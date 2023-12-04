@@ -1,20 +1,21 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	server "med"
+	"med/configs"
 	"med/pkg/handler"
 	route "med/pkg/routes"
 )
 
 func main() {
+	config := configs.InitConfig(*configs.NewConfigInfo())
+
 	handlers := new(handler.Handler)
 	routes := route.InitRoutes(handlers)
 
 	server := new(server.Server)
-	fmt.Println("Server is running ...")
-	if err := server.Run("8080", routes); err != nil {
+	if err := server.Run(config.Server.Host, config.Server.Port, routes); err != nil {
 		log.Fatal()
 	}
 }
