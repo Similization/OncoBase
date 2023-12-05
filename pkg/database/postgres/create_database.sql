@@ -1,11 +1,13 @@
+-- CREATE DATABASE med_base;
+
 CREATE SCHEMA IF NOT EXISTS onco_base;
 
 CREATE TABLE IF NOT EXISTS onco_base.admin
 (
-    id          INT         NOT NULL,
-    first_name  VARCHAR(30) NOT NULL,
-    middle_name VARCHAR(30) NOT NULL,
-    last_name   VARCHAR(30) NOT NULL,
+    id          INT,
+    first_name  VARCHAR(30),
+    middle_name VARCHAR(30),
+    last_name   VARCHAR(30),
     email       VARCHAR(60) NOT NULL UNIQUE,
     password    VARCHAR(30) NOT NULL,
 --     role        VARCHAR(15) NOT NULL,
@@ -15,13 +17,13 @@ CREATE TABLE IF NOT EXISTS onco_base.admin
 
 CREATE TABLE IF NOT EXISTS onco_base.patient
 (
-    id          INT         NOT NULL,
-    first_name  VARCHAR(30) NOT NULL,
-    middle_name VARCHAR(30) NOT NULL,
-    last_name   VARCHAR(30) NOT NULL,
+    id          SERIAL,
+    first_name  VARCHAR(30),
+    middle_name VARCHAR(30),
+    last_name   VARCHAR(30),
     birth_date  DATE,
     sex         VARCHAR(10),
-    snils       VARCHAR(12) NOT NULL UNIQUE,
+    snils       VARCHAR(12) UNIQUE,
     email       VARCHAR(60) UNIQUE,
     phone       VARCHAR(12) UNIQUE,
     password    VARCHAR(30),
@@ -29,9 +31,12 @@ CREATE TABLE IF NOT EXISTS onco_base.patient
     PRIMARY KEY (id)
 );
 
+INSERT INTO onco_base.patient (email, password)
+VALUES ('dan18b@yandex.ru', '12qw12wq');
+
 CREATE TABLE IF NOT EXISTS onco_base.doctor
 (
-    id            INT         NOT NULL,
+    id            INT,
     first_name    VARCHAR(30) NOT NULL,
     middle_name   VARCHAR(30) NOT NULL,
     last_name     VARCHAR(30) NOT NULL,

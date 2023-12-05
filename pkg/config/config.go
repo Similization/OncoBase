@@ -1,8 +1,11 @@
-package configs
+package config
 
 import (
 	"fmt"
+	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -12,6 +15,12 @@ type ConfigDatabase struct {
 	Name     string `yml:"name" env:"NAME" env-default:"postgres"`
 	User     string `yml:"user" env:"USER" env-default:"user"`
 	Password string `yml:"password" env:"PASSWORD"`
+	SSLMode  string `yml:"sslmode" env:"SSLMODE"`
+}
+
+func (c *ConfigDatabase) GetDataSourceName() string {
+	return fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s",
+		c.Host, c.Port, c.Name, c.User, c.Password, c.SSLMode)
 }
 
 type ConfigServer struct {
@@ -30,11 +39,11 @@ type ConfigInfo struct {
 	Paths     []string
 }
 
-func NewConfigInfo() *ConfigInfo {
+func DefaultConfigInfo() *ConfigInfo {
 	return &ConfigInfo{
 		Name:      "config",
 		Extension: "yaml",
-		Paths:     []string{".", "configs"},
+		Paths:     []string{".", "config", "pkg/config"},
 	}
 }
 
@@ -55,6 +64,11 @@ func InitConfig(configInfo ConfigInfo) *ConfigApp {
 	if err != nil {
 		fmt.Printf("unable to decode into struct, %v", err)
 	}
+
+	if err = godotenv.Load(); err != nil {
+		log.Fatal()
+	}
+	databaseConfig.Password = os.Getenv("POSTGRES_DB_PASSWORD")
 
 	var serverConfig ConfigServer
 	err = viper.Sub("server").Unmarshal(&serverConfig)

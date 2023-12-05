@@ -1,20 +1,38 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	server "med"
+	"net/http"
 
-func (h *Handler) LogIn(c *gin.Context) {
-	// check in db for user
+	"github.com/gin-gonic/gin"
+)
 
+func (h *Handler) LogIn(ctx *gin.Context) {
 }
 
-func (h *Handler) Registry(c *gin.Context) {
-	// create user in db
+func (h *Handler) Registry(ctx *gin.Context) {
+	var input server.User
+
+	if err := ctx.BindJSON(&input); err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.Authorization.CreateUser(input)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 }
 
-func (h *Handler) LogOut(c *gin.Context) {
+func (h *Handler) LogOut(ctx *gin.Context) {
 	// logout user
 }
 
-func (h *Handler) ResetPassword(c *gin.Context) {
+func (h *Handler) ResetPassword(ctx *gin.Context) {
 	// send message to mail
 }

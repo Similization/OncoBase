@@ -7,6 +7,7 @@ server:
 database:
   host: "localhost"
   port: 5432
-  name: "med-base"
-  user: "admin"
-  pass: ""
+  name: "postgres"
+  user: "postgres"
+  password: ""
+  sslmode: "disable"

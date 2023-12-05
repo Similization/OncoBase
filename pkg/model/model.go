@@ -1,4 +1,4 @@
-package database
+package model
 
 type Diagnosis struct {
 	Id          string // diag id
@@ -12,7 +12,7 @@ type Drug struct {
 }
 
 type Patient struct {
-	Id                   string // patient email or hashed snils
+	Id                   string
 	FirstName            string
 	MiddleName           string
 	LastName             string
