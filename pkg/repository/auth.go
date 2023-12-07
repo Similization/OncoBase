@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	server "med"
+	"med/pkg/model"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -15,13 +15,20 @@ func NewAuthRepository(db *sqlx.DB) *AuthorizationRepository {
 	return &AuthorizationRepository{db: db}
 }
 
-func (r *AuthorizationRepository) CreateUser(user server.User) (int, error) {
-	var id int
-	query := fmt.Sprintf("INSERT INTO %s (email, password) VALUES ($1, $2) RETURNING id", patientTable)
-	row := r.db.QueryRow(query, user.Email, user.Password)
+func (r *AuthorizationRepository) CreateUser(user model.User) (string, error) {
+	var email string
+	query := fmt.Sprintf("INSERT INTO %s (email, password, role) VALUES ($1, $2, $3) RETURNING email", userTable)
+	row := r.db.QueryRow(query, user.Email, user.Password, user.Role)
 
-	if err := row.Scan(&id); err != nil {
-		return -1, err
+	if err := row.Scan(&email); err != nil {
+		return "", err
 	}
-	return id, nil
+	return email, nil
+}
+
+func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
+	var user model.User
+	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", userTable)
+	err := r.db.Get(&user, query, email, password)
+	return user, err
 }

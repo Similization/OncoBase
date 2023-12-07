@@ -6,22 +6,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Settings(c *gin.Context) {
-	c.String(http.StatusOK, "The available groups are [...]")
+func (h *Handler) Settings(ctx *gin.Context) {
+	email, _ := ctx.Get("email")
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"email": email,
+	})
 }
 
-func (h *Handler) BloodCount(c *gin.Context) {
-
-}
-
-func (h *Handler) Doctors(c *gin.Context) {
-
-}
-
-func (h *Handler) Devs(c *gin.Context) {
+func (h *Handler) BloodCount(ctx *gin.Context) {
 
 }
 
-func (h *Handler) AnalysisData(c *gin.Context) {
+func (h *Handler) Doctors(ctx *gin.Context) {
+
+}
+
+func (h *Handler) Devs(ctx *gin.Context) {
+
+}
+
+func (h *Handler) AnalysisData(ctx *gin.Context) {
 
 }

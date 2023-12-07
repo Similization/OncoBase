@@ -1,12 +1,14 @@
 package services
 
 import (
-	server "med"
+	"med/pkg/model"
 	"med/pkg/repository"
 )
 
 type Authorization interface {
-	CreateUser(user server.User) (int, error)
+	CreateUser(user model.User) (string, error)
+	GenerateToken(email, password string) (string, error)
+	ParseToken(token string) (string, error)
 }
 
 type Account interface {

@@ -1,31 +1,47 @@
 package handler
 
 import (
-	server "med"
+	"med/pkg/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h *Handler) LogIn(ctx *gin.Context) {
-}
-
-func (h *Handler) Registry(ctx *gin.Context) {
-	var input server.User
+	var input model.AuthUser
 
 	if err := ctx.BindJSON(&input); err != nil {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Authorization.CreateUser(input)
+	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
+		"token": token,
+	})
+}
+
+func (h *Handler) Registry(ctx *gin.Context) {
+	var user model.User
+
+	if err := ctx.BindJSON(&user); err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	email, err := h.services.Authorization.CreateUser(user)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"email": email,
 	})
 }
 

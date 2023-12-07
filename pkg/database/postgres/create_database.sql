@@ -2,9 +2,18 @@
 
 CREATE SCHEMA IF NOT EXISTS onco_base;
 
+CREATE TABLE onco_base.external_user
+(
+    email    VARCHAR(60)  NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role     VARCHAR(30)  NOT NULL,
+
+    PRIMARY KEY (email)
+);
+
 CREATE TABLE IF NOT EXISTS onco_base.admin
 (
-    id          INT,
+    id          SERIAL,
     first_name  VARCHAR(30),
     middle_name VARCHAR(30),
     last_name   VARCHAR(30),
@@ -24,28 +33,38 @@ CREATE TABLE IF NOT EXISTS onco_base.patient
     birth_date  DATE,
     sex         VARCHAR(10),
     snils       VARCHAR(12) UNIQUE,
-    email       VARCHAR(60) UNIQUE,
+    email       VARCHAR(60),
     phone       VARCHAR(12) UNIQUE,
-    password    VARCHAR(30),
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (email) REFERENCES onco_base.external_user (email)
 );
 
-INSERT INTO onco_base.patient (email, password)
-VALUES ('dan18b@yandex.ru', '12qw12wq');
+-- INSERT INTO onco_base.patient (email, password)
+-- VALUES ('dan18b@yandex.ru', '12qw12wq');
+--
+-- SELECT id
+-- FROM onco_base.patient
+-- WHERE email = 'dan18b@yandex.ru'
+--   AND password = '12qw12wq';
+
+-- SELECT email
+-- FROM onco_base.external_user
+-- WHERE email = 'dan18b@yandex.ru'
+--   AND password = '355c6e24644ef1ccc0112f3388cf53cbd8631785fb1704c09ffd23a9685d2dad52f78d1fcc571200e98d723eb92cab6521361868157f4966bd4ba54fe06e12fb';
 
 CREATE TABLE IF NOT EXISTS onco_base.doctor
 (
-    id            INT,
+    id            SERIAL,
     first_name    VARCHAR(30) NOT NULL,
     middle_name   VARCHAR(30) NOT NULL,
     last_name     VARCHAR(30) NOT NULL,
     qualification VARCHAR(300),
-    email         VARCHAR(60) NOT NULL UNIQUE,
+    email         VARCHAR(60),
     phone         VARCHAR(12) UNIQUE,
-    password      VARCHAR(30) NOT NULL,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (email) REFERENCES onco_base.external_user (email)
 );
 
 CREATE TABLE IF NOT EXISTS onco_base.doctor_patient

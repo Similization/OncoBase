@@ -7,7 +7,7 @@ import (
 )
 
 func createAccountRoutes[G Group](route G, handlers *handler.Handler) *gin.RouterGroup {
-	account := route.Group("/account")
+	account := route.Group("/account", handlers.UserIdentity)
 	{
 		account.GET("/settings", handlers.Settings)
 		account.GET("/blood-count", handlers.BloodCount)

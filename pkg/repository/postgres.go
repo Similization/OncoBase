@@ -7,20 +7,7 @@ import (
 )
 
 const (
-	adminTable           = "admin"
-	patientTable         = "onco_base.patient"
-	doctorTable          = "doctor"
-	doctorPatientTable   = "doctor_patient"
-	diagnosisTable       = "diagnosis"
-	drugTable            = "drug"
-	unitMeasureTable     = "unit_measure"
-	courseTable          = "course"
-	bloodCountTable      = "blood_count"
-	diseaseTable         = "disease"
-	patientDiseaseTable  = "patient_disease"
-	patientCourseTable   = "patient_course"
-	bloodCountValueTable = "blood_count_value"
-	courseProcedureTable = "course_procedure"
+	userTable = "onco_base.external_user"
 )
 
 func NewPostgresDB(cfg *config.ConfigDatabase) (*sqlx.DB, error) {

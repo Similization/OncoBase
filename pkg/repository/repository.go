@@ -1,13 +1,14 @@
 package repository
 
 import (
-	server "med"
+	"med/pkg/model"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Authorization interface {
-	CreateUser(user server.User) (int, error)
+	CreateUser(user model.User) (string, error)
+	GetUser(email, password string) (model.User, error)
 }
 
 type Account interface {

@@ -8,7 +8,9 @@ import (
 	"strconv"
 )
 
-func GenerateRandomSalt(saltSize int) []byte {
+var Salt = []byte(os.Getenv("SALT"))
+
+func generateRandomSalt() []byte {
 	saltSize, err := strconv.Atoi(os.Getenv("SALT_SIZE"))
 	var salt = make([]byte, saltSize)
 
