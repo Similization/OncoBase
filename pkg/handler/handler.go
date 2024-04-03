@@ -5,9 +5,13 @@ import (
 )
 
 type Handler struct {
-	services *services.Service
+	AccountHandler AccountHandlers
+	services       *services.Service
 }
 
 func NewHandler(s *services.Service) *Handler {
-	return &Handler{services: s}
+	return &Handler{
+		AccountHandler: AccountHandlers{},
+		services:       s,
+	}
 }

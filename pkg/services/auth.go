@@ -6,6 +6,11 @@ import (
 	"med/pkg/utils"
 )
 
+type UserData struct {
+	Id   int
+	Role string
+}
+
 type AuthorizationService struct {
 	repo repository.Authorization
 	salt []byte
@@ -33,13 +38,16 @@ func (s *AuthorizationService) GenerateToken(email, password string) (string, er
 	return token, nil
 }
 
-func (*AuthorizationService) ParseToken(token string) (string, error) {
+func (*AuthorizationService) ParseToken(token string) (*UserData, error) {
 	claims, err := utils.ParseToken(token)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return claims.UserEmail, nil
+	return &UserData{
+		Id:   claims.UserId,
+		Role: claims.UserRole,
+	}, nil
 }
 
 func (s *AuthorizationService) generatePasswordHash(password string) string {

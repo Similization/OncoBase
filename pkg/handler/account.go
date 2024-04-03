@@ -6,25 +6,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Settings(ctx *gin.Context) {
-	email, _ := ctx.Get("email")
+type AccountHandlers struct {
+}
+
+func (h *AccountHandlers) Settings(ctx *gin.Context) {
+	id, _ := ctx.Get(userContext)
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"email": email,
+		"id": id,
 	})
 }
 
-func (h *Handler) BloodCount(ctx *gin.Context) {
+func (h *AccountHandlers) BloodCount(ctx *gin.Context) {
 
 }
 
-func (h *Handler) Doctors(ctx *gin.Context) {
+func (h *AccountHandlers) Doctors(ctx *gin.Context) {
 
 }
 
-func (h *Handler) Devs(ctx *gin.Context) {
+func (h *AccountHandlers) PatientData(ctx *gin.Context) {
 
 }
 
-func (h *Handler) AnalysisData(ctx *gin.Context) {
+func (h *AccountHandlers) Console(ctx *gin.Context) {
 
 }

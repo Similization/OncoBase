@@ -15,7 +15,8 @@ var jwtKey = []byte(os.Getenv("JWT_KEY"))
 const tokenTTL = 5 * time.Minute
 
 type tokenClaims struct {
-	UserEmail string `json:"email"`
+	UserId   int    `json:"id"`
+	UserRole string `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -23,7 +24,8 @@ func GenerateJWT(user model.User) (string, error) {
 	expirationTime := time.Now().Add(tokenTTL)
 
 	claims := &tokenClaims{
-		UserEmail: user.Email,
+		UserId:   user.Id,
+		UserRole: user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -38,7 +40,7 @@ func GenerateJWT(user model.User) (string, error) {
 func ParseToken(accessToken string) (*tokenClaims, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Wrong mwthod")
+			return nil, fmt.Errorf("Wrong method")
 		}
 
 		return []byte(jwtKey), nil

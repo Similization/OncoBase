@@ -12,15 +12,35 @@ type Drug struct {
 }
 
 type Patient struct {
-	Id                   string
-	FirstName            string
-	MiddleName           string
-	LastName             string
-	BirthDate            string
-	Sex                  string
-	SNILS                string
-	Phone                string
-	PreliminaryDiagnosis string
+	Id         string
+	FirstName  string
+	MiddleName string
+	LastName   string
+	BirthDate  string
+	Sex        string
+	SNILS      string
+	Phone      string
+}
+
+type PatientWithDisease struct {
+	Id         string
+	FirstName  string
+	MiddleName string
+	LastName   string
+	BirthDate  string
+	Sex        string
+	SNILS      string
+	Phone      string
+}
+
+type Doctor struct {
+	Id         string
+	FirstName  string
+	MiddleName string
+	LastName   string
+	BirthDate  string
+	Sex        string
+	Phone      string
 }
 
 type Course struct {
@@ -33,12 +53,13 @@ type Course struct {
 
 type PatientCourse struct {
 	Id        int
-	Patient   string
+	Patient   int
 	Disease   string
 	Course    string
+	Doctor    int
 	BeginDate string
 	EndDate   string
-	result    string
+	Diagnosis string
 }
 
 type UnitMeasure struct {

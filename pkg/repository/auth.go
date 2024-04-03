@@ -17,7 +17,7 @@ func NewAuthRepository(db *sqlx.DB) *AuthorizationRepository {
 
 func (r *AuthorizationRepository) CreateUser(user model.User) (string, error) {
 	var email string
-	query := fmt.Sprintf("INSERT INTO %s (email, password, role) VALUES ($1, $2, $3) RETURNING email", userTable)
+	query := fmt.Sprintf("INSERT INTO %s (email, password, role) VALUES ($1, $2, $3) RETURNING email", externalUserTable)
 	row := r.db.QueryRow(query, user.Email, user.Password, user.Role)
 
 	if err := row.Scan(&email); err != nil {
@@ -28,7 +28,11 @@ func (r *AuthorizationRepository) CreateUser(user model.User) (string, error) {
 
 func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
 	var user model.User
-	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", userTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", internalUserTable)
 	err := r.db.Get(&user, query, email, password)
+	if err != nil {
+		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", externalUserTable)
+		err = r.db.Get(&user, query, email, password)
+	}
 	return user, err
 }

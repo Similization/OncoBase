@@ -7,7 +7,12 @@ import (
 )
 
 const (
-	userTable = "onco_base.external_user"
+	externalUserTable  = "onco_base.external_user"
+	internalUserTable  = "onco_base.internal_user"
+	patientTable       = "onco_base.patient"
+	doctorTable        = "onco_base.doctor"
+	doctorPatientTable = "onco_base.doctor_patient"
+	patientCourseTable = "onco_base.patient_course"
 )
 
 func NewPostgresDB(cfg *config.ConfigDatabase) (*sqlx.DB, error) {
