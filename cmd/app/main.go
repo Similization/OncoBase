@@ -23,7 +23,7 @@ func main() {
 
 	db, err := repository.NewPostgresDB(&config.Database)
 	if err != nil {
-		logger.Error().Msg(err.Error())
+		logger.Error()
 	}
 
 	repository := repository.NewRepository(db)

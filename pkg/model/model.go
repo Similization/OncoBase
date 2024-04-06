@@ -1,10 +1,5 @@
 package model
 
-type Diagnosis struct {
-	Id          string // diag id
-	Description string
-}
-
 type Drug struct {
 	Id          string // drug global id
 	Indications string
@@ -62,13 +57,6 @@ type PatientCourse struct {
 	Diagnosis string
 }
 
-type UnitMeasure struct {
-	Id        string // global unit measure id
-	Shorthand string
-	FullText  string
-	Global    string
-}
-
 type BloodCount struct {
 	Id               string // global blood count id
 	Description      string
@@ -77,11 +65,6 @@ type BloodCount struct {
 	MinPossibleValue string
 	MaxPossibleValue string
 	MeasureCode      string
-}
-
-type Disease struct {
-	Id          string // global disease id
-	Description string
 }
 
 type BloodCountValue struct {

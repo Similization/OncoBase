@@ -12,7 +12,10 @@ const (
 	patientTable       = "onco_base.patient"
 	doctorTable        = "onco_base.doctor"
 	doctorPatientTable = "onco_base.doctor_patient"
+	diagnosisTable     = "onco_base.diagnosis"
+	diseaseTable       = "onco_base.disease"
 	patientCourseTable = "onco_base.patient_course"
+	unitMeasureTable   = "onco_base.unit_measure"
 )
 
 func NewPostgresDB(cfg *config.ConfigDatabase) (*sqlx.DB, error) {

@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS onco_base.unit_measure
 (
     id        VARCHAR(15) NOT NULL UNIQUE,
     shorthand VARCHAR(15) NOT NULL,
-    full_text VARCHAR(30) UNIQUE,
+    full_text VARCHAR(30),
     global    VARCHAR(15),
     PRIMARY KEY (id)
 );
