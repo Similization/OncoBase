@@ -1,22 +1,5 @@
 package model
 
-type Drug struct {
-	Id          string // drug global id
-	Indications string
-	Description string
-}
-
-type Patient struct {
-	Id         string
-	FirstName  string
-	MiddleName string
-	LastName   string
-	BirthDate  string
-	Sex        string
-	SNILS      string
-	Phone      string
-}
-
 type PatientWithDisease struct {
 	Id         string
 	FirstName  string

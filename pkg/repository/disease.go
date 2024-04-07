@@ -44,13 +44,13 @@ func (r *DiseaseRepository) GetDiseaseById(id string) (model.Disease, error) {
 
 // Update disease data in database
 func (r *DiseaseRepository) UpdateDisease(disease model.Disease) (model.Disease, error) {
-	var cre model.Disease
+	var updatedDisease model.Disease
 	query := fmt.Sprintf("UPDATE %s SET description=$2 WHERE id=$1 RETURNING *", diseaseTable)
-	err := r.db.Get(&cre, query,
+	err := r.db.Get(&updatedDisease, query,
 		disease.Id,
 		disease.Description,
 	)
-	return cre, err
+	return updatedDisease, err
 }
 
 // Delete disease data from database

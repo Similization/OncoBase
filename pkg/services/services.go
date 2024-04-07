@@ -38,6 +38,22 @@ type Disease interface {
 	DeleteDisease(id string) error
 }
 
+type Drug interface {
+	CreateDrug(unitMeasure model.Drug) (model.Drug, error)
+	GetDrugById(id string) (model.Drug, error)
+	GetDrugList() ([]model.Drug, error)
+	UpdateDrug(unitMeasure model.Drug) (model.Drug, error)
+	DeleteDrug(id string) error
+}
+
+type Patient interface {
+	CreatePatient(unitMeasure model.Patient) (model.Patient, error)
+	GetPatientById(id int) (model.Patient, error)
+	GetPatientList() ([]model.Patient, error)
+	UpdatePatient(unitMeasure model.Patient) (model.Patient, error)
+	DeletePatient(id int) error
+}
+
 type BloodCount interface {
 }
 
@@ -48,6 +64,8 @@ type Service struct {
 	UnitMeasure
 	Disease
 	Diagnosis
+	Drug
+	Patient
 }
 
 func NewService(repos repository.Repository) *Service {
@@ -56,5 +74,7 @@ func NewService(repos repository.Repository) *Service {
 		UnitMeasure:   NewUnitMeasureService(repos.UnitMeasure),
 		Disease:       NewDiseaseService(repos.Disease),
 		Diagnosis:     NewDiagnosisService(repos.Diagnosis),
+		Drug:          NewDrugService(repos.Drug),
+		Patient:       NewPatientService(repos.Patient),
 	}
 }

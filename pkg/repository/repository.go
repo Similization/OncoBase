@@ -26,19 +26,35 @@ type UnitMeasure interface {
 }
 
 type Disease interface {
-	CreateDisease(unitMeasure model.Disease) (model.Disease, error)
+	CreateDisease(disease model.Disease) (model.Disease, error)
 	GetDiseaseById(id string) (model.Disease, error)
 	GetDiseaseList() ([]model.Disease, error)
-	UpdateDisease(unitMeasure model.Disease) (model.Disease, error)
+	UpdateDisease(disease model.Disease) (model.Disease, error)
 	DeleteDisease(id string) error
 }
 
 type Diagnosis interface {
-	CreateDiagnosis(unitMeasure model.Diagnosis) (model.Diagnosis, error)
+	CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error)
 	GetDiagnosisById(id string) (model.Diagnosis, error)
 	GetDiagnosisList() ([]model.Diagnosis, error)
-	UpdateDiagnosis(unitMeasure model.Diagnosis) (model.Diagnosis, error)
+	UpdateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error)
 	DeleteDiagnosis(id string) error
+}
+
+type Drug interface {
+	CreateDrug(drug model.Drug) (model.Drug, error)
+	GetDrugById(id string) (model.Drug, error)
+	GetDrugList() ([]model.Drug, error)
+	UpdateDrug(drug model.Drug) (model.Drug, error)
+	DeleteDrug(id string) error
+}
+
+type Patient interface {
+	CreatePatient(patient model.Patient) (model.Patient, error)
+	GetPatientById(id int) (model.Patient, error)
+	GetPatientList() ([]model.Patient, error)
+	UpdatePatient(patient model.Patient) (model.Patient, error)
+	DeletePatient(id int) error
 }
 
 type Repository struct {
@@ -48,6 +64,8 @@ type Repository struct {
 	UnitMeasure
 	Diagnosis
 	Disease
+	Drug
+	Patient
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -56,5 +74,7 @@ func NewRepository(db *sqlx.DB) *Repository {
 		UnitMeasure:   NewUnitMeasureRepository(db),
 		Diagnosis:     NewDiagnosisRepository(db),
 		Disease:       NewDiseaseRepository(db),
+		Drug:          NewDrugRepository(db),
+		Patient:       NewPatientRepository(db),
 	}
 }

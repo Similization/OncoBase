@@ -14,6 +14,7 @@ const (
 	doctorPatientTable = "onco_base.doctor_patient"
 	diagnosisTable     = "onco_base.diagnosis"
 	diseaseTable       = "onco_base.disease"
+	drugTable          = "onco_base.drug"
 	patientCourseTable = "onco_base.patient_course"
 	unitMeasureTable   = "onco_base.unit_measure"
 )

@@ -46,15 +46,15 @@ func (r *UnitMeasureRepository) GetUnitMeasureById(id string) (model.UnitMeasure
 
 // Update unit measure data in database
 func (r *UnitMeasureRepository) UpdateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
-	var cre model.UnitMeasure
+	var updatedUnitMeasure model.UnitMeasure
 	query := fmt.Sprintf("UPDATE %s SET shorthand=$2, full_text=$3, global=$4 WHERE id=$1 RETURNING *", unitMeasureTable)
-	err := r.db.Get(&cre, query,
+	err := r.db.Get(&updatedUnitMeasure, query,
 		unitMeasure.Id,
 		unitMeasure.Shorthand,
 		unitMeasure.FullText,
 		unitMeasure.Global,
 	)
-	return cre, err
+	return updatedUnitMeasure, err
 }
 
 // Delete unit measure data from database

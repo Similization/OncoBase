@@ -7,13 +7,13 @@ import (
 )
 
 func createDiagnosisRoutes[G Group](route G, handlers *handler.Handler) *gin.RouterGroup {
-	unitMeasure := route.Group("/diagnosis")
+	diagnosis := route.Group("/diagnosis")
 	{
-		unitMeasure.POST("/", handlers.CreateDiagnosis)
-		unitMeasure.GET("/", handlers.GetDiagnosisList)
-		unitMeasure.GET("/:id", handlers.GetDiagnosisById)
-		unitMeasure.PUT("/:id", handlers.UpdateDiagnosis)
-		unitMeasure.DELETE("/:id", handlers.DeleteDiagnosis)
+		diagnosis.POST("/", handlers.CreateDiagnosis)
+		diagnosis.GET("/", handlers.GetDiagnosisList)
+		diagnosis.GET("/:id", handlers.GetDiagnosisById)
+		diagnosis.PUT("/:id", handlers.UpdateDiagnosis)
+		diagnosis.DELETE("/:id", handlers.DeleteDiagnosis)
 	}
-	return unitMeasure
+	return diagnosis
 }

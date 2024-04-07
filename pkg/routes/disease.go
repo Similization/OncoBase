@@ -7,13 +7,13 @@ import (
 )
 
 func createDiseaseRoutes[G Group](route G, handlers *handler.Handler) *gin.RouterGroup {
-	unitMeasure := route.Group("/disease")
+	disease := route.Group("/disease")
 	{
-		unitMeasure.POST("/", handlers.CreateDisease)
-		unitMeasure.GET("/", handlers.GetDiseaseList)
-		unitMeasure.GET("/:id", handlers.GetDiseaseById)
-		unitMeasure.PUT("/:id", handlers.UpdateDisease)
-		unitMeasure.DELETE("/:id", handlers.DeleteDisease)
+		disease.POST("/", handlers.CreateDisease)
+		disease.GET("/", handlers.GetDiseaseList)
+		disease.GET("/:id", handlers.GetDiseaseById)
+		disease.PUT("/:id", handlers.UpdateDisease)
+		disease.DELETE("/:id", handlers.DeleteDisease)
 	}
-	return unitMeasure
+	return disease
 }

@@ -24,5 +24,7 @@ func InitRoutes(handlers *handler.Handler) *gin.Engine {
 	createUnitMeasureRoutes(router, handlers)
 	createDiagnosisRoutes(router, handlers)
 	createDiseaseRoutes(router, handlers)
+	createDrugRoutes(router, handlers)
+	createPatientsRoutes(router, handlers)
 	return router
 }
