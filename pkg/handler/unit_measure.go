@@ -7,32 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) GetUnitMeasureList(ctx *gin.Context) {
-	unitMeasureList, err := h.services.UnitMeasure.GetUnitMeasureList()
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get unit measure list": unitMeasureList,
-	})
-}
-
-func (h *Handler) GetUnitMeasureById(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	unitMeasure, err := h.services.UnitMeasure.GetUnitMeasureById(id)
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get unit measure": unitMeasure,
-	})
-}
-
+// CreateUnitMeasure godoc
+// @Summary Create unit measure
+// @Description Creates a new unit measure entry.
+// @Tags UnitMeasure
+// @Accept json
+// @Produce json
+// @Param input body model.UnitMeasure true "Unit measure data"
+// @Success 200 {object} model.UnitMeasure "Created unit measure data"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /unit-measure [post]
 func (h *Handler) CreateUnitMeasure(ctx *gin.Context) {
 	var unitMeasure model.UnitMeasure
 
@@ -47,11 +32,59 @@ func (h *Handler) CreateUnitMeasure(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Created unit measure": createdUnitMeasure,
-	})
+	ctx.JSON(http.StatusOK, createdUnitMeasure)
 }
 
+// GetUnitMeasureList godoc
+// @Summary Get unit measure list
+// @Description Retrieves a list of unit measure entries.
+// @Tags UnitMeasure
+// @Produce json
+// @Success 200 {object} []model.UnitMeasure "Unit measure list"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /unit-measure [get]
+func (h *Handler) GetUnitMeasureList(ctx *gin.Context) {
+	unitMeasureList, err := h.services.UnitMeasure.GetUnitMeasureList()
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, unitMeasureList)
+}
+
+// GetUnitMeasureById godoc
+// @Summary Get unit measure by ID
+// @Description Retrieves a unit measure entry by ID.
+// @Tags UnitMeasure
+// @Produce json
+// @Param id path string true "Unit measure ID"
+// @Success 200 {object} model.UnitMeasure "Unit measure data"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /unit-measure/{id} [get]
+func (h *Handler) GetUnitMeasureById(ctx *gin.Context) {
+	id := ctx.Param(userContext)
+
+	unitMeasure, err := h.services.UnitMeasure.GetUnitMeasureById(id)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, unitMeasure)
+}
+
+// UpdateUnitMeasure godoc
+// @Summary Update unit measure
+// @Description Updates an existing unit measure entry.
+// @Tags UnitMeasure
+// @Accept json
+// @Produce json
+// @Param input body model.UnitMeasure true "Unit measure data"
+// @Success 200 {object} model.UnitMeasure "Updated unit measure data"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /unit-measure [put]
 func (h *Handler) UpdateUnitMeasure(ctx *gin.Context) {
 	var unitMeasure model.UnitMeasure
 
@@ -66,11 +99,18 @@ func (h *Handler) UpdateUnitMeasure(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Updated unit measure": updatedUnitMeasure,
-	})
+	ctx.JSON(http.StatusOK, updatedUnitMeasure)
 }
 
+// DeleteUnitMeasure godoc
+// @Summary Delete unit measure
+// @Description Deletes a unit measure entry by ID.
+// @Tags UnitMeasure
+// @Produce json
+// @Param id path string true "Unit measure ID"
+// @Success 200 {object} string "Unit measure deleted"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /unit-measure/{id} [delete]
 func (h *Handler) DeleteUnitMeasure(ctx *gin.Context) {
 	id := ctx.Param(userContext)
 
@@ -80,7 +120,5 @@ func (h *Handler) DeleteUnitMeasure(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Unit measure deleted": id,
-	})
+	ctx.JSON(http.StatusOK, id)
 }

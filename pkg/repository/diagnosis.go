@@ -15,7 +15,7 @@ func NewDiagnosisRepository(db *sqlx.DB) *DiagnosisRepository {
 	return &DiagnosisRepository{db: db}
 }
 
-// Create diagnosis in database and get him from database
+// Create diagnosis in database and get it from database
 func (r *DiagnosisRepository) CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
 	var createdDiagnosis model.Diagnosis
 	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2) RETURNING *", diagnosisTable)

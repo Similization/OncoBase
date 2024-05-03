@@ -7,16 +7,23 @@ import (
 )
 
 const (
-	externalUserTable  = "onco_base.external_user"
-	internalUserTable  = "onco_base.internal_user"
-	patientTable       = "onco_base.patient"
-	doctorTable        = "onco_base.doctor"
-	doctorPatientTable = "onco_base.doctor_patient"
-	diagnosisTable     = "onco_base.diagnosis"
-	diseaseTable       = "onco_base.disease"
-	drugTable          = "onco_base.drug"
-	patientCourseTable = "onco_base.patient_course"
-	unitMeasureTable   = "onco_base.unit_measure"
+	externalUserTable = "onco_base.external_user"
+	internalUserTable = "onco_base.internal_user"
+
+	bloodCountTable          = "onco_base.blood_count"
+	bloodCountValueTable     = "onco_base.blood_count_value"
+	courseTable              = "onco_base.course"
+	courseProcedureTable     = "onco_base.course_procedure"
+	diagnosisTable           = "onco_base.diagnosis"
+	diseaseTable             = "onco_base.disease"
+	doctorTable              = "onco_base.doctor"
+	doctorPatientTable       = "onco_base.doctor_patient"
+	drugTable                = "onco_base.drug"
+	patientTable             = "onco_base.patient"
+	patientCourseTable       = "onco_base.patient_course"
+	patientDiseaseTable      = "onco_base.patient_disease"
+	procedureBloodCountTable = "onco_base.procedure_blood_count"
+	unitMeasureTable         = "onco_base.unit_measure"
 )
 
 func NewPostgresDB(cfg *config.ConfigDatabase) (*sqlx.DB, error) {

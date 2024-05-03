@@ -7,32 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) GetDiagnosisList(ctx *gin.Context) {
-	diagnosisList, err := h.services.Diagnosis.GetDiagnosisList()
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get diagnosis list": diagnosisList,
-	})
-}
-
-func (h *Handler) GetDiagnosisById(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	diagnosis, err := h.services.Diagnosis.GetDiagnosisById(id)
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get diagnosis": diagnosis,
-	})
-}
-
+// CreateDiagnosis godoc
+// @Summary Create diagnosis
+// @Description Creates a new diagnosis
+// @Tags Diagnoses
+// @Accept json
+// @Produce json
+// @Param diagnosis body model.Diagnosis true "Diagnosis object"
+// @Success 200 {object} model.Diagnosis "Created diagnosis"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /diagnoses [post]
 func (h *Handler) CreateDiagnosis(ctx *gin.Context) {
 	var diagnosis model.Diagnosis
 
@@ -47,11 +32,60 @@ func (h *Handler) CreateDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Created diagnosis": createdDiagnosis,
-	})
+	ctx.JSON(http.StatusOK, createdDiagnosis)
 }
 
+// GetDiagnosisList godoc
+// @Summary Get diagnosis list
+// @Description Retrieves a list of diagnoses
+// @Tags Diagnoses
+// @Produce json
+// @Success 200 {object} []model.Diagnosis "List of diagnoses"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /diagnoses [get]
+func (h *Handler) GetDiagnosisList(ctx *gin.Context) {
+	diagnosisList, err := h.services.Diagnosis.GetDiagnosisList()
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, diagnosisList)
+}
+
+// GetDiagnosisById godoc
+// @Summary Get diagnosis by ID
+// @Description Retrieves a diagnosis by its ID
+// @Tags Diagnoses
+// @Produce json
+// @Param id path string true "Diagnosis ID"
+// @Success 200 {object} model.Diagnosis "Diagnosis"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /diagnoses/{id} [get]
+func (h *Handler) GetDiagnosisById(ctx *gin.Context) {
+	id := ctx.Param(userContext)
+
+	diagnosis, err := h.services.Diagnosis.GetDiagnosisById(id)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, diagnosis)
+}
+
+// UpdateDiagnosis godoc
+// @Summary Update diagnosis
+// @Description Updates an existing diagnosis
+// @Tags Diagnoses
+// @Accept json
+// @Produce json
+// @Param id path string true "Diagnosis ID"
+// @Param diagnosis body model.Diagnosis true "Diagnosis object"
+// @Success 200 {object} model.Diagnosis "Updated diagnosis"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /diagnoses/{id} [put]
 func (h *Handler) UpdateDiagnosis(ctx *gin.Context) {
 	var diagnosis model.Diagnosis
 
@@ -66,11 +100,18 @@ func (h *Handler) UpdateDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Updated diagnosis": updatedDiagnosis,
-	})
+	ctx.JSON(http.StatusOK, updatedDiagnosis)
 }
 
+// DeleteDiagnosis godoc
+// @Summary Delete diagnosis
+// @Description Deletes an existing diagnosis by its ID
+// @Tags Diagnoses
+// @Produce json
+// @Param id path string true "Diagnosis ID"
+// @Success 200 {object} string "ID of deleted diagnosis"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /diagnoses/{id} [delete]
 func (h *Handler) DeleteDiagnosis(ctx *gin.Context) {
 	id := ctx.Param(userContext)
 
@@ -80,7 +121,5 @@ func (h *Handler) DeleteDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Diagnosis deleted": id,
-	})
+	ctx.JSON(http.StatusOK, id)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"med/pkg/model"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -26,13 +27,33 @@ func (r *AuthorizationRepository) CreateUser(user model.User) (string, error) {
 	return email, nil
 }
 
+// func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
+// 	var user model.User
+// 	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", internalUserTable)
+// 	err := r.db.Get(&user, query, email, password)
+// 	if err != nil {
+// 		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", externalUserTable)
+// 		err = r.db.Get(&user, query, email, password)
+// 	}
+// 	return user, err
+// }
+
 func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
 	var user model.User
-	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", internalUserTable)
-	err := r.db.Get(&user, query, email, password)
+
+	// Create a squirrel.SelectBuilder for the internal user table
+	internalSelect := squirrel.Select("*").From(internalUserTable).Where(squirrel.Eq{"email": email, "password": password})
+
+	// Create a squirrel.SelectBuilder for the external user table
+	externalSelect := squirrel.Select("*").From(externalUserTable).Where(squirrel.Eq{"email": email, "password": password})
+
+	// Combine the two queries with OR
+	query, args, err := squirrel.Or{internalSelect, externalSelect}.ToSql()
 	if err != nil {
-		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", externalUserTable)
-		err = r.db.Get(&user, query, email, password)
+		return user, err
 	}
+
+	// Execute the query
+	err = r.db.Get(&user, query, args...)
 	return user, err
 }

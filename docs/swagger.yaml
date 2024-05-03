@@ -1,0 +1,2307 @@
+basePath: /api/v1
+definitions:
+  handler.BloodCountValueResponse:
+    properties:
+      blood_count_id:
+        type: string
+      disease_id:
+        type: string
+    type: object
+  handler.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.AuthUser:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.BloodCount:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      max-normal-value:
+        type: number
+      max-possible-value:
+        type: number
+      measure-code:
+        type: string
+      min-normal-value:
+        type: number
+      min-possible-value:
+        type: number
+    type: object
+  model.BloodCountValue:
+    properties:
+      blood_count:
+        description: Type of blood count.
+        type: string
+      coefficient:
+        description: Coefficient value.
+        type: number
+      description:
+        description: Description of the blood count value. Optional.
+        type: string
+      disease:
+        description: Name of the disease.
+        type: string
+    required:
+    - blood_count
+    - coefficient
+    - disease
+    type: object
+  model.Course:
+    properties:
+      dose:
+        type: number
+      drug:
+        type: string
+      frequency:
+        type: number
+      id:
+        type: string
+      measure-code:
+        type: string
+      period:
+        type: integer
+    type: object
+  model.CourseProcedure:
+    properties:
+      begin-date:
+        type: string
+      doctor:
+        type: integer
+      id:
+        type: integer
+      patient-course:
+        type: integer
+      period:
+        type: integer
+      result:
+        type: integer
+    type: object
+  model.Diagnosis:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  model.Disease:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  model.Doctor:
+    properties:
+      first-name:
+        type: string
+      id:
+        type: integer
+      last-name:
+        type: string
+      middle-name:
+        type: string
+      phone:
+        type: string
+      qualification:
+        type: string
+      user-id:
+        type: integer
+    type: object
+  model.DoctorPatient:
+    properties:
+      doctor:
+        type: integer
+      patient:
+        type: integer
+    type: object
+  model.Drug:
+    properties:
+      active-ingredients:
+        type: string
+      country:
+        type: string
+      description:
+        type: string
+      dosage-form:
+        type: string
+      id:
+        type: string
+      manufacturer:
+        type: string
+      name:
+        type: string
+      prescribing-order:
+        type: string
+    type: object
+  model.Patient:
+    type: object
+  model.PatientCourse:
+    properties:
+      begin-date:
+        type: string
+      course:
+        type: string
+      diagnosis:
+        type: string
+      disease:
+        type: string
+      doctor:
+        type: integer
+      end-date:
+        type: string
+      id:
+        type: integer
+      patient:
+        type: integer
+    type: object
+  model.PatientDisease:
+    properties:
+      diagnosis:
+        type: string
+      disease:
+        type: string
+      patient:
+        type: integer
+      stage:
+        type: string
+    type: object
+  model.ProcedureBloodCount:
+    properties:
+      blood-count:
+        type: string
+      measure-code:
+        type: string
+      procedure:
+        type: integer
+      value:
+        type: string
+    type: object
+  model.UnitMeasure:
+    properties:
+      full-text:
+        type: string
+      global:
+        type: string
+      id:
+        type: string
+      shorthand:
+        type: string
+    type: object
+  model.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - password
+    - role
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing data on oncological markers.
+  title: OncomarkerAPI
+  version: "1.0"
+paths:
+  /account/blood-count:
+    get:
+      description: Retrieves blood count data.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count data
+          schema:
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get blood count
+      tags:
+      - Account
+  /account/console:
+    get:
+      description: Retrieves console data.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Console data
+          schema:
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get console
+      tags:
+      - Account
+  /account/doctors:
+    get:
+      description: Retrieves doctor information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Doctor list
+          schema:
+            items:
+              type: array
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get doctors
+      tags:
+      - Account
+  /account/patient-data:
+    get:
+      description: Retrieves patient data.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient data
+          schema:
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get patient data
+      tags:
+      - Account
+  /account/settings:
+    get:
+      description: Retrieves the account settings for the authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Account settings
+          schema:
+            type: integer
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get account settings
+      tags:
+      - Account
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in the user and returns an authentication token.
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Authentication token
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Log in user
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Logs out the currently authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Log out user
+      tags:
+      - Auth
+  /auth/registry:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user and returns the user's email.
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User email
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Register new user
+      tags:
+      - Auth
+  /auth/reset-password:
+    post:
+      description: Sends a password reset message to the user's email.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Reset user password
+      tags:
+      - Auth
+  /blood-count:
+    get:
+      description: Retrieves a list of blood counts.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.BloodCount'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count list
+      tags:
+      - BloodCount
+    post:
+      consumes:
+      - application/json
+      description: Creates a new blood count entry.
+      parameters:
+      - description: Blood count data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodCount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created blood count data
+          schema:
+            $ref: '#/definitions/model.BloodCount'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create a new blood count
+      tags:
+      - BloodCount
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing blood count entry.
+      parameters:
+      - description: Updated blood count data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodCount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated blood count data
+          schema:
+            $ref: '#/definitions/model.BloodCount'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update blood count
+      tags:
+      - BloodCount
+  /blood-count-value:
+    get:
+      description: Retrieves a list of all blood count values.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count value list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.BloodCountValue'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count value list
+      tags:
+      - BloodCountValue
+    post:
+      consumes:
+      - application/json
+      description: Creates a new blood count value entry.
+      parameters:
+      - description: Blood count value data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodCountValue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created blood count value
+          schema:
+            $ref: '#/definitions/model.BloodCountValue'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create blood count value
+      tags:
+      - BloodCountValue
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing blood count value entry.
+      parameters:
+      - description: Blood count value data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodCountValue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated blood count value
+          schema:
+            $ref: '#/definitions/model.BloodCountValue'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update blood count value
+      tags:
+      - BloodCountValue
+  /blood-count-value/{disease_id}/{blood_count_id}:
+    delete:
+      description: Deletes an existing blood count value entry.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted blood count value
+          schema:
+            $ref: '#/definitions/handler.BloodCountValueResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete blood count value
+      tags:
+      - BloodCountValue
+    get:
+      description: Retrieves a blood count value by its ID.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count value
+          schema:
+            $ref: '#/definitions/model.BloodCountValue'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count value by ID
+      tags:
+      - BloodCountValue
+  /blood-count-value/blood-count/{blood_count_id}:
+    get:
+      description: Retrieves a list of blood count values associated with a specific
+        blood count.
+      parameters:
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count value list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.BloodCountValue'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count value list by blood count
+      tags:
+      - BloodCountValue
+  /blood-count-value/disease/{disease_id}:
+    get:
+      description: Retrieves a list of blood count values associated with a specific
+        disease.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count value list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.BloodCountValue'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count value list by disease
+      tags:
+      - BloodCountValue
+  /blood-count/{id}:
+    delete:
+      description: Deletes a blood count entry by its ID.
+      parameters:
+      - description: Blood count ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count ID
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete blood count
+      tags:
+      - BloodCount
+    get:
+      description: Retrieves a blood count entry by its ID.
+      parameters:
+      - description: Blood count ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blood count data
+          schema:
+            $ref: '#/definitions/model.BloodCount'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get blood count by ID
+      tags:
+      - BloodCount
+  /course-procedure:
+    get:
+      description: Retrieves a list of course procedures.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course procedure list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.CourseProcedure'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get course procedure list
+      tags:
+      - CourseProcedure
+    post:
+      consumes:
+      - application/json
+      description: Creates a new course procedure entry.
+      parameters:
+      - description: Course procedure data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CourseProcedure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created course procedure data
+          schema:
+            $ref: '#/definitions/model.CourseProcedure'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create a new course procedure
+      tags:
+      - CourseProcedure
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing course procedure entry.
+      parameters:
+      - description: Updated course procedure data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CourseProcedure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated course procedure data
+          schema:
+            $ref: '#/definitions/model.CourseProcedure'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update course procedure
+      tags:
+      - CourseProcedure
+  /course-procedure/{id}:
+    delete:
+      description: Deletes a course procedure entry by its ID.
+      parameters:
+      - description: Course procedure ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course procedure ID
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete course procedure
+      tags:
+      - CourseProcedure
+    get:
+      description: Retrieves a course procedure entry by its ID.
+      parameters:
+      - description: Course procedure ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course procedure data
+          schema:
+            $ref: '#/definitions/model.CourseProcedure'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get course procedure by ID
+      tags:
+      - CourseProcedure
+  /courses:
+    get:
+      description: Returns a list of courses.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of courses
+          schema:
+            items:
+              $ref: '#/definitions/model.Course'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get list of courses
+      tags:
+      - Courses
+    post:
+      consumes:
+      - application/json
+      description: Creates a new course.
+      parameters:
+      - description: Course data
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/model.Course'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created course details
+          schema:
+            $ref: '#/definitions/model.Course'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create new course
+      tags:
+      - Courses
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing course.
+      parameters:
+      - description: Updated course data
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/model.Course'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated course details
+          schema:
+            $ref: '#/definitions/model.Course'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update course
+      tags:
+      - Courses
+  /courses/{id}:
+    delete:
+      description: Deletes an existing course by its ID.
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID of deleted course
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete course
+      tags:
+      - Courses
+    get:
+      description: Returns a course by its ID.
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Course details
+          schema:
+            $ref: '#/definitions/model.Course'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get course by ID
+      tags:
+      - Courses
+  /diagnoses:
+    get:
+      description: Retrieves a list of diagnoses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of diagnoses
+          schema:
+            items:
+              $ref: '#/definitions/model.Diagnosis'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get diagnosis list
+      tags:
+      - Diagnoses
+    post:
+      consumes:
+      - application/json
+      description: Creates a new diagnosis
+      parameters:
+      - description: Diagnosis object
+        in: body
+        name: diagnosis
+        required: true
+        schema:
+          $ref: '#/definitions/model.Diagnosis'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created diagnosis
+          schema:
+            $ref: '#/definitions/model.Diagnosis'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create diagnosis
+      tags:
+      - Diagnoses
+  /diagnoses/{id}:
+    delete:
+      description: Deletes an existing diagnosis by its ID
+      parameters:
+      - description: Diagnosis ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID of deleted diagnosis
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete diagnosis
+      tags:
+      - Diagnoses
+    get:
+      description: Retrieves a diagnosis by its ID
+      parameters:
+      - description: Diagnosis ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Diagnosis
+          schema:
+            $ref: '#/definitions/model.Diagnosis'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get diagnosis by ID
+      tags:
+      - Diagnoses
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing diagnosis
+      parameters:
+      - description: Diagnosis ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Diagnosis object
+        in: body
+        name: diagnosis
+        required: true
+        schema:
+          $ref: '#/definitions/model.Diagnosis'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated diagnosis
+          schema:
+            $ref: '#/definitions/model.Diagnosis'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update diagnosis
+      tags:
+      - Diagnoses
+  /disease:
+    get:
+      description: Retrieves a list of diseases.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Disease list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.Disease'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get disease list
+      tags:
+      - Disease
+    post:
+      consumes:
+      - application/json
+      description: Creates a new disease entry.
+      parameters:
+      - description: Disease data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Disease'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created disease data
+          schema:
+            $ref: '#/definitions/model.Disease'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create a new disease
+      tags:
+      - Disease
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing disease entry.
+      parameters:
+      - description: Updated disease data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Disease'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated disease data
+          schema:
+            $ref: '#/definitions/model.Disease'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update disease
+      tags:
+      - Disease
+  /disease/{id}:
+    delete:
+      description: Deletes a disease entry by its ID.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Disease ID
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete disease
+      tags:
+      - Disease
+    get:
+      description: Retrieves a disease entry by its ID.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Disease data
+          schema:
+            $ref: '#/definitions/model.Disease'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get disease by ID
+      tags:
+      - Disease
+  /doctor-patient:
+    post:
+      consumes:
+      - application/json
+      description: Creates a relationship between a doctor and a patient.
+      parameters:
+      - description: Doctor-patient relationship data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.DoctorPatient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created doctor-patient relationship data
+          schema:
+            $ref: '#/definitions/model.DoctorPatient'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create doctor-patient relationship
+      tags:
+      - DoctorPatient
+  /doctor-patient/{doctor_id}:
+    get:
+      description: Retrieves a list of patient IDs associated with the given doctor
+        ID.
+      parameters:
+      - description: Doctor ID
+        in: path
+        name: doctor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient ID list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.DoctorPatient'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get doctor-patient relationship list by doctor ID
+      tags:
+      - DoctorPatient
+  /doctor-patient/{doctor_id}/{patient_id}:
+    delete:
+      description: Deletes the relationship between a doctor and a patient.
+      parameters:
+      - description: Doctor ID
+        in: path
+        name: doctor_id
+        required: true
+        type: string
+      - description: Patient ID
+        in: path
+        name: patient_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted doctor-patient relationship data
+          schema:
+            type: integer
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete doctor-patient relationship
+      tags:
+      - DoctorPatient
+  /doctors:
+    get:
+      description: Retrieves a list of doctors.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Doctor list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.Doctor'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get doctor list
+      tags:
+      - Doctor
+    post:
+      consumes:
+      - application/json
+      description: Creates a new doctor.
+      parameters:
+      - description: Doctor data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Doctor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created doctor data
+          schema:
+            $ref: '#/definitions/model.Doctor'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create doctor
+      tags:
+      - Doctor
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing doctor.
+      parameters:
+      - description: Doctor data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Doctor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated doctor data
+          schema:
+            $ref: '#/definitions/model.Doctor'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update doctor
+      tags:
+      - Doctor
+  /doctors/{id}:
+    delete:
+      description: Deletes a doctor by ID.
+      parameters:
+      - description: Doctor ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Doctor ID deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete doctor
+      tags:
+      - Doctor
+    get:
+      description: Retrieves a doctor by ID.
+      parameters:
+      - description: Doctor ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Doctor data
+          schema:
+            $ref: '#/definitions/model.Doctor'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get doctor by ID
+      tags:
+      - Doctor
+  /drugs:
+    get:
+      description: Retrieves a list of drugs.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Drug list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.Drug'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get drug list
+      tags:
+      - Drug
+    post:
+      consumes:
+      - application/json
+      description: Creates a new drug.
+      parameters:
+      - description: Drug data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Drug'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created drug data
+          schema:
+            $ref: '#/definitions/model.Drug'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create drug
+      tags:
+      - Drug
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing drug.
+      parameters:
+      - description: Drug data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Drug'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated drug data
+          schema:
+            $ref: '#/definitions/model.Drug'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update drug
+      tags:
+      - Drug
+  /drugs/{id}:
+    delete:
+      description: Deletes a drug by ID.
+      parameters:
+      - description: Drug ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Drug ID deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete drug
+      tags:
+      - Drug
+    get:
+      description: Retrieves a drug by ID.
+      parameters:
+      - description: Drug ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Drug data
+          schema:
+            $ref: '#/definitions/model.Drug'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get drug by ID
+      tags:
+      - Drug
+  /patient-courses:
+    get:
+      description: Retrieves a list of patient courses.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient course list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.PatientCourse'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient course list
+      tags:
+      - PatientCourse
+    post:
+      consumes:
+      - application/json
+      description: Creates a new patient course.
+      parameters:
+      - description: Patient course data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.PatientCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created patient course data
+          schema:
+            $ref: '#/definitions/model.PatientCourse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create patient course
+      tags:
+      - PatientCourse
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing patient course.
+      parameters:
+      - description: Patient course data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.PatientCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated patient course data
+          schema:
+            $ref: '#/definitions/model.PatientCourse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update patient course
+      tags:
+      - PatientCourse
+  /patient-courses/{id}:
+    delete:
+      description: Deletes a patient course by ID.
+      parameters:
+      - description: Patient course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient course ID deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete patient course
+      tags:
+      - PatientCourse
+    get:
+      description: Retrieves a patient course by ID.
+      parameters:
+      - description: Patient course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient course data
+          schema:
+            $ref: '#/definitions/model.PatientCourse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient course by ID
+      tags:
+      - PatientCourse
+  /patient-diseases:
+    get:
+      description: Retrieves a list of patient diseases.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient disease list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.PatientDisease'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient disease list
+      tags:
+      - PatientDisease
+    post:
+      consumes:
+      - application/json
+      description: Creates a new patient disease.
+      parameters:
+      - description: Patient disease data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.PatientDisease'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created patient disease data
+          schema:
+            $ref: '#/definitions/model.PatientDisease'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create patient disease
+      tags:
+      - PatientDisease
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing patient disease.
+      parameters:
+      - description: Patient disease data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.PatientDisease'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated patient disease data
+          schema:
+            $ref: '#/definitions/model.PatientDisease'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update patient disease
+      tags:
+      - PatientDisease
+  /patient-diseases/{patient_id}/{disease_id}:
+    delete:
+      description: Deletes a patient disease by patient and disease ID.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patient_id
+        required: true
+        type: string
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient disease ID deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete patient disease
+      tags:
+      - PatientDisease
+    get:
+      description: Retrieves a patient disease by patient and disease ID.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patient_id
+        required: true
+        type: string
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient disease data
+          schema:
+            $ref: '#/definitions/model.PatientDisease'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient disease by ID
+      tags:
+      - PatientDisease
+  /patient-diseases/disease/{disease_id}:
+    get:
+      description: Retrieves a list of patient diseases by disease ID.
+      parameters:
+      - description: Disease ID
+        in: path
+        name: disease_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient disease list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.PatientDisease'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient disease list by disease
+      tags:
+      - PatientDisease
+  /patient-diseases/patient/{patient_id}:
+    get:
+      description: Retrieves a list of patient diseases by patient ID.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: patient_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient disease list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.PatientDisease'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient disease list by patient
+      tags:
+      - PatientDisease
+  /patients:
+    get:
+      description: Retrieves a list of patients.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.Patient'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient list
+      tags:
+      - Patient
+    post:
+      consumes:
+      - application/json
+      description: Creates a new patient.
+      parameters:
+      - description: Patient data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Patient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created patient data
+          schema:
+            $ref: '#/definitions/model.Patient'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create patient
+      tags:
+      - Patient
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing patient.
+      parameters:
+      - description: Patient data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Patient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated patient data
+          schema:
+            $ref: '#/definitions/model.Patient'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update patient
+      tags:
+      - Patient
+  /patients/{id}:
+    delete:
+      description: Deletes a patient by ID.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient ID deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete patient
+      tags:
+      - Patient
+    get:
+      description: Retrieves a patient by ID.
+      parameters:
+      - description: Patient ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient data
+          schema:
+            $ref: '#/definitions/model.Patient'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get patient by ID
+      tags:
+      - Patient
+  /procedure-blood-count:
+    get:
+      description: Retrieves a list of procedure blood count entries.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Procedure blood count list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ProcedureBloodCount'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get procedure blood count list
+      tags:
+      - ProcedureBloodCount
+    post:
+      consumes:
+      - application/json
+      description: Creates a new procedure blood count entry.
+      parameters:
+      - description: Procedure blood count data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProcedureBloodCount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created procedure blood count data
+          schema:
+            $ref: '#/definitions/model.ProcedureBloodCount'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create procedure blood count
+      tags:
+      - ProcedureBloodCount
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing procedure blood count entry.
+      parameters:
+      - description: Procedure blood count data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProcedureBloodCount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated procedure blood count data
+          schema:
+            $ref: '#/definitions/model.ProcedureBloodCount'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update procedure blood count
+      tags:
+      - ProcedureBloodCount
+  /procedure-blood-count/blood-counts/{blood_count_id}:
+    get:
+      description: Retrieves a list of procedure blood count entries by blood count
+        ID.
+      parameters:
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Procedure blood count list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ProcedureBloodCount'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get procedure blood count list by blood count
+      tags:
+      - ProcedureBloodCount
+  /procedure-blood-count/procedures/{procedure_id}:
+    get:
+      description: Retrieves a list of procedure blood count entries by procedure
+        ID.
+      parameters:
+      - description: Procedure ID
+        in: path
+        name: procedure_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Procedure blood count list
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ProcedureBloodCount'
+              type: array
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get procedure blood count list by procedure
+      tags:
+      - ProcedureBloodCount
+  /procedure-blood-count/procedures/{procedure_id}/blood-counts/{blood_count_id}:
+    delete:
+      description: Deletes a procedure blood count entry by procedure ID and blood
+        count ID.
+      parameters:
+      - description: Procedure ID
+        in: path
+        name: procedure_id
+        required: true
+        type: string
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Procedure blood count entry deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete procedure blood count
+      tags:
+      - ProcedureBloodCount
+    get:
+      description: Retrieves a procedure blood count entry by procedure ID and blood
+        count ID.
+      parameters:
+      - description: Procedure ID
+        in: path
+        name: procedure_id
+        required: true
+        type: string
+      - description: Blood count ID
+        in: path
+        name: blood_count_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Procedure blood count data
+          schema:
+            $ref: '#/definitions/model.ProcedureBloodCount'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get procedure blood count by IDs
+      tags:
+      - ProcedureBloodCount
+  /unit-measure:
+    get:
+      description: Retrieves a list of unit measure entries.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Unit measure list
+          schema:
+            items:
+              $ref: '#/definitions/model.UnitMeasure'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get unit measure list
+      tags:
+      - UnitMeasure
+    post:
+      consumes:
+      - application/json
+      description: Creates a new unit measure entry.
+      parameters:
+      - description: Unit measure data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.UnitMeasure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created unit measure data
+          schema:
+            $ref: '#/definitions/model.UnitMeasure'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create unit measure
+      tags:
+      - UnitMeasure
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing unit measure entry.
+      parameters:
+      - description: Unit measure data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.UnitMeasure'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated unit measure data
+          schema:
+            $ref: '#/definitions/model.UnitMeasure'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update unit measure
+      tags:
+      - UnitMeasure
+  /unit-measure/{id}:
+    delete:
+      description: Deletes a unit measure entry by ID.
+      parameters:
+      - description: Unit measure ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Unit measure deleted
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete unit measure
+      tags:
+      - UnitMeasure
+    get:
+      description: Retrieves a unit measure entry by ID.
+      parameters:
+      - description: Unit measure ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Unit measure data
+          schema:
+            $ref: '#/definitions/model.UnitMeasure'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get unit measure by ID
+      tags:
+      - UnitMeasure
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -7,41 +7,38 @@ import (
 )
 
 const (
-	from     = "from@gmail.com"
 	smtpHost = "smtp.gmail.com"
 	smtpPort = "587"
-
-	messageRegister       = "Your code to register:"
-	messagePasswordUpdate = "Your code to update your password:"
-	messageIgnore         = "If it was not you who made the request - ignore this message."
 )
 
+// EmailService provides functionality to send emails.
 type EmailService struct {
-	from     string
-	host     string
-	port     string
-	password string
+	from     string // Sender email address
+	password string // Sender email password
 }
 
-func (es *EmailService) NewEmailService() *EmailService {
+// NewEmailService creates a new EmailService instance.
+func NewEmailService() *EmailService {
 	return &EmailService{
-		from:     from,
-		host:     smtpHost,
-		port:     smtpPort,
-		password: os.Getenv("EMAIL_PASSWORD"),
+		from:     "from@gmail.com",
+		password: os.Getenv("EMAIL_PASSWORD"), // Get email password from environment variable
 	}
 }
 
+// Authentication returns an smtp.Auth object for authentication.
 func (es *EmailService) Authentication() smtp.Auth {
-	return smtp.PlainAuth("", es.from, es.password, es.host)
+	return smtp.PlainAuth("", es.from, es.password, smtpHost)
 }
 
-func createMessage(txt string) string {
-	return txt
-}
+// SendEmail sends an email with the provided subject and body to the specified recipients.
+func (es *EmailService) SendEmail(to []string, subject, body string) error {
+	// Construct email message with subject and body
+	message := []byte(fmt.Sprintf("Subject: %s\r\n\r\n%s", subject, body))
 
-func (es *EmailService) SendEmail(auth smtp.Auth, to []string, message []byte) error {
-	addr := fmt.Sprintf("%s:%s", es.host, es.port)
-	err := smtp.SendMail(addr, auth, es.from, to, message)
+	// Construct SMTP server address
+	addr := fmt.Sprintf("%s:%s", smtpHost, smtpPort)
+
+	// Send email using SMTP server and authentication
+	err := smtp.SendMail(addr, es.Authentication(), es.from, to, message)
 	return err
 }

@@ -5,11 +5,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Error struct {
-	Message string
+// ErrorResponse represents an error response sent to the client.
+type ErrorResponse struct {
+	Message string `json:"message"`
 }
 
+// newErrorResponse logs the error and sends an error response to the client with the provided message and status code.
 func newErrorResponse(ctx *gin.Context, statusCode int, message string) {
 	log.Error().Msg(message)
-	ctx.AbortWithStatusJSON(statusCode, Error{message})
+	ctx.AbortWithStatusJSON(statusCode, ErrorResponse{Message: message})
 }

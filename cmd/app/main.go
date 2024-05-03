@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	server "med"
+	_ "med/docs"
 	"med/pkg/config"
 	"med/pkg/handler"
 	"med/pkg/repository"
@@ -16,6 +17,16 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// @title OncomarkerAPI
+// @version 1.0
+// @description API for managing data on oncological markers.
+
+// @host localhost:8080
+// @BasePath /api/v1
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	logger := zerolog.New(os.Stdout).Level(zerolog.DebugLevel).With().Timestamp().Logger()
 

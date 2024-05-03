@@ -7,32 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) GetDiseaseList(ctx *gin.Context) {
-	diseaseList, err := h.services.Disease.GetDiseaseList()
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get disease list": diseaseList,
-	})
-}
-
-func (h *Handler) GetDiseaseById(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	disease, err := h.services.Disease.GetDiseaseById(id)
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Get disease": disease,
-	})
-}
-
+// CreateDisease godoc
+// @Summary Create a new disease
+// @Description Creates a new disease entry.
+// @Tags Disease
+// @Accept json
+// @Produce json
+// @Param input body model.Disease true "Disease data"
+// @Success 200 {object} model.Disease "Created disease data"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /disease [post]
 func (h *Handler) CreateDisease(ctx *gin.Context) {
 	var disease model.Disease
 
@@ -47,11 +32,59 @@ func (h *Handler) CreateDisease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Created disease": createdDisease,
-	})
+	ctx.JSON(http.StatusOK, createdDisease)
 }
 
+// GetDiseaseList godoc
+// @Summary Get disease list
+// @Description Retrieves a list of diseases.
+// @Tags Disease
+// @Produce json
+// @Success 200 {array} []model.Disease "Disease list"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /disease [get]
+func (h *Handler) GetDiseaseList(ctx *gin.Context) {
+	diseaseList, err := h.services.Disease.GetDiseaseList()
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, diseaseList)
+}
+
+// GetDiseaseById godoc
+// @Summary Get disease by ID
+// @Description Retrieves a disease entry by its ID.
+// @Tags Disease
+// @Produce json
+// @Param id path string true "Disease ID"
+// @Success 200 {object} model.Disease "Disease data"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /disease/{id} [get]
+func (h *Handler) GetDiseaseById(ctx *gin.Context) {
+	id := ctx.Param(userContext)
+
+	disease, err := h.services.Disease.GetDiseaseById(id)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, disease)
+}
+
+// UpdateDisease godoc
+// @Summary Update disease
+// @Description Updates an existing disease entry.
+// @Tags Disease
+// @Accept json
+// @Produce json
+// @Param input body model.Disease true "Updated disease data"
+// @Success 200 {object} model.Disease "Updated disease data"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /disease [put]
 func (h *Handler) UpdateDisease(ctx *gin.Context) {
 	var disease model.Disease
 
@@ -66,11 +99,18 @@ func (h *Handler) UpdateDisease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Updated disease": updatedDisease,
-	})
+	ctx.JSON(http.StatusOK, updatedDisease)
 }
 
+// DeleteDisease godoc
+// @Summary Delete disease
+// @Description Deletes a disease entry by its ID.
+// @Tags Disease
+// @Produce json
+// @Param id path string true "Disease ID"
+// @Success 200 {string} string "Disease ID"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /disease/{id} [delete]
 func (h *Handler) DeleteDisease(ctx *gin.Context) {
 	id := ctx.Param(userContext)
 
@@ -80,7 +120,5 @@ func (h *Handler) DeleteDisease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Disease deleted": id,
-	})
+	ctx.JSON(http.StatusOK, id)
 }

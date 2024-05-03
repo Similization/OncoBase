@@ -2,19 +2,28 @@ package handler
 
 import (
 	"errors"
-	"med/pkg/services"
 	"net/http"
 	"strings"
+
+	"med/pkg/services"
 
 	"github.com/gin-gonic/gin"
 )
 
+// Constants for context keys and roles
 const (
 	authorizationHeader = "Authorization"
-	userContext         = "id"
-	adminRole           = "admin"
-	patinetRole         = "patient"
-	doctorRole          = "doctor"
+
+	userContext       = "id"
+	bloodCountContext = "blood_count_id"
+	diseaseContext    = "disease_id"
+	doctorContext     = "doctor_id"
+	patientContext    = "patient_id"
+	procedureContext  = "procedure_id"
+
+	adminRole   = "admin"
+	patientRole = "patient"
+	doctorRole  = "doctor"
 )
 
 // type rolePermissions struct {
@@ -37,6 +46,7 @@ const (
 // 	return false
 // }
 
+// getUserData retrieves user data from the authorization header
 func (h *Handler) getUserData(ctx *gin.Context) (*services.UserData, error) {
 	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
@@ -44,13 +54,13 @@ func (h *Handler) getUserData(ctx *gin.Context) (*services.UserData, error) {
 		return nil, errors.New("empty header")
 	}
 
-	headerParse := strings.Split(header, " ")
-	if len(headerParse) != 2 {
-		newErrorResponse(ctx, http.StatusUnauthorized, "wrong header")
-		return nil, errors.New("wrong header")
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 {
+		newErrorResponse(ctx, http.StatusUnauthorized, "malformed header")
+		return nil, errors.New("malformed header")
 	}
 
-	token := headerParse[1]
+	token := headerParts[1]
 	userData, err := h.services.Authorization.ParseToken(token)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusUnauthorized, err.Error())
@@ -60,6 +70,7 @@ func (h *Handler) getUserData(ctx *gin.Context) (*services.UserData, error) {
 	return userData, nil
 }
 
+// UserIdentity middleware sets user ID in context
 func (h *Handler) UserIdentity(ctx *gin.Context) {
 	userRole, err := h.getUserData(ctx)
 	if err != nil {
@@ -69,6 +80,7 @@ func (h *Handler) UserIdentity(ctx *gin.Context) {
 	ctx.Set(userContext, userRole.Id)
 }
 
+// AdminIdentity middleware checks if the user is an admin
 func (h *Handler) AdminIdentity(ctx *gin.Context) {
 	userRole, err := h.getUserData(ctx)
 	if err != nil {
@@ -76,23 +88,25 @@ func (h *Handler) AdminIdentity(ctx *gin.Context) {
 	}
 
 	if userRole.Role != adminRole {
-		newErrorResponse(ctx, http.StatusUnauthorized, "No permissions")
+		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}
 }
 
+// PatientIdentity middleware checks if the user is a patient
 func (h *Handler) PatientIdentity(ctx *gin.Context) {
 	userRole, err := h.getUserData(ctx)
 	if err != nil {
 		return
 	}
 
-	if userRole.Role != patinetRole {
-		newErrorResponse(ctx, http.StatusUnauthorized, "No permissions")
+	if userRole.Role != patientRole {
+		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}
 }
 
+// DoctorIdentity middleware checks if the user is a doctor
 func (h *Handler) DoctorIdentity(ctx *gin.Context) {
 	userRole, err := h.getUserData(ctx)
 	if err != nil {
@@ -100,7 +114,7 @@ func (h *Handler) DoctorIdentity(ctx *gin.Context) {
 	}
 
 	if userRole.Role != doctorRole {
-		newErrorResponse(ctx, http.StatusUnauthorized, "No permissions")
+		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}
 }
