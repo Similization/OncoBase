@@ -9,11 +9,13 @@ import (
 func createPatientDiseaseRoutes[G Group](route G, handlers *handler.Handler) *gin.RouterGroup {
 	patientDisease := route.Group("/patient-disease")
 	{
-		patientDisease.POST("/")
-		patientDisease.GET("/")
-		patientDisease.GET("/:id")
-		patientDisease.PUT("/:id")
-		patientDisease.DELETE("/:id")
+		patientDisease.POST("/", handlers.CreatePatientDisease)
+		patientDisease.GET("/", handlers.GetPatientDiseaseList)
+		patientDisease.GET("/disease/:disease_id", handlers.GetPatientDiseaseListByDisease)
+		patientDisease.GET("/patient/:patient_id", handlers.GetPatientDiseaseListByPatient)
+		patientDisease.GET("/:patient_id/:disease_id", handlers.GetPatientDiseaseById)
+		patientDisease.PUT("/:patient_id/:disease_id", handlers.UpdatePatientDisease)
+		patientDisease.DELETE("/:patient_id/:disease_id", handlers.DeletePatientDisease)
 	}
 	return patientDisease
 }

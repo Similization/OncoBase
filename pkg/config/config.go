@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -62,18 +61,19 @@ func InitConfig(configInfo ConfigInfo) *ConfigApp {
 	var databaseConfig ConfigDatabase
 	err = viper.Sub("database").Unmarshal(&databaseConfig)
 	if err != nil {
-		fmt.Printf("unable to decode into struct, %v", err)
+		panic(fmt.Errorf("unable to decode into struct, %v", err))
 	}
 
 	if err = godotenv.Load(); err != nil {
-		log.Fatal()
+		// log.Fatal()
+		panic(err)
 	}
 	databaseConfig.Password = os.Getenv("POSTGRES_DB_PASSWORD")
 
 	var serverConfig ConfigServer
 	err = viper.Sub("server").Unmarshal(&serverConfig)
 	if err != nil {
-		fmt.Printf("unable to decode into struct, %v", err)
+		panic(fmt.Errorf("unable to decode into struct, %v", err))
 	}
 
 	return &ConfigApp{

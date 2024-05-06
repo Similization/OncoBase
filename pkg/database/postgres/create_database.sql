@@ -106,10 +106,11 @@ CREATE TABLE IF NOT EXISTS onco_base.course
 CREATE TABLE IF NOT EXISTS onco_base.blood_count
 (
     id               VARCHAR(15) NOT NULL UNIQUE,
+    description      VARCHAR(300),
     min_normal_value FLOAT       NOT NULL,
     max_normal_value FLOAT       NOT NULL,
-    min_value        FLOAT       NOT NULL,
-    max_value        FLOAT       NOT NULL,
+    min_possible_value        FLOAT       NOT NULL,
+    max_possible_value        FLOAT       NOT NULL,
     measure_code     VARCHAR(15) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (measure_code) REFERENCES onco_base.unit_measure (id)

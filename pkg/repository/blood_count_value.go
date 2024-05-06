@@ -17,12 +17,12 @@ func NewBloodCountValueRepository(db *sqlx.DB) *BloodCountValueRepository {
 
 func (r *BloodCountValueRepository) CreateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
 	var createdBloodCountValue model.BloodCountValue
-	query := fmt.Sprintf("INSERT INTO %s (coefficient, description, disease, blood_count) VALUES ($1, $2, $3, $4)", bloodCountTable)
+	query := fmt.Sprintf("INSERT INTO %s (disease, blood_count, coefficient, description) VALUES ($1, $2, $3, $4)", bloodCountTable)
 	err := r.db.Get(&createdBloodCountValue, query,
-		bloodCountValue.Coefficient,
-		bloodCountValue.Description,
 		bloodCountValue.Disease,
 		bloodCountValue.BloodCount,
+		bloodCountValue.Coefficient,
+		bloodCountValue.Description,
 	)
 	return createdBloodCountValue, err
 }

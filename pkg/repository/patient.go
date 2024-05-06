@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"med/pkg/model"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -50,18 +51,28 @@ func (r *PatientRepository) GetPatientById(id int) (model.Patient, error) {
 // Update patient data in database
 func (r *PatientRepository) UpdatePatient(patient model.Patient) (model.Patient, error) {
 	var updatedPatient model.Patient
-	query := fmt.Sprintf("UPDATE %s SET first_name=$1, middle_name=$2, last_name=$3, birth_date=$4, sex=$5, snils=$6, phone=$7 WHERE id=$8 RETURNING *", patientTable)
-	err := r.db.Get(&updatedPatient, query,
-		patient.FirstName,
-		patient.MiddleName,
-		patient.LastName,
-		patient.BirthDate,
-		patient.Sex,
-		patient.SNILS,
-		patient.Phone,
-		patient.Id,
-	)
-	return patient, err
+
+	// Define the update builder
+	updateBuilder := squirrel.Update(patientTable).
+		Set("first_name", patient.FirstName).
+		Set("middle_name", patient.MiddleName).
+		Set("last_name", patient.LastName).
+		Set("birth_date", patient.BirthDate).
+		Set("sex", patient.Sex).
+		Set("snils", patient.SNILS).
+		Set("phone", patient.Phone).
+		Where(squirrel.Eq{"id": patient.Id}).
+		Suffix("RETURNING *")
+
+	// Get the SQL query and arguments from the update builder
+	sql, args, err := updateBuilder.ToSql()
+	if err != nil {
+		return updatedPatient, err
+	}
+
+	// Execute the query and scan the result into updatedPatient
+	err = r.db.Get(&updatedPatient, sql, args...)
+	return updatedPatient, err
 }
 
 // Delete patient data from database

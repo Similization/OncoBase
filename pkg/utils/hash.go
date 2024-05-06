@@ -15,12 +15,12 @@ var Salt = []byte(os.Getenv("SALT"))
 func generateRandomSalt() []byte {
 	saltSize, err := strconv.Atoi(os.Getenv("SALT_SIZE"))
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 	salt := make([]byte, saltSize)
 	_, err = rand.Read(salt[:])
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 	return salt
 }

@@ -9,11 +9,11 @@ import (
 func createDoctorRoutes[G Group](route G, handlers *handler.Handler) *gin.RouterGroup {
 	doctor := route.Group("/doctor")
 	{
-		doctor.POST("/")
-		doctor.GET("/")
-		doctor.GET("/:id")
-		doctor.PUT("/:id")
-		doctor.DELETE("/:id")
+		doctor.POST("/", handlers.CreateDoctor)
+		doctor.GET("/", handlers.GetDoctorList)
+		doctor.GET("/:id", handlers.GetDoctorById)
+		doctor.PUT("/:id", handlers.UpdateDoctor)
+		doctor.DELETE("/:id", handlers.DeleteDoctor)
 	}
 	return doctor
 }
