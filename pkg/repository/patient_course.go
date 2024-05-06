@@ -18,7 +18,7 @@ func NewPatientCourseRepository(db *sqlx.DB) *PatientCourseRepository {
 // Create patient course in database and get him from database
 func (r *PatientCourseRepository) CreatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
 	var createdPatientCourse model.PatientCourse
-	query := fmt.Sprintf("INSERT INTO %s (patient, disease, course, doctor, begin_date, end_date, diagnosis) VALUES ($1, $2, $3, $4, $5, $6, $7)", patientCourseTable)
+	query := fmt.Sprintf("INSERT INTO %s (patient, disease, course, doctor, begin_date, end_date, diagnosis) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", patientCourseTable)
 	err := r.db.Get(&createdPatientCourse, query,
 		patientCourse.Patient,
 		patientCourse.Disease,
@@ -50,7 +50,7 @@ func (r *PatientCourseRepository) GetPatientCourseById(patientCourseId int) (mod
 // Update patient course data in database
 func (r *PatientCourseRepository) UpdatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
 	var updatedPatientCourse model.PatientCourse
-	query := fmt.Sprintf("UPDATE %s SET patient=$1, disease=$2, course=$3, doctor=$4, begin_date=$5, end_date=$6, diagnosis=$7 WHERE id=$8", patientCourseTable)
+	query := fmt.Sprintf("UPDATE %s SET patient=$1, disease=$2, course=$3, doctor=$4, begin_date=$5, end_date=$6, diagnosis=$7 WHERE id=$8 RETURNING *", patientCourseTable)
 	err := r.db.Get(&updatedPatientCourse, query,
 		patientCourse.Patient,
 		patientCourse.Disease,

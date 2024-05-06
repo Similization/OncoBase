@@ -18,7 +18,7 @@ func NewProcedureBloodCountRepository(db *sqlx.DB) *ProcedureBloodCountRepositor
 // Create patient in database and get him from database
 func (r *ProcedureBloodCountRepository) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
 	var createdProcedureBloodCount model.ProcedureBloodCount
-	query := fmt.Sprintf("INSERT INTO %s (value, measure_code, procedure, blood_count) VALUES ($1, $2, $3, $4)", procedureBloodCountTable)
+	query := fmt.Sprintf("INSERT INTO %s (value, measure_code, procedure, blood_count) VALUES ($1, $2, $3, $4) RETURNING *", procedureBloodCountTable)
 	err := r.db.Get(&createdProcedureBloodCount, query,
 		procedureBloodCount.Value,
 		procedureBloodCount.MeasureCode,
@@ -63,7 +63,7 @@ func (r *ProcedureBloodCountRepository) GetProcedureBloodCountById(procedureId i
 // Update patient data in database
 func (r *ProcedureBloodCountRepository) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
 	var updatedProcedureBloodCount model.ProcedureBloodCount
-	query := fmt.Sprintf("UPDATE %s SET value=$1, measure_code=$2 WHERE procedure=$3 AND blood_count=$4", procedureBloodCountTable)
+	query := fmt.Sprintf("UPDATE %s SET value=$1, measure_code=$2 WHERE procedure=$3 AND blood_count=$4 RETURNING *", procedureBloodCountTable)
 	err := r.db.Get(&updatedProcedureBloodCount, query,
 		procedureBloodCount.Value,
 		procedureBloodCount.MeasureCode,

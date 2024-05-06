@@ -18,7 +18,7 @@ func NewCourseProcedureRepository(db *sqlx.DB) *CourseProcedureRepository {
 // Create course procedure in database and get it from database
 func (r *CourseProcedureRepository) CreateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
 	var createdCourseProcedure model.CourseProcedure
-	query := fmt.Sprintf("INSERT INTO %s (patient_course, doctor, begin_date, period, result) VALUES ($1, $2, $3, $4, $5)", courseProcedureTable)
+	query := fmt.Sprintf("INSERT INTO %s (patient_course, doctor, begin_date, period, result) VALUES ($1, $2, $3, $4, $5) RETURNING *", courseProcedureTable)
 	err := r.db.Get(&createdCourseProcedure, query,
 		courseProcedure.PatientCourse,
 		courseProcedure.Doctor,
@@ -32,7 +32,7 @@ func (r *CourseProcedureRepository) CreateCourseProcedure(courseProcedure model.
 // Get course procedure list from database
 func (r *CourseProcedureRepository) GetCourseProcedureList() ([]model.CourseProcedure, error) {
 	var courseProcedureList []model.CourseProcedure
-	query := fmt.Sprintf("SELECT FROM %s", courseProcedureTable)
+	query := fmt.Sprintf("SELECT * FROM %s", courseProcedureTable)
 	err := r.db.Select(&courseProcedureList, query)
 	return courseProcedureList, err
 }
@@ -40,7 +40,7 @@ func (r *CourseProcedureRepository) GetCourseProcedureList() ([]model.CourseProc
 // Get course procedure from database by id
 func (r *CourseProcedureRepository) GetCourseProcedureById(id string) (model.CourseProcedure, error) {
 	var courseProcedure model.CourseProcedure
-	query := fmt.Sprintf("SELECT FROM %s WHERE id=$1", courseProcedureTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", courseProcedureTable)
 	err := r.db.Get(&courseProcedure, query, id)
 	return courseProcedure, err
 }
@@ -48,7 +48,7 @@ func (r *CourseProcedureRepository) GetCourseProcedureById(id string) (model.Cou
 // Update course procedure fields in database and get it from database
 func (r *CourseProcedureRepository) UpdateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
 	var updatedCourseProcedure model.CourseProcedure
-	query := fmt.Sprintf("UPDATE %s SET patient_course=$1, doctor=$2, begin_date=$3, period=$4, result=$5 WHERE id=$6", courseProcedureTable)
+	query := fmt.Sprintf("UPDATE %s SET patient_course=$1, doctor=$2, begin_date=$3, period=$4, result=$5 WHERE id=$6 RETURNING *", courseProcedureTable)
 	err := r.db.Get(&updatedCourseProcedure, query,
 		courseProcedure.PatientCourse,
 		courseProcedure.Doctor,

@@ -18,7 +18,7 @@ func NewPatientDiseaseRepository(db *sqlx.DB) *PatientDiseaseRepository {
 // Create patient in database and get him from database
 func (r *PatientDiseaseRepository) CreatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
 	var createdPatientDisease model.PatientDisease
-	query := fmt.Sprintf("INSERT INTO %s (stage, diagnosis, patient, disease) VALUES ($1, $2, $3, $4)", patientDiseaseTable)
+	query := fmt.Sprintf("INSERT INTO %s (stage, diagnosis, patient, disease) VALUES ($1, $2, $3, $4) RETURNING *", patientDiseaseTable)
 	err := r.db.Get(&createdPatientDisease, query,
 		patientDisease.Stage,
 		patientDisease.Diagnosis,
@@ -63,7 +63,7 @@ func (r *PatientDiseaseRepository) GetPatientDiseaseById(patientId, diseaseId in
 // Update patient data in database
 func (r *PatientDiseaseRepository) UpdatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
 	var updatedPatientDisease model.PatientDisease
-	query := fmt.Sprintf("UPDATE %s SET stage=$1, diagnosis=$2 WHERE patient=$3 AND disease=$4", patientDiseaseTable)
+	query := fmt.Sprintf("UPDATE %s SET stage=$1, diagnosis=$2 WHERE patient=$3 AND disease=$4 RETURNING *", patientDiseaseTable)
 	err := r.db.Get(&updatedPatientDisease, query,
 		patientDisease.Stage,
 		patientDisease.Diagnosis,
