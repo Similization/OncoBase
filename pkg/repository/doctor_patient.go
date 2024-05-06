@@ -17,7 +17,7 @@ func NewDoctorPatientRepository(db *sqlx.DB) *DoctorPatientRepository {
 
 // Create doctor patient in database and get him from database
 func (r *DoctorPatientRepository) CreateDoctorPatient(doctorPatient model.DoctorPatient) (model.DoctorPatient, error) {
-	var createdDoctor model.Doctor
+	var createdDoctor model.DoctorPatient
 	query := fmt.Sprintf("INSERT INTO %s (patient, doctor) VALUES ($1, $2) RETURNING *", doctorPatientTable)
 	err := r.db.Get(&createdDoctor, query,
 		doctorPatient.Patient,
@@ -29,7 +29,7 @@ func (r *DoctorPatientRepository) CreateDoctorPatient(doctorPatient model.Doctor
 // Get doctor patient list from database
 func (r *DoctorPatientRepository) GetDoctorPatientList(doctor_id int) ([]model.DoctorPatient, error) {
 	var doctorPatientList []model.DoctorPatient
-	query := fmt.Sprintf("SELECT * FROM %s", doctorPatientTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE doctor=$1", doctorPatientTable)
 	err := r.db.Select(&doctorPatientList, query, doctor_id)
 	return doctorPatientList, err
 }
