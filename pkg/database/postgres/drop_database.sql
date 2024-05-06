@@ -16,3 +16,5 @@ DROP TABLE IF EXISTS onco_base.admin;
 DROP SCHEMA IF EXISTS onco_base;
 
 DROP DATABASE IF EXISTS med_base;
+
+DROP SCHEMA onco_base CASCADE;
