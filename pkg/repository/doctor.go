@@ -49,7 +49,7 @@ func (r *DoctorRepository) GetDoctorById(id int) (model.Doctor, error) {
 // Update doctor data in database
 func (r *DoctorRepository) UpdateDoctor(doctor model.Doctor) (model.Doctor, error) {
 	var updatedDoctor model.Doctor
-	query := fmt.Sprintf("UPDATE %s SET first_name=$1, middle_name=$2, last_name=$3, birth_date=$4, sex=$5, phone=$6 WHERE id=$7 RETURNING *", doctorTable)
+	query := fmt.Sprintf("UPDATE %s SET first_name=$1, middle_name=$2, last_name=$3, qualification=$4, phone=$5, user_id=$6 WHERE id=$7 RETURNING *", doctorTable)
 	err := r.db.Get(&updatedDoctor, query,
 		doctor.FirstName,
 		doctor.MiddleName,
@@ -59,7 +59,7 @@ func (r *DoctorRepository) UpdateDoctor(doctor model.Doctor) (model.Doctor, erro
 		doctor.UserId,
 		doctor.Id,
 	)
-	return doctor, err
+	return updatedDoctor, err
 }
 
 // Delete doctor data from database
