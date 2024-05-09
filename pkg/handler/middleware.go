@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"med/pkg/services"
+	services "med/pkg/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -50,14 +50,19 @@ const (
 func (h *Handler) getUserData(ctx *gin.Context) (*services.UserData, error) {
 	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
-		newErrorResponse(ctx, http.StatusUnauthorized, "empty header")
-		return nil, errors.New("empty header")
+		newErrorResponse(ctx, http.StatusUnauthorized, "empty auth header")
+		return nil, errors.New("empty auth header")
 	}
 
 	headerParts := strings.Split(header, " ")
-	if len(headerParts) != 2 {
-		newErrorResponse(ctx, http.StatusUnauthorized, "malformed header")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
+		newErrorResponse(ctx, http.StatusUnauthorized, "invalid auth header")
 		return nil, errors.New("malformed header")
+	}
+
+	if len(headerParts[1]) == 0 {
+		newErrorResponse(ctx, http.StatusUnauthorized, "token is empty")
+		return nil, errors.New("token is empty")
 	}
 
 	token := headerParts[1]
@@ -72,22 +77,22 @@ func (h *Handler) getUserData(ctx *gin.Context) (*services.UserData, error) {
 
 // UserIdentity middleware sets user ID in context
 func (h *Handler) UserIdentity(ctx *gin.Context) {
-	userRole, err := h.getUserData(ctx)
+	userData, err := h.getUserData(ctx)
 	if err != nil {
 		return
 	}
 
-	ctx.Set(userContext, userRole.Id)
+	ctx.Set(userContext, userData.Id)
 }
 
 // AdminIdentity middleware checks if the user is an admin
 func (h *Handler) AdminIdentity(ctx *gin.Context) {
-	userRole, err := h.getUserData(ctx)
+	userData, err := h.getUserData(ctx)
 	if err != nil {
 		return
 	}
 
-	if userRole.Role != adminRole {
+	if userData.Role != adminRole {
 		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}
@@ -95,12 +100,12 @@ func (h *Handler) AdminIdentity(ctx *gin.Context) {
 
 // PatientIdentity middleware checks if the user is a patient
 func (h *Handler) PatientIdentity(ctx *gin.Context) {
-	userRole, err := h.getUserData(ctx)
+	userData, err := h.getUserData(ctx)
 	if err != nil {
 		return
 	}
 
-	if userRole.Role != patientRole {
+	if userData.Role != patientRole {
 		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}
@@ -108,12 +113,12 @@ func (h *Handler) PatientIdentity(ctx *gin.Context) {
 
 // DoctorIdentity middleware checks if the user is a doctor
 func (h *Handler) DoctorIdentity(ctx *gin.Context) {
-	userRole, err := h.getUserData(ctx)
+	userData, err := h.getUserData(ctx)
 	if err != nil {
 		return
 	}
 
-	if userRole.Role != doctorRole {
+	if userData.Role != doctorRole {
 		newErrorResponse(ctx, http.StatusUnauthorized, "insufficient permissions")
 		return
 	}

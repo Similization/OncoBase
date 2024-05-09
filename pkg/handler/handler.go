@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"med/pkg/services"
+	services "med/pkg/service"
 )
 
 type Handler struct {

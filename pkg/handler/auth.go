@@ -52,7 +52,7 @@ func (h *Handler) Registry(ctx *gin.Context) {
 	var user model.User
 
 	if err := ctx.BindJSON(&user); err != nil {
-		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		newErrorResponse(ctx, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 

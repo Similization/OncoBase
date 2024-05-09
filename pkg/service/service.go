@@ -5,6 +5,8 @@ import (
 	"med/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mock/mock.go
+
 type Account interface {
 }
 

@@ -8,7 +8,7 @@ import (
 	"med/pkg/handler"
 	"med/pkg/repository"
 	route "med/pkg/routes"
-	"med/pkg/services"
+	services "med/pkg/service"
 	"os"
 	"os/signal"
 	"syscall"
