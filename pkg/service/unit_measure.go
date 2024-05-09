@@ -13,7 +13,7 @@ func NewUnitMeasureService(repo repository.UnitMeasure) *UnitMeasureService {
 	return &UnitMeasureService{repo: repo}
 }
 
-func (s *UnitMeasureService) CreateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
+func (s *UnitMeasureService) CreateUnitMeasure(unitMeasure model.UnitMeasure) error {
 	return s.repo.CreateUnitMeasure(unitMeasure)
 }
 func (s *UnitMeasureService) GetUnitMeasureById(id string) (model.UnitMeasure, error) {
@@ -22,7 +22,7 @@ func (s *UnitMeasureService) GetUnitMeasureById(id string) (model.UnitMeasure, e
 func (s *UnitMeasureService) GetUnitMeasureList() ([]model.UnitMeasure, error) {
 	return s.repo.GetUnitMeasureList()
 }
-func (s *UnitMeasureService) UpdateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
+func (s *UnitMeasureService) UpdateUnitMeasure(unitMeasure model.UnitMeasure) error {
 	return s.repo.UpdateUnitMeasure(unitMeasure)
 }
 func (s *UnitMeasureService) DeleteUnitMeasure(id string) error {

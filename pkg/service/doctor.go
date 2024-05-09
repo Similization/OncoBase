@@ -13,7 +13,7 @@ func NewDoctorService(repo repository.Doctor) *DoctorService {
 	return &DoctorService{repo: repo}
 }
 
-func (s *DoctorService) CreateDoctor(doctor model.Doctor) (model.Doctor, error) {
+func (s *DoctorService) CreateDoctor(doctor model.Doctor) (int, error) {
 	return s.repo.CreateDoctor(doctor)
 }
 func (s *DoctorService) GetDoctorById(id int) (model.Doctor, error) {
@@ -22,7 +22,7 @@ func (s *DoctorService) GetDoctorById(id int) (model.Doctor, error) {
 func (s *DoctorService) GetDoctorList() ([]model.Doctor, error) {
 	return s.repo.GetDoctorList()
 }
-func (s *DoctorService) UpdateDoctor(doctor model.Doctor) (model.Doctor, error) {
+func (s *DoctorService) UpdateDoctor(doctor model.Doctor) error {
 	return s.repo.UpdateDoctor(doctor)
 }
 func (s *DoctorService) DeleteDoctor(id int) error {

@@ -13,11 +13,14 @@ func NewDoctorPatientService(repo repository.DoctorPatient) *DoctorPatientServic
 	return &DoctorPatientService{repo: repo}
 }
 
-func (s *DoctorPatientService) CreateDoctorPatient(doctorPatient model.DoctorPatient) (model.DoctorPatient, error) {
+func (s *DoctorPatientService) CreateDoctorPatient(doctorPatient model.DoctorPatient) error {
 	return s.repo.CreateDoctorPatient(doctorPatient)
 }
-func (s *DoctorPatientService) GetDoctorPatientList(doctor_id int) ([]model.DoctorPatient, error) {
-	return s.repo.GetDoctorPatientList(doctor_id)
+func (s *DoctorPatientService) GetDoctorPatientListByDoctor(doctor_id int) ([]model.DoctorPatient, error) {
+	return s.repo.GetDoctorPatientListByDoctor(doctor_id)
+}
+func (s *DoctorPatientService) GetDoctorPatientListByPatient(patientId int) ([]model.DoctorPatient, error) {
+	return s.repo.GetDoctorPatientListByPatient(patientId)
 }
 func (s *DoctorPatientService) DeleteDoctorPatient(doctorId, patientId int) error {
 	return s.repo.DeleteDoctorPatient(model.DoctorPatient{Patient: patientId, Doctor: doctorId})

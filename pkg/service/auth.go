@@ -20,7 +20,7 @@ func NewAuthService(repo repository.Authorization) *AuthorizationService {
 	return &AuthorizationService{repo: repo, salt: utils.Salt}
 }
 
-func (s *AuthorizationService) CreateUser(user model.User) (string, error) {
+func (s *AuthorizationService) CreateUser(user model.User) (int, error) {
 	user.Password = s.generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }

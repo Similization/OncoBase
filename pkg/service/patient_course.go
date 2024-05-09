@@ -13,7 +13,7 @@ func NewPatientCourseService(repo repository.PatientCourse) *PatientCourseServic
 	return &PatientCourseService{repo: repo}
 }
 
-func (s *PatientCourseService) CreatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
+func (s *PatientCourseService) CreatePatientCourse(patientCourse model.PatientCourse) (int, error) {
 	return s.repo.CreatePatientCourse(patientCourse)
 }
 func (s *PatientCourseService) GetPatientCourseById(id int) (model.PatientCourse, error) {
@@ -22,7 +22,7 @@ func (s *PatientCourseService) GetPatientCourseById(id int) (model.PatientCourse
 func (s *PatientCourseService) GetPatientCourseList() ([]model.PatientCourse, error) {
 	return s.repo.GetPatientCourseList()
 }
-func (s *PatientCourseService) UpdatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
+func (s *PatientCourseService) UpdatePatientCourse(patientCourse model.PatientCourse) error {
 	return s.repo.UpdatePatientCourse(patientCourse)
 }
 func (s *PatientCourseService) DeletePatientCourse(id int) error {

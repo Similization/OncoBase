@@ -13,7 +13,7 @@ func NewBloodCountValueService(repo repository.BloodCountValue) *BloodCountValue
 	return &BloodCountValueService{repo: repo}
 }
 
-func (s *BloodCountValueService) CreateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
+func (s *BloodCountValueService) CreateBloodCountValue(bloodCountValue model.BloodCountValue) error {
 	return s.repo.CreateBloodCountValue(bloodCountValue)
 }
 func (s *BloodCountValueService) GetBloodCountValueById(diseaseId, bloodCountId string) (model.BloodCountValue, error) {
@@ -28,7 +28,7 @@ func (s *BloodCountValueService) GetBloodCountValueListByBloodCount(bloodCountId
 func (s *BloodCountValueService) GetBloodCountValueList() ([]model.BloodCountValue, error) {
 	return s.repo.GetBloodCountValueList()
 }
-func (s *BloodCountValueService) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
+func (s *BloodCountValueService) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) error {
 	return s.repo.UpdateBloodCountValue(bloodCountValue)
 }
 func (s *BloodCountValueService) DeleteBloodCountValue(diseaseId, bloodCountId string) error {

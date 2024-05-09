@@ -13,7 +13,7 @@ func NewPatientDiseaseService(repo repository.PatientDisease) *PatientDiseaseSer
 	return &PatientDiseaseService{repo: repo}
 }
 
-func (s *PatientDiseaseService) CreatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
+func (s *PatientDiseaseService) CreatePatientDisease(patientDisease model.PatientDisease) error {
 	return s.repo.CreatePatientDisease(patientDisease)
 }
 func (s *PatientDiseaseService) GetPatientDiseaseById(diseaseId, patientId int) (model.PatientDisease, error) {
@@ -28,7 +28,7 @@ func (s *PatientDiseaseService) GetPatientDiseaseListByPatient(patientId int) ([
 func (s *PatientDiseaseService) GetPatientDiseaseList() ([]model.PatientDisease, error) {
 	return s.repo.GetPatientDiseaseList()
 }
-func (s *PatientDiseaseService) UpdatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
+func (s *PatientDiseaseService) UpdatePatientDisease(patientDisease model.PatientDisease) error {
 	return s.repo.UpdatePatientDisease(patientDisease)
 }
 func (s *PatientDiseaseService) DeletePatientDisease(diseaseId, patientId int) error {

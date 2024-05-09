@@ -13,7 +13,7 @@ func NewDiagnosisService(repo repository.Diagnosis) *DiagnosisService {
 	return &DiagnosisService{repo: repo}
 }
 
-func (s *DiagnosisService) CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
+func (s *DiagnosisService) CreateDiagnosis(diagnosis model.Diagnosis) error {
 	return s.repo.CreateDiagnosis(diagnosis)
 }
 func (s *DiagnosisService) GetDiagnosisById(id string) (model.Diagnosis, error) {
@@ -22,7 +22,7 @@ func (s *DiagnosisService) GetDiagnosisById(id string) (model.Diagnosis, error) 
 func (s *DiagnosisService) GetDiagnosisList() ([]model.Diagnosis, error) {
 	return s.repo.GetDiagnosisList()
 }
-func (s *DiagnosisService) UpdateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
+func (s *DiagnosisService) UpdateDiagnosis(diagnosis model.Diagnosis) error {
 	return s.repo.UpdateDiagnosis(diagnosis)
 }
 func (s *DiagnosisService) DeleteDiagnosis(id string) error {

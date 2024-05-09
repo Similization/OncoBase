@@ -13,7 +13,7 @@ func NewCourseService(repo repository.Course) *CourseService {
 	return &CourseService{repo: repo}
 }
 
-func (s *CourseService) CreateCourse(course model.Course) (model.Course, error) {
+func (s *CourseService) CreateCourse(course model.Course) error {
 	return s.repo.CreateCourse(course)
 }
 func (s *CourseService) GetCourseById(id string) (model.Course, error) {
@@ -22,7 +22,7 @@ func (s *CourseService) GetCourseById(id string) (model.Course, error) {
 func (s *CourseService) GetCourseList() ([]model.Course, error) {
 	return s.repo.GetCourseList()
 }
-func (s *CourseService) UpdateCourse(course model.Course) (model.Course, error) {
+func (s *CourseService) UpdateCourse(course model.Course) error {
 	return s.repo.UpdateCourse(course)
 }
 func (s *CourseService) DeleteCourse(id string) error {

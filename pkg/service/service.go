@@ -11,124 +11,125 @@ type Account interface {
 }
 
 type Authorization interface {
-	CreateUser(user model.User) (string, error)
+	CreateUser(user model.User) (int, error)
 	GenerateToken(email, password string) (string, error)
 	ParseToken(token string) (*UserData, error)
 }
 
 type BloodCount interface {
-	CreateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error)
+	CreateBloodCount(bloodCount model.BloodCount) error
 	GetBloodCountById(id string) (model.BloodCount, error)
 	GetBloodCountList() ([]model.BloodCount, error)
-	UpdateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error)
+	UpdateBloodCount(bloodCount model.BloodCount) error
 	DeleteBloodCount(id string) error
 }
 
 type BloodCountValue interface {
-	CreateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error)
+	CreateBloodCountValue(bloodCountValue model.BloodCountValue) error
 	GetBloodCountValueById(diseaseId, bloodCountId string) (model.BloodCountValue, error)
 	GetBloodCountValueListByDisease(diseaseId string) ([]model.BloodCountValue, error)
 	GetBloodCountValueListByBloodCount(bloodCountId string) ([]model.BloodCountValue, error)
 	GetBloodCountValueList() ([]model.BloodCountValue, error)
-	UpdateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error)
+	UpdateBloodCountValue(bloodCountValue model.BloodCountValue) error
 	DeleteBloodCountValue(diseaseId, bloodCountId string) error
 }
 
 type Course interface {
-	CreateCourse(course model.Course) (model.Course, error)
+	CreateCourse(course model.Course) error
 	GetCourseById(id string) (model.Course, error)
 	GetCourseList() ([]model.Course, error)
-	UpdateCourse(course model.Course) (model.Course, error)
+	UpdateCourse(course model.Course) error
 	DeleteCourse(id string) error
 }
 
 type CourseProcedure interface {
-	CreateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error)
+	CreateCourseProcedure(courseProcedure model.CourseProcedure) (int, error)
 	GetCourseProcedureById(id string) (model.CourseProcedure, error)
 	GetCourseProcedureList() ([]model.CourseProcedure, error)
-	UpdateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error)
+	UpdateCourseProcedure(courseProcedure model.CourseProcedure) error
 	DeleteCourseProcedure(id string) error
 }
 
 type Diagnosis interface {
-	CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error)
+	CreateDiagnosis(diagnosis model.Diagnosis) error
 	GetDiagnosisById(id string) (model.Diagnosis, error)
 	GetDiagnosisList() ([]model.Diagnosis, error)
-	UpdateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error)
+	UpdateDiagnosis(diagnosis model.Diagnosis) error
 	DeleteDiagnosis(id string) error
 }
 
 type Disease interface {
-	CreateDisease(disease model.Disease) (model.Disease, error)
+	CreateDisease(disease model.Disease) error
 	GetDiseaseById(id string) (model.Disease, error)
 	GetDiseaseList() ([]model.Disease, error)
-	UpdateDisease(disease model.Disease) (model.Disease, error)
+	UpdateDisease(disease model.Disease) error
 	DeleteDisease(id string) error
 }
 
 type Doctor interface {
-	CreateDoctor(doctor model.Doctor) (model.Doctor, error)
+	CreateDoctor(doctor model.Doctor) (int, error)
 	GetDoctorById(id int) (model.Doctor, error)
 	GetDoctorList() ([]model.Doctor, error)
-	UpdateDoctor(doctor model.Doctor) (model.Doctor, error)
+	UpdateDoctor(doctor model.Doctor) error
 	DeleteDoctor(id int) error
 }
 
 type DoctorPatient interface {
-	CreateDoctorPatient(doctorPatient model.DoctorPatient) (model.DoctorPatient, error)
-	GetDoctorPatientList(doctor_id int) ([]model.DoctorPatient, error)
-	DeleteDoctorPatient(doctor_id, patient_id int) error
+	CreateDoctorPatient(doctorPatient model.DoctorPatient) error
+	GetDoctorPatientListByDoctor(doctorId int) ([]model.DoctorPatient, error)
+	GetDoctorPatientListByPatient(patientId int) ([]model.DoctorPatient, error)
+	DeleteDoctorPatient(doctorId, patientId int) error
 }
 
 type Drug interface {
-	CreateDrug(drug model.Drug) (model.Drug, error)
+	CreateDrug(drug model.Drug) error
 	GetDrugById(id string) (model.Drug, error)
 	GetDrugList() ([]model.Drug, error)
-	UpdateDrug(drug model.Drug) (model.Drug, error)
+	UpdateDrug(drug model.Drug) error
 	DeleteDrug(id string) error
 }
 
 type Patient interface {
-	CreatePatient(patient model.Patient) (model.Patient, error)
+	CreatePatient(patient model.Patient) (int, error)
 	GetPatientById(id int) (model.Patient, error)
 	GetPatientList() ([]model.Patient, error)
-	UpdatePatient(patient model.Patient) (model.Patient, error)
+	UpdatePatient(patient model.Patient) error
 	DeletePatient(id int) error
 }
 
 type PatientCourse interface {
-	CreatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error)
+	CreatePatientCourse(patientCourse model.PatientCourse) (int, error)
 	GetPatientCourseById(id int) (model.PatientCourse, error)
 	GetPatientCourseList() ([]model.PatientCourse, error)
-	UpdatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error)
+	UpdatePatientCourse(patientCourse model.PatientCourse) error
 	DeletePatientCourse(id int) error
 }
 
 type PatientDisease interface {
-	CreatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error)
+	CreatePatientDisease(patientDisease model.PatientDisease) error
 	GetPatientDiseaseById(patientId, diseaseId int) (model.PatientDisease, error)
 	GetPatientDiseaseListByPatient(patientId int) ([]model.PatientDisease, error)
 	GetPatientDiseaseListByDisease(diseaseId int) ([]model.PatientDisease, error)
 	GetPatientDiseaseList() ([]model.PatientDisease, error)
-	UpdatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error)
+	UpdatePatientDisease(patientDisease model.PatientDisease) error
 	DeletePatientDisease(patientId, diseaseId int) error
 }
 
 type ProcedureBloodCount interface {
-	CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error)
+	CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error
 	GetProcedureBloodCountById(procedureId int, bloodCountId string) (model.ProcedureBloodCount, error)
 	GetProcedureBloodCountListByProcedure(procedureId int) ([]model.ProcedureBloodCount, error)
 	GetProcedureBloodCountListByBloodCount(bloodCountId string) ([]model.ProcedureBloodCount, error)
 	GetProcedureBloodCountList() ([]model.ProcedureBloodCount, error)
-	UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error)
+	UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error
 	DeleteProcedureBloodCount(procedureId int, bloodCountId string) error
 }
 
 type UnitMeasure interface {
-	CreateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error)
+	CreateUnitMeasure(unitMeasure model.UnitMeasure) error
 	GetUnitMeasureById(id string) (model.UnitMeasure, error)
 	GetUnitMeasureList() ([]model.UnitMeasure, error)
-	UpdateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error)
+	UpdateUnitMeasure(unitMeasure model.UnitMeasure) error
 	DeleteUnitMeasure(id string) error
 }
 

@@ -11,7 +11,7 @@ package mock_services
 
 import (
 	model "med/pkg/model"
-	service "med/pkg/service"
+	services "med/pkg/service"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -64,10 +64,10 @@ func (m *MockAuthorization) EXPECT() *MockAuthorizationMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockAuthorization) CreateUser(user model.User) (string, error) {
+func (m *MockAuthorization) CreateUser(user model.User) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +94,10 @@ func (mr *MockAuthorizationMockRecorder) GenerateToken(email, password any) *gom
 }
 
 // ParseToken mocks base method.
-func (m *MockAuthorization) ParseToken(token string) (*service.UserData, error) {
+func (m *MockAuthorization) ParseToken(token string) (*services.UserData, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseToken", token)
-	ret0, _ := ret[0].(*service.UserData)
+	ret0, _ := ret[0].(*services.UserData)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -132,12 +132,11 @@ func (m *MockBloodCount) EXPECT() *MockBloodCountMockRecorder {
 }
 
 // CreateBloodCount mocks base method.
-func (m *MockBloodCount) CreateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error) {
+func (m *MockBloodCount) CreateBloodCount(bloodCount model.BloodCount) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateBloodCount", bloodCount)
-	ret0, _ := ret[0].(model.BloodCount)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateBloodCount indicates an expected call of CreateBloodCount.
@@ -191,12 +190,11 @@ func (mr *MockBloodCountMockRecorder) GetBloodCountList() *gomock.Call {
 }
 
 // UpdateBloodCount mocks base method.
-func (m *MockBloodCount) UpdateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error) {
+func (m *MockBloodCount) UpdateBloodCount(bloodCount model.BloodCount) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateBloodCount", bloodCount)
-	ret0, _ := ret[0].(model.BloodCount)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateBloodCount indicates an expected call of UpdateBloodCount.
@@ -229,12 +227,11 @@ func (m *MockBloodCountValue) EXPECT() *MockBloodCountValueMockRecorder {
 }
 
 // CreateBloodCountValue mocks base method.
-func (m *MockBloodCountValue) CreateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
+func (m *MockBloodCountValue) CreateBloodCountValue(bloodCountValue model.BloodCountValue) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateBloodCountValue", bloodCountValue)
-	ret0, _ := ret[0].(model.BloodCountValue)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateBloodCountValue indicates an expected call of CreateBloodCountValue.
@@ -318,12 +315,11 @@ func (mr *MockBloodCountValueMockRecorder) GetBloodCountValueListByDisease(disea
 }
 
 // UpdateBloodCountValue mocks base method.
-func (m *MockBloodCountValue) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
+func (m *MockBloodCountValue) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateBloodCountValue", bloodCountValue)
-	ret0, _ := ret[0].(model.BloodCountValue)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateBloodCountValue indicates an expected call of UpdateBloodCountValue.
@@ -356,12 +352,11 @@ func (m *MockCourse) EXPECT() *MockCourseMockRecorder {
 }
 
 // CreateCourse mocks base method.
-func (m *MockCourse) CreateCourse(course model.Course) (model.Course, error) {
+func (m *MockCourse) CreateCourse(course model.Course) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCourse", course)
-	ret0, _ := ret[0].(model.Course)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateCourse indicates an expected call of CreateCourse.
@@ -415,12 +410,11 @@ func (mr *MockCourseMockRecorder) GetCourseList() *gomock.Call {
 }
 
 // UpdateCourse mocks base method.
-func (m *MockCourse) UpdateCourse(course model.Course) (model.Course, error) {
+func (m *MockCourse) UpdateCourse(course model.Course) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCourse", course)
-	ret0, _ := ret[0].(model.Course)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateCourse indicates an expected call of UpdateCourse.
@@ -453,10 +447,10 @@ func (m *MockCourseProcedure) EXPECT() *MockCourseProcedureMockRecorder {
 }
 
 // CreateCourseProcedure mocks base method.
-func (m *MockCourseProcedure) CreateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
+func (m *MockCourseProcedure) CreateCourseProcedure(courseProcedure model.CourseProcedure) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCourseProcedure", courseProcedure)
-	ret0, _ := ret[0].(model.CourseProcedure)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -512,12 +506,11 @@ func (mr *MockCourseProcedureMockRecorder) GetCourseProcedureList() *gomock.Call
 }
 
 // UpdateCourseProcedure mocks base method.
-func (m *MockCourseProcedure) UpdateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
+func (m *MockCourseProcedure) UpdateCourseProcedure(courseProcedure model.CourseProcedure) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCourseProcedure", courseProcedure)
-	ret0, _ := ret[0].(model.CourseProcedure)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateCourseProcedure indicates an expected call of UpdateCourseProcedure.
@@ -550,12 +543,11 @@ func (m *MockDiagnosis) EXPECT() *MockDiagnosisMockRecorder {
 }
 
 // CreateDiagnosis mocks base method.
-func (m *MockDiagnosis) CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
+func (m *MockDiagnosis) CreateDiagnosis(diagnosis model.Diagnosis) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDiagnosis", diagnosis)
-	ret0, _ := ret[0].(model.Diagnosis)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateDiagnosis indicates an expected call of CreateDiagnosis.
@@ -609,12 +601,11 @@ func (mr *MockDiagnosisMockRecorder) GetDiagnosisList() *gomock.Call {
 }
 
 // UpdateDiagnosis mocks base method.
-func (m *MockDiagnosis) UpdateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
+func (m *MockDiagnosis) UpdateDiagnosis(diagnosis model.Diagnosis) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDiagnosis", diagnosis)
-	ret0, _ := ret[0].(model.Diagnosis)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateDiagnosis indicates an expected call of UpdateDiagnosis.
@@ -647,12 +638,11 @@ func (m *MockDisease) EXPECT() *MockDiseaseMockRecorder {
 }
 
 // CreateDisease mocks base method.
-func (m *MockDisease) CreateDisease(disease model.Disease) (model.Disease, error) {
+func (m *MockDisease) CreateDisease(disease model.Disease) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDisease", disease)
-	ret0, _ := ret[0].(model.Disease)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateDisease indicates an expected call of CreateDisease.
@@ -706,12 +696,11 @@ func (mr *MockDiseaseMockRecorder) GetDiseaseList() *gomock.Call {
 }
 
 // UpdateDisease mocks base method.
-func (m *MockDisease) UpdateDisease(disease model.Disease) (model.Disease, error) {
+func (m *MockDisease) UpdateDisease(disease model.Disease) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDisease", disease)
-	ret0, _ := ret[0].(model.Disease)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateDisease indicates an expected call of UpdateDisease.
@@ -744,10 +733,10 @@ func (m *MockDoctor) EXPECT() *MockDoctorMockRecorder {
 }
 
 // CreateDoctor mocks base method.
-func (m *MockDoctor) CreateDoctor(doctor model.Doctor) (model.Doctor, error) {
+func (m *MockDoctor) CreateDoctor(doctor model.Doctor) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDoctor", doctor)
-	ret0, _ := ret[0].(model.Doctor)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -803,12 +792,11 @@ func (mr *MockDoctorMockRecorder) GetDoctorList() *gomock.Call {
 }
 
 // UpdateDoctor mocks base method.
-func (m *MockDoctor) UpdateDoctor(doctor model.Doctor) (model.Doctor, error) {
+func (m *MockDoctor) UpdateDoctor(doctor model.Doctor) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDoctor", doctor)
-	ret0, _ := ret[0].(model.Doctor)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateDoctor indicates an expected call of UpdateDoctor.
@@ -841,12 +829,11 @@ func (m *MockDoctorPatient) EXPECT() *MockDoctorPatientMockRecorder {
 }
 
 // CreateDoctorPatient mocks base method.
-func (m *MockDoctorPatient) CreateDoctorPatient(doctorPatient model.DoctorPatient) (model.DoctorPatient, error) {
+func (m *MockDoctorPatient) CreateDoctorPatient(doctorPatient model.DoctorPatient) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDoctorPatient", doctorPatient)
-	ret0, _ := ret[0].(model.DoctorPatient)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateDoctorPatient indicates an expected call of CreateDoctorPatient.
@@ -856,32 +843,47 @@ func (mr *MockDoctorPatientMockRecorder) CreateDoctorPatient(doctorPatient any) 
 }
 
 // DeleteDoctorPatient mocks base method.
-func (m *MockDoctorPatient) DeleteDoctorPatient(doctor_id, patient_id int) error {
+func (m *MockDoctorPatient) DeleteDoctorPatient(doctorId, patientId int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteDoctorPatient", doctor_id, patient_id)
+	ret := m.ctrl.Call(m, "DeleteDoctorPatient", doctorId, patientId)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteDoctorPatient indicates an expected call of DeleteDoctorPatient.
-func (mr *MockDoctorPatientMockRecorder) DeleteDoctorPatient(doctor_id, patient_id any) *gomock.Call {
+func (mr *MockDoctorPatientMockRecorder) DeleteDoctorPatient(doctorId, patientId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDoctorPatient", reflect.TypeOf((*MockDoctorPatient)(nil).DeleteDoctorPatient), doctor_id, patient_id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDoctorPatient", reflect.TypeOf((*MockDoctorPatient)(nil).DeleteDoctorPatient), doctorId, patientId)
 }
 
-// GetDoctorPatientList mocks base method.
-func (m *MockDoctorPatient) GetDoctorPatientList(doctor_id int) ([]model.DoctorPatient, error) {
+// GetDoctorPatientListByDoctor mocks base method.
+func (m *MockDoctorPatient) GetDoctorPatientListByDoctor(doctorId int) ([]model.DoctorPatient, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDoctorPatientList", doctor_id)
+	ret := m.ctrl.Call(m, "GetDoctorPatientListByDoctor", doctorId)
 	ret0, _ := ret[0].([]model.DoctorPatient)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetDoctorPatientList indicates an expected call of GetDoctorPatientList.
-func (mr *MockDoctorPatientMockRecorder) GetDoctorPatientList(doctor_id any) *gomock.Call {
+// GetDoctorPatientListByDoctor indicates an expected call of GetDoctorPatientListByDoctor.
+func (mr *MockDoctorPatientMockRecorder) GetDoctorPatientListByDoctor(doctorId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorPatientList", reflect.TypeOf((*MockDoctorPatient)(nil).GetDoctorPatientList), doctor_id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorPatientListByDoctor", reflect.TypeOf((*MockDoctorPatient)(nil).GetDoctorPatientListByDoctor), doctorId)
+}
+
+// GetDoctorPatientListByPatient mocks base method.
+func (m *MockDoctorPatient) GetDoctorPatientListByPatient(patientId int) ([]model.DoctorPatient, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDoctorPatientListByPatient", patientId)
+	ret0, _ := ret[0].([]model.DoctorPatient)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDoctorPatientListByPatient indicates an expected call of GetDoctorPatientListByPatient.
+func (mr *MockDoctorPatientMockRecorder) GetDoctorPatientListByPatient(patientId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDoctorPatientListByPatient", reflect.TypeOf((*MockDoctorPatient)(nil).GetDoctorPatientListByPatient), patientId)
 }
 
 // MockDrug is a mock of Drug interface.
@@ -908,12 +910,11 @@ func (m *MockDrug) EXPECT() *MockDrugMockRecorder {
 }
 
 // CreateDrug mocks base method.
-func (m *MockDrug) CreateDrug(drug model.Drug) (model.Drug, error) {
+func (m *MockDrug) CreateDrug(drug model.Drug) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDrug", drug)
-	ret0, _ := ret[0].(model.Drug)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateDrug indicates an expected call of CreateDrug.
@@ -967,12 +968,11 @@ func (mr *MockDrugMockRecorder) GetDrugList() *gomock.Call {
 }
 
 // UpdateDrug mocks base method.
-func (m *MockDrug) UpdateDrug(drug model.Drug) (model.Drug, error) {
+func (m *MockDrug) UpdateDrug(drug model.Drug) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDrug", drug)
-	ret0, _ := ret[0].(model.Drug)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateDrug indicates an expected call of UpdateDrug.
@@ -1005,10 +1005,10 @@ func (m *MockPatient) EXPECT() *MockPatientMockRecorder {
 }
 
 // CreatePatient mocks base method.
-func (m *MockPatient) CreatePatient(patient model.Patient) (model.Patient, error) {
+func (m *MockPatient) CreatePatient(patient model.Patient) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePatient", patient)
-	ret0, _ := ret[0].(model.Patient)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1064,12 +1064,11 @@ func (mr *MockPatientMockRecorder) GetPatientList() *gomock.Call {
 }
 
 // UpdatePatient mocks base method.
-func (m *MockPatient) UpdatePatient(patient model.Patient) (model.Patient, error) {
+func (m *MockPatient) UpdatePatient(patient model.Patient) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePatient", patient)
-	ret0, _ := ret[0].(model.Patient)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdatePatient indicates an expected call of UpdatePatient.
@@ -1102,10 +1101,10 @@ func (m *MockPatientCourse) EXPECT() *MockPatientCourseMockRecorder {
 }
 
 // CreatePatientCourse mocks base method.
-func (m *MockPatientCourse) CreatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
+func (m *MockPatientCourse) CreatePatientCourse(patientCourse model.PatientCourse) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePatientCourse", patientCourse)
-	ret0, _ := ret[0].(model.PatientCourse)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1161,12 +1160,11 @@ func (mr *MockPatientCourseMockRecorder) GetPatientCourseList() *gomock.Call {
 }
 
 // UpdatePatientCourse mocks base method.
-func (m *MockPatientCourse) UpdatePatientCourse(patientCourse model.PatientCourse) (model.PatientCourse, error) {
+func (m *MockPatientCourse) UpdatePatientCourse(patientCourse model.PatientCourse) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePatientCourse", patientCourse)
-	ret0, _ := ret[0].(model.PatientCourse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdatePatientCourse indicates an expected call of UpdatePatientCourse.
@@ -1199,12 +1197,11 @@ func (m *MockPatientDisease) EXPECT() *MockPatientDiseaseMockRecorder {
 }
 
 // CreatePatientDisease mocks base method.
-func (m *MockPatientDisease) CreatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
+func (m *MockPatientDisease) CreatePatientDisease(patientDisease model.PatientDisease) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePatientDisease", patientDisease)
-	ret0, _ := ret[0].(model.PatientDisease)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreatePatientDisease indicates an expected call of CreatePatientDisease.
@@ -1288,12 +1285,11 @@ func (mr *MockPatientDiseaseMockRecorder) GetPatientDiseaseListByPatient(patient
 }
 
 // UpdatePatientDisease mocks base method.
-func (m *MockPatientDisease) UpdatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
+func (m *MockPatientDisease) UpdatePatientDisease(patientDisease model.PatientDisease) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePatientDisease", patientDisease)
-	ret0, _ := ret[0].(model.PatientDisease)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdatePatientDisease indicates an expected call of UpdatePatientDisease.
@@ -1326,12 +1322,11 @@ func (m *MockProcedureBloodCount) EXPECT() *MockProcedureBloodCountMockRecorder 
 }
 
 // CreateProcedureBloodCount mocks base method.
-func (m *MockProcedureBloodCount) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
+func (m *MockProcedureBloodCount) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateProcedureBloodCount", procedureBloodCount)
-	ret0, _ := ret[0].(model.ProcedureBloodCount)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateProcedureBloodCount indicates an expected call of CreateProcedureBloodCount.
@@ -1415,12 +1410,11 @@ func (mr *MockProcedureBloodCountMockRecorder) GetProcedureBloodCountListByProce
 }
 
 // UpdateProcedureBloodCount mocks base method.
-func (m *MockProcedureBloodCount) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
+func (m *MockProcedureBloodCount) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateProcedureBloodCount", procedureBloodCount)
-	ret0, _ := ret[0].(model.ProcedureBloodCount)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateProcedureBloodCount indicates an expected call of UpdateProcedureBloodCount.
@@ -1453,12 +1447,11 @@ func (m *MockUnitMeasure) EXPECT() *MockUnitMeasureMockRecorder {
 }
 
 // CreateUnitMeasure mocks base method.
-func (m *MockUnitMeasure) CreateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
+func (m *MockUnitMeasure) CreateUnitMeasure(unitMeasure model.UnitMeasure) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUnitMeasure", unitMeasure)
-	ret0, _ := ret[0].(model.UnitMeasure)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateUnitMeasure indicates an expected call of CreateUnitMeasure.
@@ -1512,12 +1505,11 @@ func (mr *MockUnitMeasureMockRecorder) GetUnitMeasureList() *gomock.Call {
 }
 
 // UpdateUnitMeasure mocks base method.
-func (m *MockUnitMeasure) UpdateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
+func (m *MockUnitMeasure) UpdateUnitMeasure(unitMeasure model.UnitMeasure) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUnitMeasure", unitMeasure)
-	ret0, _ := ret[0].(model.UnitMeasure)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateUnitMeasure indicates an expected call of UpdateUnitMeasure.

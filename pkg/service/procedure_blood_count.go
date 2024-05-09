@@ -13,7 +13,7 @@ func NewProcedureBloodCountService(repo repository.ProcedureBloodCount) *Procedu
 	return &ProcedureBloodCountService{repo: repo}
 }
 
-func (s *ProcedureBloodCountService) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
+func (s *ProcedureBloodCountService) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
 	return s.repo.CreateProcedureBloodCount(procedureBloodCount)
 }
 func (s *ProcedureBloodCountService) GetProcedureBloodCountById(procedureId int, bloodCountId string) (model.ProcedureBloodCount, error) {
@@ -28,7 +28,7 @@ func (s *ProcedureBloodCountService) GetProcedureBloodCountListByBloodCount(bloo
 func (s *ProcedureBloodCountService) GetProcedureBloodCountList() ([]model.ProcedureBloodCount, error) {
 	return s.repo.GetProcedureBloodCountList()
 }
-func (s *ProcedureBloodCountService) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
+func (s *ProcedureBloodCountService) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
 	return s.repo.UpdateProcedureBloodCount(procedureBloodCount)
 }
 func (s *ProcedureBloodCountService) DeleteProcedureBloodCount(procedureId int, bloodCountId string) error {
