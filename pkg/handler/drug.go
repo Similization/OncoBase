@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.Drug true "Drug data"
-// @Success 200 {object} model.Drug "Created drug data"
+// @Success 200 {object} string "Created drug data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /drugs [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateDrug(ctx *gin.Context) {
 		return
 	}
 
-	createdDrug, err := h.services.Drug.CreateDrug(drug)
+	err := h.services.Drug.CreateDrug(drug)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdDrug)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetDrugList godoc
@@ -81,7 +81,7 @@ func (h *Handler) GetDrugById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.Drug true "Drug data"
-// @Success 200 {object} model.Drug "Updated drug data"
+// @Success 200 {object} string "Updated drug data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /drugs [put]
@@ -93,13 +93,13 @@ func (h *Handler) UpdateDrug(ctx *gin.Context) {
 		return
 	}
 
-	updatedDrug, err := h.services.Drug.UpdateDrug(drug)
+	err := h.services.Drug.UpdateDrug(drug)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedDrug)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteDrug godoc
@@ -108,7 +108,7 @@ func (h *Handler) UpdateDrug(ctx *gin.Context) {
 // @Tags Drug
 // @Produce json
 // @Param id path string true "Drug ID"
-// @Success 200 {string} string "Drug ID deleted"
+// @Success 200 {string} string "Deleted drug data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /drugs/{id} [delete]
 func (h *Handler) DeleteDrug(ctx *gin.Context) {
@@ -120,7 +120,5 @@ func (h *Handler) DeleteDrug(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"Drug deleted": id,
-	})
+	ctx.JSON(http.StatusOK, "deleted")
 }

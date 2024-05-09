@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.DoctorPatient true "Doctor-patient relationship data"
-// @Success 200 {object} model.DoctorPatient "Created doctor-patient relationship data"
+// @Success 200 {object} string "Created doctor-patient relationship data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctor-patient [post]
@@ -27,13 +27,13 @@ func (h *Handler) CreateDoctorPatient(ctx *gin.Context) {
 		return
 	}
 
-	createdDoctorPatient, err := h.services.DoctorPatient.CreateDoctorPatient(doctorPatient)
+	err := h.services.DoctorPatient.CreateDoctorPatient(doctorPatient)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdDoctorPatient)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetDoctorPatientList godoc
@@ -45,14 +45,39 @@ func (h *Handler) CreateDoctorPatient(ctx *gin.Context) {
 // @Success 200 {array} []model.DoctorPatient "Patient ID list"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctor-patient/{doctor_id} [get]
-func (h *Handler) GetDoctorPatientList(ctx *gin.Context) {
+func (h *Handler) GetDoctorPatientListByDoctor(ctx *gin.Context) {
 	doctorId, err := strconv.Atoi(ctx.Param(doctorContext))
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	doctorPatientList, err := h.services.DoctorPatient.GetDoctorPatientList(doctorId)
+	doctorPatientList, err := h.services.DoctorPatient.GetDoctorPatientListByDoctor(doctorId)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, doctorPatientList)
+}
+
+// GetDoctorPatientList godoc
+// @Summary Get doctor-patient relationship list by doctor ID
+// @Description Retrieves a list of patient IDs associated with the given doctor ID.
+// @Tags DoctorPatient
+// @Produce json
+// @Param doctor_id path string true "Doctor ID"
+// @Success 200 {array} []model.DoctorPatient "Patient ID list"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /doctor-patient/{doctor_id} [get]
+func (h *Handler) GetDoctorPatientListByPatient(ctx *gin.Context) {
+	patientId, err := strconv.Atoi(ctx.Param(patientContext))
+	if err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	doctorPatientList, err := h.services.DoctorPatient.GetDoctorPatientListByDoctor(patientId)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -68,7 +93,7 @@ func (h *Handler) GetDoctorPatientList(ctx *gin.Context) {
 // @Produce json
 // @Param doctor_id path string true "Doctor ID"
 // @Param patient_id path string true "Patient ID"
-// @Success 200 {object} int "Deleted doctor-patient relationship data"
+// @Success 200 {object} string "Deleted doctor-patient relationship data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctor-patient/{doctor_id}/{patient_id} [delete]
 func (h *Handler) DeleteDoctorPatient(ctx *gin.Context) {
@@ -89,8 +114,5 @@ func (h *Handler) DeleteDoctorPatient(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"doctor_id":  doctorId,
-		"patient_id": patientId,
-	})
+	ctx.JSON(http.StatusOK, "deleted")
 }

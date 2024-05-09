@@ -8,11 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type PatientDiseaseResponse struct {
-	PatientId int `json:"patient_id"`
-	DiseaseId int `json:"disease_id"`
-}
-
 // CreatePatientDisease godoc
 // @Summary Create patient disease
 // @Description Creates a new patient disease.
@@ -20,7 +15,7 @@ type PatientDiseaseResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body model.PatientDisease true "Patient disease data"
-// @Success 200 {object} model.PatientDisease "Created patient disease data"
+// @Success 200 {object} string "Created patient disease data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-diseases [post]
@@ -32,13 +27,13 @@ func (h *Handler) CreatePatientDisease(ctx *gin.Context) {
 		return
 	}
 
-	createdPatientDisease, err := h.services.PatientDisease.CreatePatientDisease(patientDisease)
+	err := h.services.PatientDisease.CreatePatientDisease(patientDisease)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdPatientDisease)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetPatientDiseaseList godoc
@@ -147,7 +142,7 @@ func (h *Handler) GetPatientDiseaseById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.PatientDisease true "Patient disease data"
-// @Success 200 {object} model.PatientDisease "Updated patient disease data"
+// @Success 200 {object} string "Updated patient disease data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-diseases [put]
@@ -159,13 +154,13 @@ func (h *Handler) UpdatePatientDisease(ctx *gin.Context) {
 		return
 	}
 
-	updatedPatientDisease, err := h.services.PatientDisease.UpdatePatientDisease(patientDisease)
+	err := h.services.PatientDisease.UpdatePatientDisease(patientDisease)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedPatientDisease)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeletePatientDisease godoc
@@ -175,7 +170,7 @@ func (h *Handler) UpdatePatientDisease(ctx *gin.Context) {
 // @Produce json
 // @Param patient_id path string true "Patient ID"
 // @Param disease_id path string true "Disease ID"
-// @Success 200 {string} PatientDiseaseResponse "Patient disease ID deleted"
+// @Success 200 {string} string "Deleted patient disease data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-diseases/{patient_id}/{disease_id} [delete]
 func (h *Handler) DeletePatientDisease(ctx *gin.Context) {
@@ -196,5 +191,5 @@ func (h *Handler) DeletePatientDisease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, PatientDiseaseResponse{PatientId: patientId, DiseaseId: diseaseId})
+	ctx.JSON(http.StatusOK, "deleted")
 }

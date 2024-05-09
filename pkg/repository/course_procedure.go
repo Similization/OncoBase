@@ -16,17 +16,28 @@ func NewCourseProcedureRepository(db *sqlx.DB) *CourseProcedureRepository {
 }
 
 // Create course procedure in database and get it from database
-func (r *CourseProcedureRepository) CreateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
-	var createdCourseProcedure model.CourseProcedure
-	query := fmt.Sprintf("INSERT INTO %s (patient_course, doctor, begin_date, period, result) VALUES ($1, $2, $3, $4, $5) RETURNING *", courseProcedureTable)
-	err := r.db.Get(&createdCourseProcedure, query,
+func (r *CourseProcedureRepository) CreateCourseProcedure(courseProcedure model.CourseProcedure) (int, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+
+	var courseProcedureId int
+	query := fmt.Sprintf("INSERT INTO %s (patient_course, doctor, begin_date, period, result) VALUES ($1, $2, $3, $4, $5) RETURNING id", courseProcedureTable)
+	row := r.db.QueryRow(query,
 		courseProcedure.PatientCourse,
 		courseProcedure.Doctor,
 		courseProcedure.BeginDate,
 		courseProcedure.Period,
 		courseProcedure.Result,
 	)
-	return createdCourseProcedure, err
+
+	row.Scan(&courseProcedure)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+	return courseProcedureId, tx.Commit()
 }
 
 // Get course procedure list from database
@@ -46,10 +57,14 @@ func (r *CourseProcedureRepository) GetCourseProcedureById(id string) (model.Cou
 }
 
 // Update course procedure fields in database and get it from database
-func (r *CourseProcedureRepository) UpdateCourseProcedure(courseProcedure model.CourseProcedure) (model.CourseProcedure, error) {
-	var updatedCourseProcedure model.CourseProcedure
-	query := fmt.Sprintf("UPDATE %s SET patient_course=$1, doctor=$2, begin_date=$3, period=$4, result=$5 WHERE id=$6 RETURNING *", courseProcedureTable)
-	err := r.db.Get(&updatedCourseProcedure, query,
+func (r *CourseProcedureRepository) UpdateCourseProcedure(courseProcedure model.CourseProcedure) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET patient_course=$1, doctor=$2, begin_date=$3, period=$4, result=$5 WHERE id=$6", courseProcedureTable)
+	_, err = r.db.Exec(query,
 		courseProcedure.PatientCourse,
 		courseProcedure.Doctor,
 		courseProcedure.BeginDate,
@@ -57,12 +72,26 @@ func (r *CourseProcedureRepository) UpdateCourseProcedure(courseProcedure model.
 		courseProcedure.Result,
 		courseProcedure.Id,
 	)
-	return courseProcedure, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete course procedure from database by id
 func (r *CourseProcedureRepository) DeleteCourseProcedure(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", courseProcedureTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

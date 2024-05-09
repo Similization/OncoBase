@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.Disease true "Disease data"
-// @Success 200 {object} model.Disease "Created disease data"
+// @Success 200 {object} string "Created disease data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /disease [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateDisease(ctx *gin.Context) {
 		return
 	}
 
-	createdDisease, err := h.services.Disease.CreateDisease(disease)
+	err := h.services.Disease.CreateDisease(disease)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdDisease)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetDiseaseList godoc
@@ -81,7 +81,7 @@ func (h *Handler) GetDiseaseById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.Disease true "Updated disease data"
-// @Success 200 {object} model.Disease "Updated disease data"
+// @Success 200 {object} string "Updated disease data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /disease [put]
@@ -93,13 +93,13 @@ func (h *Handler) UpdateDisease(ctx *gin.Context) {
 		return
 	}
 
-	updatedDisease, err := h.services.Disease.UpdateDisease(disease)
+	err := h.services.Disease.UpdateDisease(disease)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedDisease)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteDisease godoc
@@ -108,7 +108,7 @@ func (h *Handler) UpdateDisease(ctx *gin.Context) {
 // @Tags Disease
 // @Produce json
 // @Param id path string true "Disease ID"
-// @Success 200 {string} string "Disease ID"
+// @Success 200 {string} string "Deleted disease data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /disease/{id} [delete]
 func (h *Handler) DeleteDisease(ctx *gin.Context) {
@@ -120,5 +120,5 @@ func (h *Handler) DeleteDisease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

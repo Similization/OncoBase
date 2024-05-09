@@ -15,15 +15,22 @@ func NewAuthRepository(db *sqlx.DB) *AuthorizationRepository {
 	return &AuthorizationRepository{db: db}
 }
 
-func (r *AuthorizationRepository) CreateUser(user model.User) (string, error) {
-	var email string
-	query := fmt.Sprintf("INSERT INTO %s (email, password, role) VALUES ($1, $2, $3) RETURNING email", externalUserTable)
+func (r *AuthorizationRepository) CreateUser(user model.User) (int, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+
+	var userId int
+	query := fmt.Sprintf("INSERT INTO %s (email, password, role) VALUES ($1, $2, $3) RETURNING id", externalUserTable)
 	row := r.db.QueryRow(query, user.Email, user.Password, user.Role)
 
-	if err := row.Scan(&email); err != nil {
-		return "", err
+	err = row.Scan(&userId)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
 	}
-	return email, nil
+	return userId, tx.Commit()
 }
 
 func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
@@ -36,23 +43,3 @@ func (r *AuthorizationRepository) GetUser(email, password string) (model.User, e
 	}
 	return user, err
 }
-
-// func (r *AuthorizationRepository) GetUser(email, password string) (model.User, error) {
-// 	var user model.User
-
-// 	// Create a squirrel.SelectBuilder for the internal user table
-// 	internalSelect := squirrel.Select("*").From(internalUserTable).Where(squirrel.Eq{"email": email, "password": password})
-
-// 	// Create a squirrel.SelectBuilder for the external user table
-// 	externalSelect := squirrel.Select("*").From(externalUserTable).Where(squirrel.Eq{"email": email, "password": password})
-
-// 	// Combine the two queries with OR
-// 	query, args, err := squirrel.Or{internalSelect, externalSelect}.ToSql()
-// 	if err != nil {
-// 		return user, err
-// 	}
-
-// 	// Execute the query
-// 	err = r.db.Get(&user, query, args...)
-// 	return user, err
-// }

@@ -16,16 +16,25 @@ func NewPatientDiseaseRepository(db *sqlx.DB) *PatientDiseaseRepository {
 }
 
 // Create patient in database and get him from database
-func (r *PatientDiseaseRepository) CreatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
-	var createdPatientDisease model.PatientDisease
-	query := fmt.Sprintf("INSERT INTO %s (stage, diagnosis, patient, disease) VALUES ($1, $2, $3, $4) RETURNING *", patientDiseaseTable)
-	err := r.db.Get(&createdPatientDisease, query,
+func (r *PatientDiseaseRepository) CreatePatientDisease(patientDisease model.PatientDisease) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (stage, diagnosis, patient, disease) VALUES ($1, $2, $3, $4)", patientDiseaseTable)
+	_, err = r.db.Exec(query,
 		patientDisease.Stage,
 		patientDisease.Diagnosis,
 		patientDisease.Patient,
 		patientDisease.Disease,
 	)
-	return createdPatientDisease, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get patient list from database
@@ -61,21 +70,40 @@ func (r *PatientDiseaseRepository) GetPatientDiseaseById(patientId, diseaseId in
 }
 
 // Update patient data in database
-func (r *PatientDiseaseRepository) UpdatePatientDisease(patientDisease model.PatientDisease) (model.PatientDisease, error) {
-	var updatedPatientDisease model.PatientDisease
-	query := fmt.Sprintf("UPDATE %s SET stage=$1, diagnosis=$2 WHERE patient=$3 AND disease=$4 RETURNING *", patientDiseaseTable)
-	err := r.db.Get(&updatedPatientDisease, query,
+func (r *PatientDiseaseRepository) UpdatePatientDisease(patientDisease model.PatientDisease) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET stage=$1, diagnosis=$2 WHERE patient=$3 AND disease=$4", patientDiseaseTable)
+	_, err = r.db.Exec(query,
 		patientDisease.Stage,
 		patientDisease.Diagnosis,
 		patientDisease.Patient,
 		patientDisease.Disease,
 	)
-	return updatedPatientDisease, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete patient data from database
 func (r *PatientDiseaseRepository) DeletePatientDisease(patientId, diseaseId int) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE patient=$1 AND disease=$2", patientDiseaseTable)
-	_, err := r.db.Exec(query, patientId, diseaseId)
-	return err
+	_, err = r.db.Exec(query, patientId, diseaseId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

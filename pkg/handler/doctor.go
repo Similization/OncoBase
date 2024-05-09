@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.Doctor true "Doctor data"
-// @Success 200 {object} model.Doctor "Created doctor data"
+// @Success 200 {object} IdResponse "Created doctor data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctors [post]
@@ -27,13 +27,13 @@ func (h *Handler) CreateDoctor(ctx *gin.Context) {
 		return
 	}
 
-	createdDoctor, err := h.services.Doctor.CreateDoctor(doctor)
+	id, err := h.services.Doctor.CreateDoctor(doctor)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdDoctor)
+	ctx.JSON(http.StatusOK, IdResponse{Id: id})
 }
 
 // GetDoctorList godoc
@@ -86,7 +86,7 @@ func (h *Handler) GetDoctorById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.Doctor true "Doctor data"
-// @Success 200 {object} model.Doctor "Updated doctor data"
+// @Success 200 {object} string "Updated doctor data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctors [put]
@@ -98,13 +98,13 @@ func (h *Handler) UpdateDoctor(ctx *gin.Context) {
 		return
 	}
 
-	updatedDoctor, err := h.services.Doctor.UpdateDoctor(doctor)
+	err := h.services.Doctor.UpdateDoctor(doctor)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedDoctor)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteDoctor godoc
@@ -113,7 +113,7 @@ func (h *Handler) UpdateDoctor(ctx *gin.Context) {
 // @Tags Doctor
 // @Produce json
 // @Param id path string true "Doctor ID"
-// @Success 200 {string} string "Doctor ID deleted"
+// @Success 200 {string} string "Deleted doctor data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /doctors/{id} [delete]
 func (h *Handler) DeleteDoctor(ctx *gin.Context) {
@@ -129,5 +129,5 @@ func (h *Handler) DeleteDoctor(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

@@ -17,10 +17,15 @@ func NewPatientRepository(db *sqlx.DB) *PatientRepository {
 }
 
 // Create patient in database and get him from database
-func (r *PatientRepository) CreatePatient(patient model.Patient) (model.Patient, error) {
-	var createdPatient model.Patient
+func (r *PatientRepository) CreatePatient(patient model.Patient) (int, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+
+	var patientId int
 	query := fmt.Sprintf("INSERT INTO %s (first_name, middle_name, last_name, birth_date, sex, snils, phone) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", patientTable)
-	err := r.db.Get(&createdPatient, query,
+	row := r.db.QueryRow(query,
 		patient.FirstName,
 		patient.MiddleName,
 		patient.LastName,
@@ -29,7 +34,14 @@ func (r *PatientRepository) CreatePatient(patient model.Patient) (model.Patient,
 		patient.SNILS,
 		patient.Phone,
 	)
-	return createdPatient, err
+
+	err = row.Scan(&patientId)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	return patientId, tx.Commit()
 }
 
 // Get patient list from database
@@ -49,8 +61,11 @@ func (r *PatientRepository) GetPatientById(id int) (model.Patient, error) {
 }
 
 // Update patient data in database
-func (r *PatientRepository) UpdatePatient(patient model.Patient) (model.Patient, error) {
-	var updatedPatient model.Patient
+func (r *PatientRepository) UpdatePatient(patient model.Patient) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
 
 	// Define the update builder
 	updateBuilder := squirrel.Update(patientTable).
@@ -67,17 +82,32 @@ func (r *PatientRepository) UpdatePatient(patient model.Patient) (model.Patient,
 	// Get the SQL query and arguments from the update builder
 	sql, args, err := updateBuilder.ToSql()
 	if err != nil {
-		return updatedPatient, err
+		tx.Rollback()
+		return err
 	}
 
 	// Execute the query and scan the result into updatedPatient
-	err = r.db.Get(&updatedPatient, sql, args...)
-	return updatedPatient, err
+	_, err = r.db.Exec(sql, args...)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 // Delete patient data from database
 func (r *PatientRepository) DeletePatient(id int) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", patientTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

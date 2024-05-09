@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param diagnosis body model.Diagnosis true "Diagnosis object"
-// @Success 200 {object} model.Diagnosis "Created diagnosis"
+// @Success 200 {object} string "Created diagnosis data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /diagnoses [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	createdDiagnosis, err := h.services.Diagnosis.CreateDiagnosis(diagnosis)
+	err := h.services.Diagnosis.CreateDiagnosis(diagnosis)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdDiagnosis)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetDiagnosisList godoc
@@ -82,7 +82,7 @@ func (h *Handler) GetDiagnosisById(ctx *gin.Context) {
 // @Produce json
 // @Param id path string true "Diagnosis ID"
 // @Param diagnosis body model.Diagnosis true "Diagnosis object"
-// @Success 200 {object} model.Diagnosis "Updated diagnosis"
+// @Success 200 {object} string "Updated diagnosis data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /diagnoses/{id} [put]
@@ -94,13 +94,13 @@ func (h *Handler) UpdateDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	updatedDiagnosis, err := h.services.Diagnosis.UpdateDiagnosis(diagnosis)
+	err := h.services.Diagnosis.UpdateDiagnosis(diagnosis)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedDiagnosis)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteDiagnosis godoc
@@ -109,7 +109,7 @@ func (h *Handler) UpdateDiagnosis(ctx *gin.Context) {
 // @Tags Diagnoses
 // @Produce json
 // @Param id path string true "Diagnosis ID"
-// @Success 200 {object} string "ID of deleted diagnosis"
+// @Success 200 {object} string "Deleted diagnosis data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /diagnoses/{id} [delete]
 func (h *Handler) DeleteDiagnosis(ctx *gin.Context) {
@@ -121,5 +121,5 @@ func (h *Handler) DeleteDiagnosis(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

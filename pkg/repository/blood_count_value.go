@@ -15,16 +15,24 @@ func NewBloodCountValueRepository(db *sqlx.DB) *BloodCountValueRepository {
 	return &BloodCountValueRepository{db: db}
 }
 
-func (r *BloodCountValueRepository) CreateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
-	var createdBloodCountValue model.BloodCountValue
-	query := fmt.Sprintf("INSERT INTO %s (disease, blood_count, coefficient, description) VALUES ($1, $2, $3, $4) RETURNING *", bloodCountValueTable)
-	err := r.db.Get(&createdBloodCountValue, query,
+func (r *BloodCountValueRepository) CreateBloodCountValue(bloodCountValue model.BloodCountValue) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (disease, blood_count, coefficient, description) VALUES ($1, $2, $3, $4)", bloodCountValueTable)
+	_, err = r.db.Exec(query,
 		bloodCountValue.Disease,
 		bloodCountValue.BloodCount,
 		bloodCountValue.Coefficient,
 		bloodCountValue.Description,
 	)
-	return createdBloodCountValue, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 func (r *BloodCountValueRepository) GetBloodCountValueList() ([]model.BloodCountValue, error) {
@@ -55,20 +63,36 @@ func (r *BloodCountValueRepository) GetBloodCountValueById(diseaseId, bloodCount
 	return bloodCountValue, err
 }
 
-func (r *BloodCountValueRepository) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) (model.BloodCountValue, error) {
-	var updatedBloodCountValue model.BloodCountValue
+func (r *BloodCountValueRepository) UpdateBloodCountValue(bloodCountValue model.BloodCountValue) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("UPDATE %s SET coefficient=$1, description=$2 WHERE disease=$3 AND blood_count=$4 RETURNING *", bloodCountValueTable)
-	err := r.db.Get(&updatedBloodCountValue, query,
+	_, err = r.db.Exec(query,
 		bloodCountValue.Coefficient,
 		bloodCountValue.Description,
 		bloodCountValue.Disease,
 		bloodCountValue.BloodCount,
 	)
-	return bloodCountValue, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 func (r *BloodCountValueRepository) DeleteBloodCountValue(diseaseId, bloodCountId string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE disease=$1 AND blood_count=$2", bloodCountValueTable)
-	_, err := r.db.Exec(query, diseaseId, bloodCountId)
-	return err
+	_, err = r.db.Exec(query, diseaseId, bloodCountId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }

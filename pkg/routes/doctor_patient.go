@@ -10,7 +10,8 @@ func createDoctorPatientRoutes[G Group](route G, handlers *handler.Handler) *gin
 	doctorPatient := route.Group("/doctor-patient")
 	{
 		doctorPatient.POST("/", handlers.CreateDoctorPatient)
-		doctorPatient.GET("/:doctor_id", handlers.GetDoctorPatientList)
+		doctorPatient.GET("/doctor/:doctor_id", handlers.GetDoctorPatientListByDoctor)
+		doctorPatient.GET("/patient/:patient_id", handlers.GetDoctorPatientListByPatient)
 		doctorPatient.DELETE("/:doctor_id/:patient_id", handlers.DeleteDoctorPatient)
 	}
 	return doctorPatient

@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.CourseProcedure true "Course procedure data"
-// @Success 200 {object} model.CourseProcedure "Created course procedure data"
+// @Success 200 {object} IdResponse "Created course procedure data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /course-procedure [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateCourseProcedure(ctx *gin.Context) {
 		return
 	}
 
-	createdCourseProcedure, err := h.services.CourseProcedure.CreateCourseProcedure(courseProcedure)
+	id, err := h.services.CourseProcedure.CreateCourseProcedure(courseProcedure)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdCourseProcedure)
+	ctx.JSON(http.StatusOK, IdResponse{Id: id})
 }
 
 // GetCourseProcedureList godoc
@@ -81,7 +81,7 @@ func (h *Handler) GetCourseProcedureById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.CourseProcedure true "Updated course procedure data"
-// @Success 200 {object} model.CourseProcedure "Updated course procedure data"
+// @Success 200 {object} string "Updated course procedure data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /course-procedure [put]
@@ -93,13 +93,13 @@ func (h *Handler) UpdateCourseProcedure(ctx *gin.Context) {
 		return
 	}
 
-	updatedCourseProcedure, err := h.services.CourseProcedure.UpdateCourseProcedure(courseProcedure)
+	err := h.services.CourseProcedure.UpdateCourseProcedure(courseProcedure)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedCourseProcedure)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteCourseProcedure godoc
@@ -108,7 +108,7 @@ func (h *Handler) UpdateCourseProcedure(ctx *gin.Context) {
 // @Tags CourseProcedure
 // @Produce json
 // @Param id path string true "Course procedure ID"
-// @Success 200 {string} string "Course procedure ID"
+// @Success 200 {string} string "Deleted course procedure data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /course-procedure/{id} [delete]
 func (h *Handler) DeleteCourseProcedure(ctx *gin.Context) {
@@ -120,5 +120,5 @@ func (h *Handler) DeleteCourseProcedure(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

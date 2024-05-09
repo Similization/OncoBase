@@ -16,10 +16,14 @@ func NewDrugRepository(db *sqlx.DB) *DrugRepository {
 }
 
 // Create drug in database and get him from database
-func (r *DrugRepository) CreateDrug(drug model.Drug) (model.Drug, error) {
-	var createdDrug model.Drug
-	query := fmt.Sprintf("INSERT INTO %s (id, name, dosage_form, active_ingredients, country, manufacturer, prescribing_order, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", drugTable)
-	err := r.db.Get(&createdDrug, query,
+func (r *DrugRepository) CreateDrug(drug model.Drug) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, name, dosage_form, active_ingredients, country, manufacturer, prescribing_order, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", drugTable)
+	_, err = r.db.Exec(query,
 		drug.Id,
 		drug.Name,
 		drug.DosageForm,
@@ -29,7 +33,12 @@ func (r *DrugRepository) CreateDrug(drug model.Drug) (model.Drug, error) {
 		drug.PrescribingOrder,
 		drug.Description,
 	)
-	return createdDrug, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get drug list from database
@@ -49,10 +58,14 @@ func (r *DrugRepository) GetDrugById(id string) (model.Drug, error) {
 }
 
 // Update drug data in database
-func (r *DrugRepository) UpdateDrug(drug model.Drug) (model.Drug, error) {
-	var updatedDrug model.Drug
-	query := fmt.Sprintf("UPDATE %s SET name=$2, dosage_form=$3, active_ingredients=$4, country=$5, manufacturer=$6, prescribing_order=$7, description=$8 WHERE id=$1 RETURNING *", drugTable)
-	err := r.db.Get(&updatedDrug, query,
+func (r *DrugRepository) UpdateDrug(drug model.Drug) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET name=$2, dosage_form=$3, active_ingredients=$4, country=$5, manufacturer=$6, prescribing_order=$7, description=$8 WHERE id=$1", drugTable)
+	_, err = r.db.Exec(query,
 		drug.Id,
 		drug.Name,
 		drug.DosageForm,
@@ -62,12 +75,26 @@ func (r *DrugRepository) UpdateDrug(drug model.Drug) (model.Drug, error) {
 		drug.PrescribingOrder,
 		drug.Description,
 	)
-	return updatedDrug, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete drug data from database
 func (r *DrugRepository) DeleteDrug(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", drugTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }

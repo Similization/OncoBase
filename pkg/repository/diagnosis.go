@@ -16,14 +16,23 @@ func NewDiagnosisRepository(db *sqlx.DB) *DiagnosisRepository {
 }
 
 // Create diagnosis in database and get it from database
-func (r *DiagnosisRepository) CreateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
-	var createdDiagnosis model.Diagnosis
-	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2) RETURNING *", diagnosisTable)
-	err := r.db.Get(&createdDiagnosis, query,
+func (r *DiagnosisRepository) CreateDiagnosis(diagnosis model.Diagnosis) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2)", diagnosisTable)
+	_, err = r.db.Exec(query,
 		diagnosis.Id,
 		diagnosis.Description,
 	)
-	return createdDiagnosis, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get diagnosis list from database
@@ -43,19 +52,38 @@ func (r *DiagnosisRepository) GetDiagnosisById(id string) (model.Diagnosis, erro
 }
 
 // Update diagnosis data in database
-func (r *DiagnosisRepository) UpdateDiagnosis(diagnosis model.Diagnosis) (model.Diagnosis, error) {
-	var updatedDiagnosis model.Diagnosis
-	query := fmt.Sprintf("UPDATE %s SET description=$2 WHERE id=$1 RETURNING *", diagnosisTable)
-	err := r.db.Get(&updatedDiagnosis, query,
+func (r *DiagnosisRepository) UpdateDiagnosis(diagnosis model.Diagnosis) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET description=$2 WHERE id=$1", diagnosisTable)
+	_, err = r.db.Exec(query,
 		diagnosis.Id,
 		diagnosis.Description,
 	)
-	return updatedDiagnosis, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete diagnosis data from database
 func (r *DiagnosisRepository) DeleteDiagnosis(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", diagnosisTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

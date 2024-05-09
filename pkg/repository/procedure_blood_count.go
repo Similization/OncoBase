@@ -16,16 +16,25 @@ func NewProcedureBloodCountRepository(db *sqlx.DB) *ProcedureBloodCountRepositor
 }
 
 // Create patient in database and get him from database
-func (r *ProcedureBloodCountRepository) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
-	var createdProcedureBloodCount model.ProcedureBloodCount
-	query := fmt.Sprintf("INSERT INTO %s (value, measure_code, procedure, blood_count) VALUES ($1, $2, $3, $4) RETURNING *", procedureBloodCountTable)
-	err := r.db.Get(&createdProcedureBloodCount, query,
+func (r *ProcedureBloodCountRepository) CreateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (value, measure_code, procedure, blood_count) VALUES ($1, $2, $3, $4)", procedureBloodCountTable)
+	_, err = r.db.Exec(query,
 		procedureBloodCount.Value,
 		procedureBloodCount.MeasureCode,
 		procedureBloodCount.Procedure,
 		procedureBloodCount.BloodCount,
 	)
-	return createdProcedureBloodCount, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get patient list from database
@@ -61,21 +70,38 @@ func (r *ProcedureBloodCountRepository) GetProcedureBloodCountById(procedureId i
 }
 
 // Update patient data in database
-func (r *ProcedureBloodCountRepository) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) (model.ProcedureBloodCount, error) {
-	var updatedProcedureBloodCount model.ProcedureBloodCount
-	query := fmt.Sprintf("UPDATE %s SET value=$1, measure_code=$2 WHERE procedure=$3 AND blood_count=$4 RETURNING *", procedureBloodCountTable)
-	err := r.db.Get(&updatedProcedureBloodCount, query,
+func (r *ProcedureBloodCountRepository) UpdateProcedureBloodCount(procedureBloodCount model.ProcedureBloodCount) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+	query := fmt.Sprintf("UPDATE %s SET value=$1, measure_code=$2 WHERE procedure=$3 AND blood_count=$4", procedureBloodCountTable)
+	_, err = r.db.Exec(query,
 		procedureBloodCount.Value,
 		procedureBloodCount.MeasureCode,
 		procedureBloodCount.Procedure,
 		procedureBloodCount.BloodCount,
 	)
-	return updatedProcedureBloodCount, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete patient data from database
 func (r *ProcedureBloodCountRepository) DeleteProcedureBloodCount(procedureId int, bloodCountId string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE procedure=$1 AND blood_count=$2", procedureBloodCountTable)
-	_, err := r.db.Exec(query, procedureId, bloodCountId)
-	return err
+	_, err = r.db.Exec(query, procedureId, bloodCountId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }

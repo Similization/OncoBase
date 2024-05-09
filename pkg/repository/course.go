@@ -16,10 +16,14 @@ func NewCourseRepository(db *sqlx.DB) *CourseRepository {
 }
 
 // Create course in database and get him from database
-func (r *CourseRepository) CreateCourse(course model.Course) (model.Course, error) {
-	var createdCourse model.Course
-	query := fmt.Sprintf("INSERT INTO %s (id, period, frequency, dose, drug, measure_code) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *", courseTable)
-	err := r.db.Get(&createdCourse, query,
+func (r *CourseRepository) CreateCourse(course model.Course) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, period, frequency, dose, drug, measure_code) VALUES ($1, $2, $3, $4, $5, $6)", courseTable)
+	_, err = r.db.Exec(query,
 		course.Id,
 		course.Period,
 		course.Frequency,
@@ -27,7 +31,12 @@ func (r *CourseRepository) CreateCourse(course model.Course) (model.Course, erro
 		course.Drug,
 		course.MeasureCode,
 	)
-	return createdCourse, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get course list from database
@@ -47,10 +56,14 @@ func (r *CourseRepository) GetCourseById(id string) (model.Course, error) {
 }
 
 // Update course data in database
-func (r *CourseRepository) UpdateCourse(course model.Course) (model.Course, error) {
-	var updatedCourse model.Course
-	query := fmt.Sprintf("UPDATE %s SET period=$2, frequency=$3, dose=$4, drug=$5, measure_code=$6 WHERE id=$1 RETURNING *", courseTable)
-	err := r.db.Get(&updatedCourse, query,
+func (r *CourseRepository) UpdateCourse(course model.Course) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET period=$2, frequency=$3, dose=$4, drug=$5, measure_code=$6 WHERE id=$1", courseTable)
+	_, err = r.db.Exec(query,
 		course.Id,
 		course.Period,
 		course.Frequency,
@@ -58,12 +71,27 @@ func (r *CourseRepository) UpdateCourse(course model.Course) (model.Course, erro
 		course.Drug,
 		course.MeasureCode,
 	)
-	return updatedCourse, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete course data from database
 func (r *CourseRepository) DeleteCourse(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", courseTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

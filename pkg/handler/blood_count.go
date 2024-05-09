@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.BloodCount true "Blood count data"
-// @Success 200 {object} model.BloodCount "Created blood count data"
+// @Success 200 {object} string "Created blood count data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	createdBloodCount, err := h.services.BloodCount.CreateBloodCount(bloodCount)
+	err := h.services.BloodCount.CreateBloodCount(bloodCount)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdBloodCount)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetBloodCountList godoc
@@ -81,7 +81,7 @@ func (h *Handler) GetBloodCountById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.BloodCount true "Updated blood count data"
-// @Success 200 {object} model.BloodCount "Updated blood count data"
+// @Success 200 {object} string "Updated blood count data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count [put]
@@ -93,13 +93,13 @@ func (h *Handler) UpdateBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	updatedBloodCount, err := h.services.BloodCount.UpdateBloodCount(bloodCount)
+	err := h.services.BloodCount.UpdateBloodCount(bloodCount)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedBloodCount)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteBloodCount godoc
@@ -108,7 +108,7 @@ func (h *Handler) UpdateBloodCount(ctx *gin.Context) {
 // @Tags BloodCount
 // @Produce json
 // @Param id path string true "Blood count ID"
-// @Success 200 {string} string "Blood count ID"
+// @Success 200 {string} string "Deleted blood count data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count/{id} [delete]
 func (h *Handler) DeleteBloodCount(ctx *gin.Context) {
@@ -120,5 +120,5 @@ func (h *Handler) DeleteBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

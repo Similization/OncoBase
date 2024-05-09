@@ -7,11 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BloodCountValueResponse struct {
-	DiseaseId    string `json:"disease_id"`
-	BloodCountId string `json:"blood_count_id"`
-}
-
 // CreateBloodCountValue godoc
 // @Summary Create blood count value
 // @Description Creates a new blood count value entry.
@@ -19,7 +14,7 @@ type BloodCountValueResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body model.BloodCountValue true "Blood count value data"
-// @Success 200 {object} model.BloodCountValue "Created blood count value"
+// @Success 200 {object} string "Created blood count value data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count-value [post]
@@ -31,13 +26,13 @@ func (h *Handler) CreateBloodCountValue(ctx *gin.Context) {
 		return
 	}
 
-	createdBloodCountValue, err := h.services.BloodCountValue.CreateBloodCountValue(bloodCountValue)
+	err := h.services.BloodCountValue.CreateBloodCountValue(bloodCountValue)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdBloodCountValue)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetBloodCountValueList godoc
@@ -130,7 +125,7 @@ func (h *Handler) GetBloodCountValueById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.BloodCountValue true "Blood count value data"
-// @Success 200 {object} model.BloodCountValue "Updated blood count value"
+// @Success 200 {object} string "Updated blood count value data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count-value [put]
@@ -142,13 +137,13 @@ func (h *Handler) UpdateBloodCountValue(ctx *gin.Context) {
 		return
 	}
 
-	updatedBloodCountValue, err := h.services.BloodCountValue.UpdateBloodCountValue(bloodCountValue)
+	err := h.services.BloodCountValue.UpdateBloodCountValue(bloodCountValue)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedBloodCountValue)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteBloodCountValue godoc
@@ -158,7 +153,7 @@ func (h *Handler) UpdateBloodCountValue(ctx *gin.Context) {
 // @Param disease_id path string true "Disease ID"
 // @Param blood_count_id path string true "Blood count ID"
 // @Produce json
-// @Success 200 {object} BloodCountValueResponse "Deleted blood count value"
+// @Success 200 {object} string "Deleted blood count value data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /blood-count-value/{disease_id}/{blood_count_id} [delete]
 func (h *Handler) DeleteBloodCountValue(ctx *gin.Context) {
@@ -171,5 +166,5 @@ func (h *Handler) DeleteBloodCountValue(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, BloodCountValueResponse{DiseaseId: diseaseId, BloodCountId: bloodCountId})
+	ctx.JSON(http.StatusOK, "deleted")
 }

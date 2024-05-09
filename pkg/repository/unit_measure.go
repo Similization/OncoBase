@@ -16,16 +16,25 @@ func NewUnitMeasureRepository(db *sqlx.DB) *UnitMeasureRepository {
 }
 
 // Create unit measure in database and get him from database
-func (r *UnitMeasureRepository) CreateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
-	var createdUnitMeasure model.UnitMeasure
-	query := fmt.Sprintf("INSERT INTO %s (id, shorthand, full_text, global) VALUES ($1, $2, $3, $4) RETURNING *", unitMeasureTable)
-	err := r.db.Get(&createdUnitMeasure, query,
+func (r *UnitMeasureRepository) CreateUnitMeasure(unitMeasure model.UnitMeasure) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, shorthand, full_text, global) VALUES ($1, $2, $3, $4)", unitMeasureTable)
+	_, err = r.db.Exec(query,
 		unitMeasure.Id,
 		unitMeasure.Shorthand,
 		unitMeasure.FullText,
 		unitMeasure.Global,
 	)
-	return createdUnitMeasure, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get unit measure list from database
@@ -45,21 +54,40 @@ func (r *UnitMeasureRepository) GetUnitMeasureById(id string) (model.UnitMeasure
 }
 
 // Update unit measure data in database
-func (r *UnitMeasureRepository) UpdateUnitMeasure(unitMeasure model.UnitMeasure) (model.UnitMeasure, error) {
-	var updatedUnitMeasure model.UnitMeasure
+func (r *UnitMeasureRepository) UpdateUnitMeasure(unitMeasure model.UnitMeasure) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("UPDATE %s SET shorthand=$2, full_text=$3, global=$4 WHERE id=$1 RETURNING *", unitMeasureTable)
-	err := r.db.Get(&updatedUnitMeasure, query,
+	_, err = r.db.Exec(query,
 		unitMeasure.Id,
 		unitMeasure.Shorthand,
 		unitMeasure.FullText,
 		unitMeasure.Global,
 	)
-	return updatedUnitMeasure, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete unit measure data from database
 func (r *UnitMeasureRepository) DeleteUnitMeasure(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", unitMeasureTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

@@ -8,11 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProcedureBloodCountResponse struct {
-	ProcedureId  int    `json:"procedure_id"`
-	BloodCountId string `json:"blood_count_id"`
-}
-
 // CreateProcedureBloodCount godoc
 // @Summary Create procedure blood count
 // @Description Creates a new procedure blood count entry.
@@ -20,7 +15,7 @@ type ProcedureBloodCountResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body model.ProcedureBloodCount true "Procedure blood count data"
-// @Success 200 {object} model.ProcedureBloodCount "Created procedure blood count data"
+// @Success 200 {object} string "Created procedure blood count data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /procedure-blood-count [post]
@@ -32,13 +27,13 @@ func (h *Handler) CreateProcedureBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	createdProcedureBloodCount, err := h.services.ProcedureBloodCount.CreateProcedureBloodCount(procedureBloodCount)
+	err := h.services.ProcedureBloodCount.CreateProcedureBloodCount(procedureBloodCount)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdProcedureBloodCount)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetProcedureBloodCountList godoc
@@ -139,7 +134,7 @@ func (h *Handler) GetProcedureBloodCountById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.ProcedureBloodCount true "Procedure blood count data"
-// @Success 200 {object} model.ProcedureBloodCount "Updated procedure blood count data"
+// @Success 200 {object} string "Updated procedure blood count data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /procedure-blood-count [put]
@@ -151,13 +146,13 @@ func (h *Handler) UpdateProcedureBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	updatedProcedureBloodCount, err := h.services.ProcedureBloodCount.UpdateProcedureBloodCount(procedureBloodCount)
+	err := h.services.ProcedureBloodCount.UpdateProcedureBloodCount(procedureBloodCount)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedProcedureBloodCount)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteProcedureBloodCount godoc
@@ -167,7 +162,7 @@ func (h *Handler) UpdateProcedureBloodCount(ctx *gin.Context) {
 // @Produce json
 // @Param procedure_id path string true "Procedure ID"
 // @Param blood_count_id path string true "Blood count ID"
-// @Success 200 {string} ProcedureBloodCountResponse "Procedure blood count entry deleted"
+// @Success 200 {string} string "Deleted procedure blood count data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /procedure-blood-count/procedures/{procedure_id}/blood-counts/{blood_count_id} [delete]
 func (h *Handler) DeleteProcedureBloodCount(ctx *gin.Context) {
@@ -184,5 +179,5 @@ func (h *Handler) DeleteProcedureBloodCount(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, ProcedureBloodCountResponse{ProcedureId: procedureId, BloodCountId: bloodCountId})
+	ctx.JSON(http.StatusOK, "deleted")
 }

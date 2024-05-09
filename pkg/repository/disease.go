@@ -16,14 +16,23 @@ func NewDiseaseRepository(db *sqlx.DB) *DiseaseRepository {
 }
 
 // Create disease in database and get it from database
-func (r *DiseaseRepository) CreateDisease(disease model.Disease) (model.Disease, error) {
-	var createdDisease model.Disease
-	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2) RETURNING *", diseaseTable)
-	err := r.db.Get(&createdDisease, query,
+func (r *DiseaseRepository) CreateDisease(disease model.Disease) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2)", diseaseTable)
+	_, err = r.db.Exec(query,
 		disease.Id,
 		disease.Description,
 	)
-	return createdDisease, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Get disease list from database
@@ -43,19 +52,38 @@ func (r *DiseaseRepository) GetDiseaseById(id string) (model.Disease, error) {
 }
 
 // Update disease data in database
-func (r *DiseaseRepository) UpdateDisease(disease model.Disease) (model.Disease, error) {
-	var updatedDisease model.Disease
-	query := fmt.Sprintf("UPDATE %s SET description=$2 WHERE id=$1 RETURNING *", diseaseTable)
-	err := r.db.Get(&updatedDisease, query,
+func (r *DiseaseRepository) UpdateDisease(disease model.Disease) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET description=$2 WHERE id=$1", diseaseTable)
+	_, err = r.db.Exec(query,
 		disease.Id,
 		disease.Description,
 	)
-	return updatedDisease, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete disease data from database
 func (r *DiseaseRepository) DeleteDisease(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", diseaseTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

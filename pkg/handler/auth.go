@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.AuthUser true "User credentials"
-// @Success 200 {object} string "Authentication token"
+// @Success 200 {object} TokenResponse "Authentication token"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /auth/login [post]
@@ -32,9 +32,7 @@ func (h *Handler) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"token": token,
-	})
+	ctx.JSON(http.StatusOK, TokenResponse{Token: token})
 }
 
 // Registry godoc
@@ -44,7 +42,7 @@ func (h *Handler) LogIn(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user body model.User true "User data"
-// @Success 200 {object} string "User email"
+// @Success 200 {object} IdResponse "User id"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /auth/registry [post]
@@ -56,15 +54,13 @@ func (h *Handler) Registry(ctx *gin.Context) {
 		return
 	}
 
-	email, err := h.services.Authorization.CreateUser(user)
+	id, err := h.services.Authorization.CreateUser(user)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"email": email,
-	})
+	ctx.JSON(http.StatusOK, IdResponse{Id: id})
 }
 
 // LogOut godoc

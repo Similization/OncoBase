@@ -35,10 +35,10 @@ func TestRegistry(t *testing.T) {
 				Role:     "doctor",
 			},
 			mockBehavior: func(s *mock.MockAuthorization, user model.User) {
-				s.EXPECT().CreateUser(user).Return("user_email", nil)
+				s.EXPECT().CreateUser(user).Return(1, nil)
 			},
 			expectedStatus: 200,
-			expectedBody:   `{"email":"user_email"}`,
+			expectedBody:   `{"id":1}`,
 		},
 		{
 			name:           "Empty fields",
@@ -56,7 +56,7 @@ func TestRegistry(t *testing.T) {
 				Role:     "doctor",
 			},
 			mockBehavior: func(s *mock.MockAuthorization, user model.User) {
-				s.EXPECT().CreateUser(user).Return("", errors.New("Internal server error"))
+				s.EXPECT().CreateUser(user).Return(0, errors.New("Internal server error"))
 			},
 			expectedStatus: 500,
 			expectedBody:   `{"message":"Internal server error"}`,

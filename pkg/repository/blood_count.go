@@ -15,10 +15,14 @@ func NewBloodCountRepository(db *sqlx.DB) *BloodCountRepository {
 	return &BloodCountRepository{db: db}
 }
 
-func (r *BloodCountRepository) CreateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error) {
-	var createdBloodCount model.BloodCount
-	query := fmt.Sprintf("INSERT INTO %s (id, description, min_normal_value, max_normal_value, min_possible_value, max_possible_value, measure_code) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", bloodCountTable)
-	err := r.db.Get(&createdBloodCount, query,
+func (r *BloodCountRepository) CreateBloodCount(bloodCount model.BloodCount) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("INSERT INTO %s (id, description, min_normal_value, max_normal_value, min_possible_value, max_possible_value, measure_code) VALUES ($1, $2, $3, $4, $5, $6, $7)", bloodCountTable)
+	_, err = r.db.Exec(query,
 		bloodCount.Id,
 		bloodCount.Description,
 		bloodCount.MinNormalValue,
@@ -27,7 +31,11 @@ func (r *BloodCountRepository) CreateBloodCount(bloodCount model.BloodCount) (mo
 		bloodCount.MaxPossibleValue,
 		bloodCount.MeasureCode,
 	)
-	return createdBloodCount, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 func (r *BloodCountRepository) GetBloodCountList() ([]model.BloodCount, error) {
@@ -44,10 +52,14 @@ func (r *BloodCountRepository) GetBloodCountById(id string) (model.BloodCount, e
 	return bloodCount, err
 }
 
-func (r *BloodCountRepository) UpdateBloodCount(bloodCount model.BloodCount) (model.BloodCount, error) {
-	var updatedBloodCount model.BloodCount
-	query := fmt.Sprintf("UPDATE %s SET description=$1, min_normal_value=$2, max_normal_value=$3, min_possible_value=$4, max_possible_value=$5, measure_code=$6 WHERE id=$7 RETURNING *", bloodCountTable)
-	err := r.db.Get(&updatedBloodCount, query,
+func (r *BloodCountRepository) UpdateBloodCount(bloodCount model.BloodCount) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET description=$1, min_normal_value=$2, max_normal_value=$3, min_possible_value=$4, max_possible_value=$5, measure_code=$6 WHERE id=$7", bloodCountTable)
+	_, err = r.db.Exec(query,
 		bloodCount.Description,
 		bloodCount.MinNormalValue,
 		bloodCount.MaxNormalValue,
@@ -56,11 +68,25 @@ func (r *BloodCountRepository) UpdateBloodCount(bloodCount model.BloodCount) (mo
 		bloodCount.MeasureCode,
 		bloodCount.Id,
 	)
-	return bloodCount, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 func (r *BloodCountRepository) DeleteBloodCount(id string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", bloodCountTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }

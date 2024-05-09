@@ -5,6 +5,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+type TokenResponse struct {
+	Token string `json:"token"`
+}
+
+type IdResponse struct {
+	Id int `json:"id"`
+}
+
 // ErrorResponse represents an error response sent to the client.
 type ErrorResponse struct {
 	Message string `json:"message"`

@@ -16,10 +16,15 @@ func NewDoctorRepository(db *sqlx.DB) *DoctorRepository {
 }
 
 // Create doctor in database and get him from database
-func (r *DoctorRepository) CreateDoctor(doctor model.Doctor) (model.Doctor, error) {
-	var createdDoctor model.Doctor
-	query := fmt.Sprintf("INSERT INTO %s (first_name, middle_name, last_name, qualification, phone, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *", doctorTable)
-	err := r.db.Get(&createdDoctor, query,
+func (r *DoctorRepository) CreateDoctor(doctor model.Doctor) (int, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+
+	var doctorId int
+	query := fmt.Sprintf("INSERT INTO %s (first_name, middle_name, last_name, qualification, phone, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", doctorTable)
+	row := r.db.QueryRow(query,
 		doctor.FirstName,
 		doctor.MiddleName,
 		doctor.LastName,
@@ -27,7 +32,14 @@ func (r *DoctorRepository) CreateDoctor(doctor model.Doctor) (model.Doctor, erro
 		doctor.Phone,
 		doctor.UserId,
 	)
-	return createdDoctor, err
+
+	err = row.Scan(&doctorId)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	return doctorId, tx.Commit()
 }
 
 // Get doctor list from database
@@ -47,10 +59,14 @@ func (r *DoctorRepository) GetDoctorById(id int) (model.Doctor, error) {
 }
 
 // Update doctor data in database
-func (r *DoctorRepository) UpdateDoctor(doctor model.Doctor) (model.Doctor, error) {
-	var updatedDoctor model.Doctor
-	query := fmt.Sprintf("UPDATE %s SET first_name=$1, middle_name=$2, last_name=$3, qualification=$4, phone=$5, user_id=$6 WHERE id=$7 RETURNING *", doctorTable)
-	err := r.db.Get(&updatedDoctor, query,
+func (r *DoctorRepository) UpdateDoctor(doctor model.Doctor) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET first_name=$1, middle_name=$2, last_name=$3, qualification=$4, phone=$5, user_id=$6 WHERE id=$7", doctorTable)
+	_, err = r.db.Exec(query,
 		doctor.FirstName,
 		doctor.MiddleName,
 		doctor.LastName,
@@ -59,12 +75,27 @@ func (r *DoctorRepository) UpdateDoctor(doctor model.Doctor) (model.Doctor, erro
 		doctor.UserId,
 		doctor.Id,
 	)
-	return updatedDoctor, err
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // Delete doctor data from database
 func (r *DoctorRepository) DeleteDoctor(id int) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", doctorTable)
-	_, err := r.db.Exec(query, id)
-	return err
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }

@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body model.PatientCourse true "Patient course data"
-// @Success 200 {object} model.PatientCourse "Created patient course data"
+// @Success 200 {object} IdResponse "Created patient course data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-courses [post]
@@ -27,13 +27,13 @@ func (h *Handler) CreatePatientCourse(ctx *gin.Context) {
 		return
 	}
 
-	createdPatientCourse, err := h.services.PatientCourse.CreatePatientCourse(patientCourse)
+	id, err := h.services.PatientCourse.CreatePatientCourse(patientCourse)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdPatientCourse)
+	ctx.JSON(http.StatusOK, IdResponse{Id: id})
 }
 
 // GetPatientCourseList godoc
@@ -86,7 +86,7 @@ func (h *Handler) GetPatientCourseById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body model.PatientCourse true "Patient course data"
-// @Success 200 {object} model.PatientCourse "Updated patient course data"
+// @Success 200 {object} string "Updated patient course data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-courses [put]
@@ -98,13 +98,13 @@ func (h *Handler) UpdatePatientCourse(ctx *gin.Context) {
 		return
 	}
 
-	updatedPatientCourse, err := h.services.PatientCourse.UpdatePatientCourse(patientCourse)
+	err := h.services.PatientCourse.UpdatePatientCourse(patientCourse)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedPatientCourse)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeletePatientCourse godoc
@@ -113,7 +113,7 @@ func (h *Handler) UpdatePatientCourse(ctx *gin.Context) {
 // @Tags PatientCourse
 // @Produce json
 // @Param id path string true "Patient course ID"
-// @Success 200 {string} string "Patient course ID deleted"
+// @Success 200 {string} string "Delete patient course data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-courses/{id} [delete]
 func (h *Handler) DeletePatientCourse(ctx *gin.Context) {
@@ -129,5 +129,5 @@ func (h *Handler) DeletePatientCourse(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

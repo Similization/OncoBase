@@ -14,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param course body model.Course true "Course data"
-// @Success 200 {object} model.Course "Created course details"
+// @Success 200 {object} string "Created course data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /courses [post]
@@ -26,13 +26,13 @@ func (h *Handler) CreateCourse(ctx *gin.Context) {
 		return
 	}
 
-	createdCourse, err := h.services.Course.CreateCourse(course)
+	err := h.services.Course.CreateCourse(course)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, createdCourse)
+	ctx.JSON(http.StatusOK, "created")
 }
 
 // GetCourseList godoc
@@ -81,7 +81,7 @@ func (h *Handler) GetCourseById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param course body model.Course true "Updated course data"
-// @Success 200 {object} model.Course "Updated course details"
+// @Success 200 {object} string "Updated course data"
 // @Failure 400 {object} ErrorResponse "Bad request"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /courses [put]
@@ -93,13 +93,13 @@ func (h *Handler) UpdateCourse(ctx *gin.Context) {
 		return
 	}
 
-	updatedCourse, err := h.services.Course.UpdateCourse(course)
+	err := h.services.Course.UpdateCourse(course)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, updatedCourse)
+	ctx.JSON(http.StatusOK, "updated")
 }
 
 // DeleteCourse godoc
@@ -108,7 +108,7 @@ func (h *Handler) UpdateCourse(ctx *gin.Context) {
 // @Tags Courses
 // @Produce json
 // @Param id path string true "Course ID"
-// @Success 200 {object} string "ID of deleted course"
+// @Success 200 {object} string "Deleted course data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /courses/{id} [delete]
 func (h *Handler) DeleteCourse(ctx *gin.Context) {
@@ -120,5 +120,5 @@ func (h *Handler) DeleteCourse(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, id)
+	ctx.JSON(http.StatusOK, "deleted")
 }

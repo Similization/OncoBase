@@ -161,7 +161,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Account settings",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     "401": {
@@ -201,7 +201,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Authentication token",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handler.TokenResponse"
                         }
                     },
                     "400": {
@@ -265,9 +265,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "User email",
+                        "description": "User id",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/handler.IdResponse"
                         }
                     },
                     "400": {
@@ -363,7 +363,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated blood count data",
                         "schema": {
-                            "$ref": "#/definitions/model.BloodCount"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -407,7 +407,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created blood count data",
                         "schema": {
-                            "$ref": "#/definitions/model.BloodCount"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -481,9 +481,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated blood count value",
+                        "description": "Updated blood count value data",
                         "schema": {
-                            "$ref": "#/definitions/model.BloodCountValue"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -525,9 +525,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Created blood count value",
+                        "description": "Created blood count value data",
                         "schema": {
-                            "$ref": "#/definitions/model.BloodCountValue"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -695,9 +695,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Deleted blood count value",
+                        "description": "Deleted blood count value data",
                         "schema": {
-                            "$ref": "#/definitions/handler.BloodCountValueResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -763,7 +763,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Blood count ID",
+                        "description": "Deleted blood count data",
                         "schema": {
                             "type": "string"
                         }
@@ -835,7 +835,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated course procedure data",
                         "schema": {
-                            "$ref": "#/definitions/model.CourseProcedure"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -879,7 +879,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created course procedure data",
                         "schema": {
-                            "$ref": "#/definitions/model.CourseProcedure"
+                            "$ref": "#/definitions/handler.IdResponse"
                         }
                     },
                     "400": {
@@ -951,7 +951,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Course procedure ID",
+                        "description": "Deleted course procedure data",
                         "schema": {
                             "type": "string"
                         }
@@ -1018,9 +1018,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated course details",
+                        "description": "Updated course data",
                         "schema": {
-                            "$ref": "#/definitions/model.Course"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1062,9 +1062,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Created course details",
+                        "description": "Created course data",
                         "schema": {
-                            "$ref": "#/definitions/model.Course"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1136,7 +1136,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "ID of deleted course",
+                        "description": "Deleted course data",
                         "schema": {
                             "type": "string"
                         }
@@ -1203,9 +1203,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Created diagnosis",
+                        "description": "Created diagnosis data",
                         "schema": {
-                            "$ref": "#/definitions/model.Diagnosis"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1289,9 +1289,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated diagnosis",
+                        "description": "Updated diagnosis data",
                         "schema": {
-                            "$ref": "#/definitions/model.Diagnosis"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1328,7 +1328,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "ID of deleted diagnosis",
+                        "description": "Deleted diagnosis data",
                         "schema": {
                             "type": "string"
                         }
@@ -1400,7 +1400,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated disease data",
                         "schema": {
-                            "$ref": "#/definitions/model.Disease"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1444,7 +1444,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created disease data",
                         "schema": {
-                            "$ref": "#/definitions/model.Disease"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1516,7 +1516,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Disease ID",
+                        "description": "Deleted disease data",
                         "schema": {
                             "type": "string"
                         }
@@ -1558,7 +1558,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created doctor-patient relationship data",
                         "schema": {
-                            "$ref": "#/definitions/model.DoctorPatient"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1647,7 +1647,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Deleted doctor-patient relationship data",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -1717,7 +1717,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated doctor data",
                         "schema": {
-                            "$ref": "#/definitions/model.Doctor"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1761,7 +1761,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created doctor data",
                         "schema": {
-                            "$ref": "#/definitions/model.Doctor"
+                            "$ref": "#/definitions/handler.IdResponse"
                         }
                     },
                     "400": {
@@ -1833,7 +1833,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Doctor ID deleted",
+                        "description": "Deleted doctor data",
                         "schema": {
                             "type": "string"
                         }
@@ -1905,7 +1905,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated drug data",
                         "schema": {
-                            "$ref": "#/definitions/model.Drug"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1949,7 +1949,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created drug data",
                         "schema": {
-                            "$ref": "#/definitions/model.Drug"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2021,7 +2021,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Drug ID deleted",
+                        "description": "Deleted drug data",
                         "schema": {
                             "type": "string"
                         }
@@ -2093,7 +2093,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated patient course data",
                         "schema": {
-                            "$ref": "#/definitions/model.PatientCourse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2137,7 +2137,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created patient course data",
                         "schema": {
-                            "$ref": "#/definitions/model.PatientCourse"
+                            "$ref": "#/definitions/handler.IdResponse"
                         }
                     },
                     "400": {
@@ -2209,7 +2209,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Patient course ID deleted",
+                        "description": "Delete patient course data",
                         "schema": {
                             "type": "string"
                         }
@@ -2281,7 +2281,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated patient disease data",
                         "schema": {
-                            "$ref": "#/definitions/model.PatientDisease"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2325,7 +2325,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created patient disease data",
                         "schema": {
-                            "$ref": "#/definitions/model.PatientDisease"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2493,7 +2493,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Patient disease ID deleted",
+                        "description": "Deleted patient disease data",
                         "schema": {
                             "type": "string"
                         }
@@ -2565,7 +2565,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated patient data",
                         "schema": {
-                            "$ref": "#/definitions/model.Patient"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2609,7 +2609,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created patient data",
                         "schema": {
-                            "$ref": "#/definitions/model.Patient"
+                            "$ref": "#/definitions/handler.IdResponse"
                         }
                     },
                     "400": {
@@ -2681,7 +2681,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Patient ID deleted",
+                        "description": "Deleted patient data",
                         "schema": {
                             "type": "string"
                         }
@@ -2753,7 +2753,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated procedure blood count data",
                         "schema": {
-                            "$ref": "#/definitions/model.ProcedureBloodCount"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2797,7 +2797,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created procedure blood count data",
                         "schema": {
-                            "$ref": "#/definitions/model.ProcedureBloodCount"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -2965,7 +2965,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Procedure blood count entry deleted",
+                        "description": "Deleted procedure blood count data",
                         "schema": {
                             "type": "string"
                         }
@@ -3034,7 +3034,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Updated unit measure data",
                         "schema": {
-                            "$ref": "#/definitions/model.UnitMeasure"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -3078,7 +3078,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Created unit measure data",
                         "schema": {
-                            "$ref": "#/definitions/model.UnitMeasure"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -3150,7 +3150,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Unit measure deleted",
+                        "description": "Deleted unit measure data",
                         "schema": {
                             "type": "string"
                         }
@@ -3166,21 +3166,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.BloodCountValueResponse": {
-            "type": "object",
-            "properties": {
-                "blood_count_id": {
-                    "type": "string"
-                },
-                "disease_id": {
-                    "type": "string"
-                }
-            }
-        },
         "handler.ErrorResponse": {
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.IdResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
                     "type": "string"
                 }
             }

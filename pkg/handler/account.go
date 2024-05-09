@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,14 +13,11 @@ type AccountHandlers struct {
 // @Tags Account
 // @Produce json
 // @Security ApiKeyAuth
-// @Success 200 {object} int "Account settings"
+// @Success 200 {object} string "Account settings"
 // @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Router /account/settings [get]
 func (h *AccountHandlers) Settings(ctx *gin.Context) {
-	id, _ := ctx.Get(userContext)
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
+
 }
 
 // BloodCount godoc
