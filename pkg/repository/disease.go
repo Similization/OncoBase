@@ -22,9 +22,14 @@ func (r *DiseaseRepository) CreateDisease(disease model.Disease) error {
 		return err
 	}
 
+	var id interface{} = disease.Id
+	if disease.Id == "" {
+		id = nil
+	}
+
 	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2)", diseaseTable)
 	_, err = r.db.Exec(query,
-		disease.Id,
+		id,
 		disease.Description,
 	)
 	if err != nil {

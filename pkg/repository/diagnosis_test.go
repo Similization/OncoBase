@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"med/pkg/model"
 	"testing"
@@ -12,6 +14,8 @@ import (
 )
 
 func TestCreateDiagnosis(t *testing.T) {
+	a := sql.NullString{}
+	fmt.Print("a", a)
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -45,16 +49,15 @@ func TestCreateDiagnosis(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Empty Id",
+			name: "Empty required field",
 			model: model.Diagnosis{
-				Id:          "",
 				Description: "text",
 			},
 			mockBehavior: func(model model.Diagnosis) {
 				mock.ExpectBegin()
 				mock.ExpectExec("INSERT INTO onco_base.diagnosis").
-					WithArgs(model.Id, model.Description).
-					WillReturnResult(sqlmock.NewResult(1, 1))
+					WithArgs(nil, model.Description).
+					WillReturnError(errors.New("some error occured"))
 				mock.ExpectRollback()
 			},
 			expectErr: true,
@@ -71,6 +74,7 @@ func TestCreateDiagnosis(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -101,7 +105,7 @@ func TestGetDiagnosisList(t *testing.T) {
 					AddRow("2", "description2").
 					AddRow("3", "description3")
 
-				mock.ExpectQuery(`SELECT \* FROM onco_base.diagnosis`).
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis").
 					WillReturnRows(rows)
 			},
 			expectResult: []model.Diagnosis{
@@ -112,9 +116,9 @@ func TestGetDiagnosisList(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Select return error",
+			name: "Select error occured",
 			mockBehavior: func() {
-				mock.ExpectQuery(`SELECT \* FROM onco_base.diagnosis`).
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis").
 					WillReturnError(errors.New("some error occured"))
 			},
 			expectErr: true,
@@ -159,7 +163,7 @@ func TestGetDiagnosisById(t *testing.T) {
 			mockBehavior: func(id string) {
 				row := sqlmock.NewRows([]string{"id", "description"}).AddRow("1", "description1")
 
-				mock.ExpectQuery(`SELECT \* FROM onco_base.diagnosis WHERE id=`).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis WHERE id=").WithArgs(id).WillReturnRows(row)
 			},
 			expectResult: model.Diagnosis{Id: "1", Description: "description1"},
 			expectErr:    false,
@@ -169,7 +173,7 @@ func TestGetDiagnosisById(t *testing.T) {
 			mockBehavior: func(id string) {
 				row := sqlmock.NewRows([]string{"id", "description"})
 
-				mock.ExpectQuery(`SELECT \* FROM onco_base.diagnosis WHERE id=`).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis WHERE id=(.+)").WithArgs(id).WillReturnRows(row)
 			},
 			expectErr: true,
 		},
@@ -212,17 +216,28 @@ func TestUpdateDiagnosis(t *testing.T) {
 		{
 			name: "OK",
 			data: model.Diagnosis{
-				Id:          "id",
+				Id:          "1",
 				Description: "new description",
 			},
-			mockBehavior: func(model.Diagnosis) {
+			mockBehavior: func(model model.Diagnosis) {
 				mock.ExpectBegin()
 				mock.ExpectExec("UPDATE onco_base.diagnosis SET (.+) WHERE id=(.+)").
-					WithArgs("id", "new description").
+					WithArgs(model.Id, model.Description).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
 			expectErr: false,
+		},
+		{
+			name: "Update error occured",
+			mockBehavior: func(model model.Diagnosis) {
+				mock.ExpectBegin()
+				mock.ExpectExec("UPDATE onco_base.diagnosis SET (.+) WHERE id=(.+)").
+					WithArgs(model.Id, model.Description).
+					WillReturnError(errors.New("error occured"))
+				mock.ExpectRollback()
+			},
+			expectErr: true,
 		},
 	}
 
@@ -236,6 +251,7 @@ func TestUpdateDiagnosis(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -265,21 +281,21 @@ func TestDeleteDiagnosis(t *testing.T) {
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
 				mock.ExpectExec("DELETE FROM onco_base.diagnosis WHERE id=(.+)").
-					WithArgs("1").
+					WithArgs(id).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
 			expectErr: false,
 		},
 		{
-			name: "Delete return error",
+			name: "Delete error occured",
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
 				mock.ExpectExec("DELETE FROM onco_base.diagnosis WHERE id=(.+)").
-					WithArgs("1").
+					WithArgs(id).
 					WillReturnError(errors.New("some error occured"))
-				mock.ExpectCommit()
+				mock.ExpectRollback()
 			},
 			expectErr: true,
 		},
@@ -295,6 +311,7 @@ func TestDeleteDiagnosis(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateDisease(t *testing.T) {
+func TestCreateDrug(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -19,26 +19,41 @@ func TestCreateDisease(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiseaseRepository(sqlxDB)
+	r := NewDrugRepository(sqlxDB)
 
-	type mockBehavior func(model model.Disease)
+	type mockBehavior func(model model.Drug)
 
 	testTable := []struct {
 		name         string
-		model        model.Disease
+		model        model.Drug
 		mockBehavior mockBehavior
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			model: model.Disease{
-				Id:          "1",
-				Description: "text",
+			model: model.Drug{
+				Id:                "1",
+				Name:              "name",
+				DosageForm:        "form",
+				ActiveIngredients: "ingridients",
+				Country:           "cou",
+				Manufacturer:      "man",
+				PrescribingOrder:  "ord",
+				Description:       "text",
 			},
-			mockBehavior: func(model model.Disease) {
+			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.disease").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("INSERT INTO onco_base.drug").
+					WithArgs(
+						model.Id,
+						model.Name,
+						model.DosageForm,
+						model.ActiveIngredients,
+						model.Country,
+						model.Manufacturer,
+						model.PrescribingOrder,
+						model.Description,
+					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
@@ -46,13 +61,19 @@ func TestCreateDisease(t *testing.T) {
 		},
 		{
 			name: "Empty required field",
-			model: model.Disease{
-				Description: "text",
-			},
-			mockBehavior: func(model model.Disease) {
+			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.disease").
-					WithArgs(nil, model.Description).
+				mock.ExpectExec("INSERT INTO onco_base.drug").
+					WithArgs(
+						nil,
+						model.Name,
+						model.DosageForm,
+						model.ActiveIngredients,
+						model.Country,
+						model.Manufacturer,
+						model.PrescribingOrder,
+						model.Description,
+					).
 					WillReturnError(errors.New("some error occured"))
 				mock.ExpectRollback()
 			},
@@ -63,7 +84,7 @@ func TestCreateDisease(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.model)
-			err := r.CreateDisease(testCase.model)
+			err := r.CreateDrug(testCase.model)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -75,7 +96,7 @@ func TestCreateDisease(t *testing.T) {
 	}
 }
 
-func TestGetDiseaseList(t *testing.T) {
+func TestGetDrugList(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -83,38 +104,53 @@ func TestGetDiseaseList(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiseaseRepository(sqlxDB)
+	r := NewDrugRepository(sqlxDB)
 
 	type mockBehavior func()
 
 	testTable := []struct {
 		name         string
 		mockBehavior mockBehavior
-		expectResult []model.Disease
+		expectResult []model.Drug
 		expectErr    bool
 	}{
 		{
 			name: "OK",
 			mockBehavior: func() {
-				rows := sqlmock.NewRows([]string{"id", "description"}).
-					AddRow("1", "description1").
-					AddRow("2", "description2").
-					AddRow("3", "description3")
+				rows := sqlmock.NewRows([]string{
+					"id", "name", "dosage_form", "active_ingredients", "country", "manufacturer", "prescribing_order", "description",
+				}).
+					AddRow("1", "name", "form", "ingridients", "cou", "man", "ord", "text").
+					AddRow("2", "name2", "form2", "ingridients2", "", "", "", "text2")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.drug").
 					WillReturnRows(rows)
 			},
-			expectResult: []model.Disease{
-				{Id: "1", Description: "description1"},
-				{Id: "2", Description: "description2"},
-				{Id: "3", Description: "description3"},
+			expectResult: []model.Drug{
+				{
+					Id:                "1",
+					Name:              "name",
+					DosageForm:        "form",
+					ActiveIngredients: "ingridients",
+					Country:           "cou",
+					Manufacturer:      "man",
+					PrescribingOrder:  "ord",
+					Description:       "text",
+				},
+				{
+					Id:                "2",
+					Name:              "name2",
+					DosageForm:        "form2",
+					ActiveIngredients: "ingridients2",
+					Description:       "text2",
+				},
 			},
 			expectErr: false,
 		},
 		{
 			name: "Select return error",
 			mockBehavior: func() {
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.drug").
 					WillReturnError(errors.New("some error occured"))
 			},
 			expectErr: true,
@@ -124,7 +160,7 @@ func TestGetDiseaseList(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior()
-			res, err := r.GetDiseaseList()
+			res, err := r.GetDrugList()
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -137,7 +173,7 @@ func TestGetDiseaseList(t *testing.T) {
 	}
 }
 
-func TestGetDiseaseById(t *testing.T) {
+func TestGetDrugById(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -145,32 +181,44 @@ func TestGetDiseaseById(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiseaseRepository(sqlxDB)
+	r := NewDrugRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
 	testTable := []struct {
 		name         string
 		mockBehavior mockBehavior
-		expectResult model.Disease
+		expectResult model.Drug
 		expectErr    bool
 	}{
 		{
 			name: "OK",
 			mockBehavior: func(id string) {
-				row := sqlmock.NewRows([]string{"id", "description"}).AddRow("1", "description1")
+				row := sqlmock.NewRows([]string{
+					"id", "name", "dosage_form", "active_ingredients", "country", "manufacturer", "prescribing_order", "description",
+				}).
+					AddRow("1", "name", "form", "ingridients", "cou", "man", "ord", "text")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease WHERE id=").WithArgs(id).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.drug WHERE id=(.+)").WithArgs(id).WillReturnRows(row)
 			},
-			expectResult: model.Disease{Id: "1", Description: "description1"},
-			expectErr:    false,
+			expectResult: model.Drug{
+				Id:                "1",
+				Name:              "name",
+				DosageForm:        "form",
+				ActiveIngredients: "ingridients",
+				Country:           "cou",
+				Manufacturer:      "man",
+				PrescribingOrder:  "ord",
+				Description:       "text",
+			},
+			expectErr: false,
 		},
 		{
 			name: "No records",
 			mockBehavior: func(id string) {
 				row := sqlmock.NewRows([]string{"id", "description"})
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease WHERE id=").WithArgs(id).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.drug WHERE id=(.+)").WillReturnRows(row)
 			},
 			expectErr: true,
 		},
@@ -179,7 +227,7 @@ func TestGetDiseaseById(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.expectResult.Id)
-			res, err := r.GetDiseaseById(testCase.expectResult.Id)
+			res, err := r.GetDrugById(testCase.expectResult.Id)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -192,7 +240,7 @@ func TestGetDiseaseById(t *testing.T) {
 	}
 }
 
-func TestUpdateDisease(t *testing.T) {
+func TestUpdateDrug(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -200,27 +248,42 @@ func TestUpdateDisease(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiseaseRepository(sqlxDB)
+	r := NewDrugRepository(sqlxDB)
 
-	type mockBehavior func(model model.Disease)
+	type mockBehavior func(model model.Drug)
 
 	testTable := []struct {
 		name         string
-		data         model.Disease
+		data         model.Drug
 		mockBehavior mockBehavior
-		expectResult model.Disease
+		expectResult model.Drug
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			data: model.Disease{
-				Id:          "1",
-				Description: "new description",
+			data: model.Drug{
+				Id:                "1",
+				Name:              "name",
+				DosageForm:        "form",
+				ActiveIngredients: "ingridients",
+				Country:           "cou",
+				Manufacturer:      "man",
+				PrescribingOrder:  "ord",
+				Description:       "text",
 			},
-			mockBehavior: func(model model.Disease) {
+			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.disease SET (.+) WHERE id=(.+)").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("UPDATE onco_base.drug SET (.+) WHERE id=(.+)").
+					WithArgs(
+						model.Id,
+						model.Name,
+						model.DosageForm,
+						model.ActiveIngredients,
+						model.Country,
+						model.Manufacturer,
+						model.PrescribingOrder,
+						model.Description,
+					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
@@ -228,10 +291,19 @@ func TestUpdateDisease(t *testing.T) {
 		},
 		{
 			name: "Update error occured",
-			mockBehavior: func(model model.Disease) {
+			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.disease SET (.+) WHERE id=(.+)").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("UPDATE onco_base.drug SET (.+) WHERE id=(.+)").
+					WithArgs(
+						model.Id,
+						model.Name,
+						model.DosageForm,
+						model.ActiveIngredients,
+						model.Country,
+						model.Manufacturer,
+						model.PrescribingOrder,
+						model.Description,
+					).
 					WillReturnError(errors.New("error occured"))
 				mock.ExpectRollback()
 			},
@@ -242,7 +314,7 @@ func TestUpdateDisease(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.UpdateDisease(testCase.data)
+			err := r.UpdateDrug(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -254,7 +326,7 @@ func TestUpdateDisease(t *testing.T) {
 	}
 }
 
-func TestDeleteDisease(t *testing.T) {
+func TestDeleteDrug(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -262,7 +334,7 @@ func TestDeleteDisease(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiseaseRepository(sqlxDB)
+	r := NewDrugRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
@@ -270,7 +342,7 @@ func TestDeleteDisease(t *testing.T) {
 		name         string
 		data         string
 		mockBehavior mockBehavior
-		expectResult model.Disease
+		expectResult model.Drug
 		expectErr    bool
 	}{
 		{
@@ -278,7 +350,7 @@ func TestDeleteDisease(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.disease WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.drug WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
@@ -290,7 +362,7 @@ func TestDeleteDisease(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.disease WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.drug WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnError(errors.New("some error occured"))
 				mock.ExpectRollback()
@@ -302,7 +374,7 @@ func TestDeleteDisease(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.DeleteDisease(testCase.data)
+			err := r.DeleteDrug(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
