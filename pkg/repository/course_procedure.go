@@ -32,7 +32,7 @@ func (r *CourseProcedureRepository) CreateCourseProcedure(courseProcedure model.
 		courseProcedure.Result,
 	)
 
-	row.Scan(&courseProcedure)
+	err = row.Scan(&courseProcedure)
 	if err != nil {
 		tx.Rollback()
 		return 0, err

@@ -4,7 +4,7 @@ CREATE SCHEMA IF NOT EXISTS onco_base;
 
 CREATE TABLE IF NOT EXISTS onco_base.external_user
 (
-    id       SERIAL,
+    id       SERIAL       NOT NULL UNIQUE,
     email    VARCHAR(60)  NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role     VARCHAR(30)  NOT NULL,
