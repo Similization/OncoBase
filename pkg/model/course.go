@@ -1,10 +1,12 @@
 package model
 
+import "github.com/guregu/null/v5"
+
 type Course struct {
-	Id          string  `json:"id" db:"id" binding:"required"`
-	Period      int     `json:"period" db:"period" binding:"required"`
-	Frequency   float32 `json:"frequency" db:"frequency" binding:"required"`
-	Dose        float32 `json:"dose" db:"dose" binding:"required"`
-	Drug        string  `json:"drug" db:"drug" binding:"required"`
-	MeasureCode string  `json:"measure-code" db:"measure_code" binding:"required"`
+	Id          null.String `json:"id" db:"id" binding:"required"`
+	Period      null.Int    `json:"period" db:"period" binding:"required"`
+	Frequency   null.Float  `json:"frequency" db:"frequency" binding:"required"`
+	Dose        null.Float  `json:"dose" db:"dose" binding:"required"`
+	Drug        null.String `json:"drug" db:"drug" binding:"required"`
+	MeasureCode null.String `json:"measure-code" db:"measure_code" binding:"required"`
 }

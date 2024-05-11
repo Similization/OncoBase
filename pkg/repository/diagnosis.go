@@ -22,14 +22,9 @@ func (r *DiagnosisRepository) CreateDiagnosis(diagnosis model.Diagnosis) error {
 		return err
 	}
 
-	var id interface{} = diagnosis.Id
-	if diagnosis.Id == "" {
-		id = nil
-	}
-
 	query := fmt.Sprintf("INSERT INTO %s (id, description) VALUES ($1, $2)", diagnosisTable)
 	_, err = r.db.Exec(query,
-		id,
+		diagnosis.Id,
 		diagnosis.Description,
 	)
 	if err != nil {

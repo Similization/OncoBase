@@ -30,8 +30,8 @@ func GenerateJWT(user model.User) (string, error) {
 
 	// Create custom claims
 	claims := &tokenClaims{
-		UserId:   user.Id,
-		UserRole: user.Role,
+		UserId:   int(user.Id.Int64),
+		UserRole: user.Role.String,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

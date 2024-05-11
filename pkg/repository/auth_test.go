@@ -1,21 +1,18 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"med/pkg/model"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/guregu/null/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUser(t *testing.T) {
-	a := sql.NullString{}
-	fmt.Print("a", a)
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -37,9 +34,9 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "OK",
 			model: model.User{
-				Email:    "email",
-				Password: "pass",
-				Role:     "role",
+				Email:    null.StringFrom("email"),
+				Password: null.StringFrom("pass"),
+				Role:     null.StringFrom("role"),
 			},
 			mockBehavior: func(model model.User) {
 				mock.ExpectBegin()
@@ -56,14 +53,16 @@ func TestCreateUser(t *testing.T) {
 		{
 			name: "Empty required field",
 			model: model.User{
-				Password: "pass",
-				Role:     "role",
+				Password: null.StringFrom("pass"),
+				Role:     null.StringFrom("role"),
 			},
 			mockBehavior: func(model model.User) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.external_user").
+
+				row := sqlmock.NewRows([]string{"id"})
+				mock.ExpectQuery("INSERT INTO onco_base.external_user").
 					WithArgs(nil, model.Password, model.Role).
-					WillReturnError(errors.New("some error occured"))
+					WillReturnRows(row)
 				mock.ExpectRollback()
 			},
 			expectErr: true,
@@ -113,14 +112,19 @@ func TestGetUser(t *testing.T) {
 		{
 			name: "OK",
 			mockBehavior: func(email string, password string) {
-				rows := sqlmock.NewRows([]string{"id", "description"}).
+				rows := sqlmock.NewRows([]string{"id", "email", "password", "role"}).
 					AddRow(1, "email", "pass", "role")
 
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.internal_user WHERE email=(.+) AND password=(.+)").
 					WillReturnRows(rows)
 			},
-			expectResult: model.User{Id: 1, Email: "email", Password: "pass", Role: "role"},
-			expectErr:    false,
+			expectResult: model.User{
+				Id:       null.IntFrom(1),
+				Email:    null.StringFrom("email"),
+				Password: null.StringFrom("pass"),
+				Role:     null.StringFrom("role"),
+			},
+			expectErr: false,
 		},
 		{
 			name: "Select error occured",

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/guregu/null/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,8 +37,8 @@ func TestCreateDiagnosis(t *testing.T) {
 		{
 			name: "OK",
 			model: model.Diagnosis{
-				Id:          "1",
-				Description: "text",
+				Id:          null.StringFrom("1"),
+				Description: null.StringFrom("text"),
 			},
 			mockBehavior: func(model model.Diagnosis) {
 				mock.ExpectBegin()
@@ -51,7 +52,7 @@ func TestCreateDiagnosis(t *testing.T) {
 		{
 			name: "Empty required field",
 			model: model.Diagnosis{
-				Description: "text",
+				Description: null.StringFrom("text"),
 			},
 			mockBehavior: func(model model.Diagnosis) {
 				mock.ExpectBegin()
@@ -101,17 +102,26 @@ func TestGetDiagnosisList(t *testing.T) {
 			name: "OK",
 			mockBehavior: func() {
 				rows := sqlmock.NewRows([]string{"id", "description"}).
-					AddRow("1", "description1").
-					AddRow("2", "description2").
-					AddRow("3", "description3")
+					AddRow("1", "descr1").
+					AddRow("2", "descr2").
+					AddRow("3", "descr3")
 
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis").
 					WillReturnRows(rows)
 			},
 			expectResult: []model.Diagnosis{
-				{Id: "1", Description: "description1"},
-				{Id: "2", Description: "description2"},
-				{Id: "3", Description: "description3"},
+				{
+					Id:          null.StringFrom("1"),
+					Description: null.StringFrom("descr1"),
+				},
+				{
+					Id:          null.StringFrom("2"),
+					Description: null.StringFrom("descr2"),
+				},
+				{
+					Id:          null.StringFrom("3"),
+					Description: null.StringFrom("descr3"),
+				},
 			},
 			expectErr: false,
 		},
@@ -165,8 +175,11 @@ func TestGetDiagnosisById(t *testing.T) {
 
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis WHERE id=").WithArgs(id).WillReturnRows(row)
 			},
-			expectResult: model.Diagnosis{Id: "1", Description: "description1"},
-			expectErr:    false,
+			expectResult: model.Diagnosis{
+				Id:          null.StringFrom("1"),
+				Description: null.StringFrom("description1"),
+			},
+			expectErr: false,
 		},
 		{
 			name: "No records",
@@ -181,8 +194,8 @@ func TestGetDiagnosisById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			testCase.mockBehavior(testCase.expectResult.Id)
-			res, err := r.GetDiagnosisById(testCase.expectResult.Id)
+			testCase.mockBehavior(testCase.expectResult.Id.String)
+			res, err := r.GetDiagnosisById(testCase.expectResult.Id.String)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -216,8 +229,8 @@ func TestUpdateDiagnosis(t *testing.T) {
 		{
 			name: "OK",
 			data: model.Diagnosis{
-				Id:          "1",
-				Description: "new description",
+				Id:          null.StringFrom("1"),
+				Description: null.StringFrom("description1"),
 			},
 			mockBehavior: func(model model.Diagnosis) {
 				mock.ExpectBegin()

@@ -1,12 +1,14 @@
 package model
 
+import "github.com/guregu/null/v5"
+
 type Drug struct {
-	Id                string `json:"id" db:"id" binding:"required"`
-	Name              string `json:"name" db:"name" binding:"required"`
-	DosageForm        string `json:"dosage-form" db:"dosage_form" binding:"required"`
-	ActiveIngredients string `json:"active-ingredients" db:"active_ingredients" binding:"required"`
-	Country           string `json:"country" db:"country"`
-	Manufacturer      string `json:"manufacturer" db:"manufacturer"`
-	PrescribingOrder  string `json:"prescribing-order" db:"prescribing_order"`
-	Description       string `json:"description" db:"description"`
+	Id                null.String `json:"id" db:"id" binding:"required"`
+	Name              null.String `json:"name" db:"name" binding:"required"`
+	DosageForm        null.String `json:"dosage-form" db:"dosage_form" binding:"required"`
+	ActiveIngredients null.String `json:"active-ingredients" db:"active_ingredients" binding:"required"`
+	Country           null.String `json:"country" db:"country"`
+	Manufacturer      null.String `json:"manufacturer" db:"manufacturer"`
+	PrescribingOrder  null.String `json:"prescribing-order" db:"prescribing_order"`
+	Description       null.String `json:"description" db:"description"`
 }

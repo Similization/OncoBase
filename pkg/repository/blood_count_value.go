@@ -69,7 +69,7 @@ func (r *BloodCountValueRepository) UpdateBloodCountValue(bloodCountValue model.
 		return err
 	}
 
-	query := fmt.Sprintf("UPDATE %s SET coefficient=$1, description=$2 WHERE disease=$3 AND blood_count=$4 RETURNING *", bloodCountValueTable)
+	query := fmt.Sprintf("UPDATE %s SET coefficient=$1, description=$2 WHERE disease=$3 AND blood_count=$4", bloodCountValueTable)
 	_, err = r.db.Exec(query,
 		bloodCountValue.Coefficient,
 		bloodCountValue.Description,

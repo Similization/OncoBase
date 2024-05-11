@@ -1,13 +1,15 @@
 package model
 
+import "github.com/guregu/null/v5"
+
 type User struct {
-	Id       int    `json:"id" db:"id"`
-	Email    string `json:"email" binding:"required" db:"email"`
-	Password string `json:"password" binding:"required"`
-	Role     string `json:"role" binding:"required"`
+	Id       null.Int    `json:"id" db:"id"`
+	Email    null.String `json:"email" binding:"required" db:"email"`
+	Password null.String `json:"password" binding:"required"`
+	Role     null.String `json:"role" binding:"required"`
 }
 
 type AuthUser struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    null.String `json:"email" binding:"required"`
+	Password null.String `json:"password" binding:"required"`
 }

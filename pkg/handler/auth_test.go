@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"database/sql"
 	"errors"
 	model "med/pkg/model"
 	service "med/pkg/service"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/guregu/null/v5"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -30,9 +32,9 @@ func TestRegistry(t *testing.T) {
 			name:      "OK",
 			inputBody: `{"email": "user_email", "password": "pass", "role": "doctor"}`,
 			inputUser: model.User{
-				Email:    "user_email",
-				Password: "pass",
-				Role:     "doctor",
+				Email:    null.String{NullString: sql.NullString{String: "user_email", Valid: true}},
+				Password: null.String{NullString: sql.NullString{String: "pass", Valid: true}},
+				Role:     null.String{NullString: sql.NullString{String: "doctor", Valid: true}},
 			},
 			mockBehavior: func(s *mock.MockAuthorization, user model.User) {
 				s.EXPECT().CreateUser(user).Return(1, nil)
@@ -51,9 +53,9 @@ func TestRegistry(t *testing.T) {
 			name:      "Service error",
 			inputBody: `{"email": "user_email", "password": "pass", "role": "doctor"}`,
 			inputUser: model.User{
-				Email:    "user_email",
-				Password: "pass",
-				Role:     "doctor",
+				Email:    null.String{NullString: sql.NullString{String: "user_email", Valid: true}},
+				Password: null.String{NullString: sql.NullString{String: "pass", Valid: true}},
+				Role:     null.String{NullString: sql.NullString{String: "doctor", Valid: true}},
 			},
 			mockBehavior: func(s *mock.MockAuthorization, user model.User) {
 				s.EXPECT().CreateUser(user).Return(0, errors.New("Internal server error"))

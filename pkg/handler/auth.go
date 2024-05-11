@@ -26,7 +26,7 @@ func (h *Handler) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
+	token, err := h.services.Authorization.GenerateToken(input.Email.String, input.Password.String)
 	if err != nil {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return

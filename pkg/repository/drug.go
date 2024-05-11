@@ -22,14 +22,9 @@ func (r *DrugRepository) CreateDrug(drug model.Drug) error {
 		return err
 	}
 
-	var id interface{} = drug.Id
-	if drug.Id == "" {
-		id = nil
-	}
-
 	query := fmt.Sprintf("INSERT INTO %s (id, name, dosage_form, active_ingredients, country, manufacturer, prescribing_order, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", drugTable)
 	_, err = r.db.Exec(query,
-		id,
+		drug.Id,
 		drug.Name,
 		drug.DosageForm,
 		drug.ActiveIngredients,

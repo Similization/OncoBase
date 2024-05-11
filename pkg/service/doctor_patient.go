@@ -3,6 +3,8 @@ package services
 import (
 	"med/pkg/model"
 	"med/pkg/repository"
+
+	"github.com/guregu/null/v5"
 )
 
 type DoctorPatientService struct {
@@ -23,5 +25,8 @@ func (s *DoctorPatientService) GetDoctorPatientListByPatient(patientId int) ([]m
 	return s.repo.GetDoctorPatientListByPatient(patientId)
 }
 func (s *DoctorPatientService) DeleteDoctorPatient(doctorId, patientId int) error {
-	return s.repo.DeleteDoctorPatient(model.DoctorPatient{Patient: patientId, Doctor: doctorId})
+	return s.repo.DeleteDoctorPatient(model.DoctorPatient{
+		Patient: null.IntFrom(int64(patientId)),
+		Doctor:  null.IntFrom(int64(doctorId)),
+	})
 }

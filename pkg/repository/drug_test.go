@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/guregu/null/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,14 +33,14 @@ func TestCreateDrug(t *testing.T) {
 		{
 			name: "OK",
 			model: model.Drug{
-				Id:                "1",
-				Name:              "name",
-				DosageForm:        "form",
-				ActiveIngredients: "ingridients",
-				Country:           "cou",
-				Manufacturer:      "man",
-				PrescribingOrder:  "ord",
-				Description:       "text",
+				Id:                null.StringFrom("1"),
+				Name:              null.StringFrom("name"),
+				DosageForm:        null.StringFrom("form"),
+				ActiveIngredients: null.StringFrom("ingridients"),
+				Country:           null.StringFrom("cou"),
+				Manufacturer:      null.StringFrom("man"),
+				PrescribingOrder:  null.StringFrom("ord"),
+				Description:       null.StringFrom("text"),
 			},
 			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()
@@ -128,21 +129,24 @@ func TestGetDrugList(t *testing.T) {
 			},
 			expectResult: []model.Drug{
 				{
-					Id:                "1",
-					Name:              "name",
-					DosageForm:        "form",
-					ActiveIngredients: "ingridients",
-					Country:           "cou",
-					Manufacturer:      "man",
-					PrescribingOrder:  "ord",
-					Description:       "text",
+					Id:                null.StringFrom("1"),
+					Name:              null.StringFrom("name"),
+					DosageForm:        null.StringFrom("form"),
+					ActiveIngredients: null.StringFrom("ingridients"),
+					Country:           null.StringFrom("cou"),
+					Manufacturer:      null.StringFrom("man"),
+					PrescribingOrder:  null.StringFrom("ord"),
+					Description:       null.StringFrom("text"),
 				},
 				{
-					Id:                "2",
-					Name:              "name2",
-					DosageForm:        "form2",
-					ActiveIngredients: "ingridients2",
-					Description:       "text2",
+					Id:                null.StringFrom("2"),
+					Name:              null.StringFrom("name2"),
+					DosageForm:        null.StringFrom("form2"),
+					ActiveIngredients: null.StringFrom("ingridients2"),
+					Country:           null.StringFrom(""),
+					Manufacturer:      null.StringFrom(""),
+					PrescribingOrder:  null.StringFrom(""),
+					Description:       null.StringFrom("text2"),
 				},
 			},
 			expectErr: false,
@@ -202,14 +206,14 @@ func TestGetDrugById(t *testing.T) {
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.drug WHERE id=(.+)").WithArgs(id).WillReturnRows(row)
 			},
 			expectResult: model.Drug{
-				Id:                "1",
-				Name:              "name",
-				DosageForm:        "form",
-				ActiveIngredients: "ingridients",
-				Country:           "cou",
-				Manufacturer:      "man",
-				PrescribingOrder:  "ord",
-				Description:       "text",
+				Id:                null.StringFrom("1"),
+				Name:              null.StringFrom("name"),
+				DosageForm:        null.StringFrom("form"),
+				ActiveIngredients: null.StringFrom("ingridients"),
+				Country:           null.StringFrom("cou"),
+				Manufacturer:      null.StringFrom("man"),
+				PrescribingOrder:  null.StringFrom("ord"),
+				Description:       null.StringFrom("text"),
 			},
 			expectErr: false,
 		},
@@ -226,8 +230,8 @@ func TestGetDrugById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			testCase.mockBehavior(testCase.expectResult.Id)
-			res, err := r.GetDrugById(testCase.expectResult.Id)
+			testCase.mockBehavior(testCase.expectResult.Id.String)
+			res, err := r.GetDrugById(testCase.expectResult.Id.String)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -262,14 +266,14 @@ func TestUpdateDrug(t *testing.T) {
 		{
 			name: "OK",
 			data: model.Drug{
-				Id:                "1",
-				Name:              "name",
-				DosageForm:        "form",
-				ActiveIngredients: "ingridients",
-				Country:           "cou",
-				Manufacturer:      "man",
-				PrescribingOrder:  "ord",
-				Description:       "text",
+				Id:                null.StringFrom("1"),
+				Name:              null.StringFrom("name"),
+				DosageForm:        null.StringFrom("form"),
+				ActiveIngredients: null.StringFrom("ingridients"),
+				Country:           null.StringFrom("cou"),
+				Manufacturer:      null.StringFrom("man"),
+				PrescribingOrder:  null.StringFrom("ord"),
+				Description:       null.StringFrom("text"),
 			},
 			mockBehavior: func(model model.Drug) {
 				mock.ExpectBegin()

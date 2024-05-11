@@ -1,10 +1,12 @@
 package model
 
+import "github.com/guregu/null/v5"
+
 type CourseProcedure struct {
-	Id            int    `json:"id" db:"id" binding:"required"`
-	PatientCourse int    `json:"patient-course" db:"patient_course" binding:"required"`
-	Doctor        int    `json:"doctor" db:"doctor" binding:"required"`
-	BeginDate     string `json:"begin-date" db:"begin_date" binding:"required"`
-	Period        int    `json:"period" db:"period"`
-	Result        int    `json:"result" db:"result"`
+	Id            null.Int    `json:"id" db:"id" binding:"required"`
+	PatientCourse null.Int    `json:"patient-course" db:"patient_course" binding:"required"`
+	Doctor        null.Int    `json:"doctor" db:"doctor" binding:"required"`
+	BeginDate     null.String `json:"begin-date" db:"begin_date" binding:"required"`
+	Period        null.Int    `json:"period" db:"period"`
+	Result        null.Int    `json:"result" db:"result"`
 }

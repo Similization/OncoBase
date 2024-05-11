@@ -21,7 +21,7 @@ func NewAuthService(repo repository.Authorization) *AuthorizationService {
 }
 
 func (s *AuthorizationService) CreateUser(user model.User) (int, error) {
-	user.Password = s.generatePasswordHash(user.Password)
+	user.Password.String = s.generatePasswordHash(user.Password.String)
 	return s.repo.CreateUser(user)
 }
 
