@@ -1,6 +1,8 @@
 package model
 
+import "github.com/guregu/null/v5"
+
 type Disease struct {
-	Id          string `json:"id" db:"id"`
-	Description string `json:"description" db:"description"`
+	Id          null.String `json:"id" db:"id" binding:"required"`
+	Description null.String `json:"description" db:"description"`
 }

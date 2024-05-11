@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"database/sql"
 	"errors"
 	"log"
 	"med/pkg/model"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/guregu/null/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,8 +34,8 @@ func TestCreateDisease(t *testing.T) {
 		{
 			name: "OK",
 			model: model.Disease{
-				Id:          "1",
-				Description: "text",
+				Id:          null.String{NullString: sql.NullString{String: "1", Valid: true}},
+				Description: null.String{NullString: sql.NullString{String: "desc", Valid: true}},
 			},
 			mockBehavior: func(model model.Disease) {
 				mock.ExpectBegin()
@@ -47,7 +49,7 @@ func TestCreateDisease(t *testing.T) {
 		{
 			name: "Empty required field",
 			model: model.Disease{
-				Description: "text",
+				Description: null.String{NullString: sql.NullString{String: "descr", Valid: true}},
 			},
 			mockBehavior: func(model model.Disease) {
 				mock.ExpectBegin()
@@ -97,17 +99,26 @@ func TestGetDiseaseList(t *testing.T) {
 			name: "OK",
 			mockBehavior: func() {
 				rows := sqlmock.NewRows([]string{"id", "description"}).
-					AddRow("1", "description1").
-					AddRow("2", "description2").
-					AddRow("3", "description3")
+					AddRow("1", "descr1").
+					AddRow("2", "descr2").
+					AddRow("3", "descr3")
 
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease").
 					WillReturnRows(rows)
 			},
 			expectResult: []model.Disease{
-				{Id: "1", Description: "description1"},
-				{Id: "2", Description: "description2"},
-				{Id: "3", Description: "description3"},
+				{
+					Id:          null.String{NullString: sql.NullString{String: "1", Valid: true}},
+					Description: null.String{NullString: sql.NullString{String: "descr1", Valid: true}},
+				},
+				{
+					Id:          null.String{NullString: sql.NullString{String: "2", Valid: true}},
+					Description: null.String{NullString: sql.NullString{String: "descr2", Valid: true}},
+				},
+				{
+					Id:          null.String{NullString: sql.NullString{String: "3", Valid: true}},
+					Description: null.String{NullString: sql.NullString{String: "descr3", Valid: true}},
+				},
 			},
 			expectErr: false,
 		},
@@ -158,12 +169,15 @@ func TestGetDiseaseById(t *testing.T) {
 		{
 			name: "OK",
 			mockBehavior: func(id string) {
-				row := sqlmock.NewRows([]string{"id", "description"}).AddRow("1", "description1")
+				row := sqlmock.NewRows([]string{"id", "description"}).AddRow("1", "descr")
 
 				mock.ExpectQuery("SELECT (.+) FROM onco_base.disease WHERE id=").WithArgs(id).WillReturnRows(row)
 			},
-			expectResult: model.Disease{Id: "1", Description: "description1"},
-			expectErr:    false,
+			expectResult: model.Disease{
+				Id:          null.String{NullString: sql.NullString{String: "1", Valid: true}},
+				Description: null.String{NullString: sql.NullString{String: "descr", Valid: true}},
+			},
+			expectErr: false,
 		},
 		{
 			name: "No records",
@@ -178,8 +192,8 @@ func TestGetDiseaseById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			testCase.mockBehavior(testCase.expectResult.Id)
-			res, err := r.GetDiseaseById(testCase.expectResult.Id)
+			testCase.mockBehavior(testCase.expectResult.Id.String)
+			res, err := r.GetDiseaseById(testCase.expectResult.Id.String)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -214,8 +228,8 @@ func TestUpdateDisease(t *testing.T) {
 		{
 			name: "OK",
 			data: model.Disease{
-				Id:          "1",
-				Description: "new description",
+				Id:          null.String{NullString: sql.NullString{String: "1", Valid: true}},
+				Description: null.String{NullString: sql.NullString{String: "new descr", Valid: true}},
 			},
 			mockBehavior: func(model model.Disease) {
 				mock.ExpectBegin()

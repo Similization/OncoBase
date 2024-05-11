@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS onco_base.internal_user
 CREATE TABLE IF NOT EXISTS onco_base.diagnosis
 (
     id          VARCHAR(10)  NOT NULL UNIQUE,
-    description VARCHAR(300) NOT NULL,
+    description VARCHAR(300),
     PRIMARY KEY (id)
 );
 
@@ -126,9 +126,9 @@ CREATE TABLE IF NOT EXISTS onco_base.disease
 CREATE TABLE IF NOT EXISTS onco_base.patient_disease
 (
     patient   INT NOT NULL,
-    disease   VARCHAR(15),
+    disease   VARCHAR(15) NOT NULL,
     stage     VARCHAR(10),
-    diagnosis VARCHAR(10),
+    diagnosis VARCHAR(10) NOT NULL,
     PRIMARY KEY (patient, disease),
     FOREIGN KEY (patient) REFERENCES onco_base.patient (id),
     FOREIGN KEY (disease) REFERENCES onco_base.disease (id),
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS onco_base.patient_course
 (
     id         SERIAL      NOT NULL UNIQUE,
     patient    INT         NOT NULL,
-    disease    VARCHAR(15),
+    disease    VARCHAR(15) NOT NULL,
     course     VARCHAR(30) NOT NULL,
     doctor     INT         NOT NULL,
     begin_date DATE        NOT NULL,
