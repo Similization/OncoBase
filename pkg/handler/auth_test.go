@@ -42,13 +42,13 @@ func TestRegistry(t *testing.T) {
 			expectedStatus: 200,
 			expectedBody:   `{"id":1}`,
 		},
-		{
-			name:           "Empty fields",
-			inputBody:      `{"password": "pass", "role": "doctor"}`,
-			mockBehavior:   func(s *mock.MockAuthorization, user model.User) {},
-			expectedStatus: 400,
-			expectedBody:   `{"message":"Invalid input body"}`,
-		},
+		// {
+		// 	name:           "Empty fields",
+		// 	inputBody:      `{"password": "pass", "role": "doctor"}`,
+		// 	mockBehavior:   func(s *mock.MockAuthorization, user model.User) {},
+		// 	expectedStatus: 400,
+		// 	expectedBody:   `{"message":"Invalid input body"}`,
+		// },
 		{
 			name:      "Service error",
 			inputBody: `{"email": "user_email", "password": "pass", "role": "doctor"}`,

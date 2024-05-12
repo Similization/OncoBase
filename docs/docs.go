@@ -2396,7 +2396,7 @@ const docTemplate = `{
                 "summary": "Get patient disease list by patient",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Patient ID",
                         "name": "patient_id",
                         "in": "path",
@@ -2437,7 +2437,7 @@ const docTemplate = `{
                 "summary": "Get patient disease by ID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Patient ID",
                         "name": "patient_id",
                         "in": "path",
@@ -2477,7 +2477,7 @@ const docTemplate = `{
                 "summary": "Delete patient disease",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Patient ID",
                         "name": "patient_id",
                         "in": "path",
@@ -3191,310 +3191,52 @@ const docTemplate = `{
             }
         },
         "model.AuthUser": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.BloodCount": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "max-normal-value": {
-                    "type": "number"
-                },
-                "max-possible-value": {
-                    "type": "number"
-                },
-                "measure-code": {
-                    "type": "string"
-                },
-                "min-normal-value": {
-                    "type": "number"
-                },
-                "min-possible-value": {
-                    "type": "number"
-                }
-            }
+            "type": "object"
         },
         "model.BloodCountValue": {
-            "type": "object",
-            "required": [
-                "blood_count",
-                "coefficient",
-                "disease"
-            ],
-            "properties": {
-                "blood_count": {
-                    "description": "Type of blood count.",
-                    "type": "string"
-                },
-                "coefficient": {
-                    "description": "Coefficient value.",
-                    "type": "number"
-                },
-                "description": {
-                    "description": "Description of the blood count value. Optional.",
-                    "type": "string"
-                },
-                "disease": {
-                    "description": "Name of the disease.",
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.Course": {
-            "type": "object",
-            "properties": {
-                "dose": {
-                    "type": "number"
-                },
-                "drug": {
-                    "type": "string"
-                },
-                "frequency": {
-                    "type": "number"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "measure-code": {
-                    "type": "string"
-                },
-                "period": {
-                    "type": "integer"
-                }
-            }
+            "type": "object"
         },
         "model.CourseProcedure": {
-            "type": "object",
-            "properties": {
-                "begin-date": {
-                    "type": "string"
-                },
-                "doctor": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "patient-course": {
-                    "type": "integer"
-                },
-                "period": {
-                    "type": "integer"
-                },
-                "result": {
-                    "type": "integer"
-                }
-            }
+            "type": "object"
         },
         "model.Diagnosis": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.Disease": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.Doctor": {
-            "type": "object",
-            "properties": {
-                "first-name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "last-name": {
-                    "type": "string"
-                },
-                "middle-name": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "qualification": {
-                    "type": "string"
-                },
-                "user-id": {
-                    "type": "integer"
-                }
-            }
+            "type": "object"
         },
         "model.DoctorPatient": {
-            "type": "object",
-            "properties": {
-                "doctor": {
-                    "type": "integer"
-                },
-                "patient": {
-                    "type": "integer"
-                }
-            }
+            "type": "object"
         },
         "model.Drug": {
-            "type": "object",
-            "properties": {
-                "active-ingredients": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "dosage-form": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "manufacturer": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "prescribing-order": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.Patient": {
             "type": "object"
         },
         "model.PatientCourse": {
-            "type": "object",
-            "properties": {
-                "begin-date": {
-                    "type": "string"
-                },
-                "course": {
-                    "type": "string"
-                },
-                "diagnosis": {
-                    "type": "string"
-                },
-                "disease": {
-                    "type": "string"
-                },
-                "doctor": {
-                    "type": "integer"
-                },
-                "end-date": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "patient": {
-                    "type": "integer"
-                }
-            }
+            "type": "object"
         },
         "model.PatientDisease": {
-            "type": "object",
-            "properties": {
-                "diagnosis": {
-                    "type": "string"
-                },
-                "disease": {
-                    "type": "string"
-                },
-                "patient": {
-                    "type": "integer"
-                },
-                "stage": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.ProcedureBloodCount": {
-            "type": "object",
-            "properties": {
-                "blood-count": {
-                    "type": "string"
-                },
-                "measure-code": {
-                    "type": "string"
-                },
-                "procedure": {
-                    "type": "integer"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.UnitMeasure": {
-            "type": "object",
-            "properties": {
-                "full-text": {
-                    "type": "string"
-                },
-                "global": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "shorthand": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "model.User": {
-            "type": "object",
-            "required": [
-                "email",
-                "password",
-                "role"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         }
     },
     "securityDefinitions": {

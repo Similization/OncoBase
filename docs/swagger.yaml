@@ -16,206 +16,36 @@ definitions:
         type: string
     type: object
   model.AuthUser:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - password
     type: object
   model.BloodCount:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      max-normal-value:
-        type: number
-      max-possible-value:
-        type: number
-      measure-code:
-        type: string
-      min-normal-value:
-        type: number
-      min-possible-value:
-        type: number
     type: object
   model.BloodCountValue:
-    properties:
-      blood_count:
-        description: Type of blood count.
-        type: string
-      coefficient:
-        description: Coefficient value.
-        type: number
-      description:
-        description: Description of the blood count value. Optional.
-        type: string
-      disease:
-        description: Name of the disease.
-        type: string
-    required:
-    - blood_count
-    - coefficient
-    - disease
     type: object
   model.Course:
-    properties:
-      dose:
-        type: number
-      drug:
-        type: string
-      frequency:
-        type: number
-      id:
-        type: string
-      measure-code:
-        type: string
-      period:
-        type: integer
     type: object
   model.CourseProcedure:
-    properties:
-      begin-date:
-        type: string
-      doctor:
-        type: integer
-      id:
-        type: integer
-      patient-course:
-        type: integer
-      period:
-        type: integer
-      result:
-        type: integer
     type: object
   model.Diagnosis:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
     type: object
   model.Disease:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
     type: object
   model.Doctor:
-    properties:
-      first-name:
-        type: string
-      id:
-        type: integer
-      last-name:
-        type: string
-      middle-name:
-        type: string
-      phone:
-        type: string
-      qualification:
-        type: string
-      user-id:
-        type: integer
     type: object
   model.DoctorPatient:
-    properties:
-      doctor:
-        type: integer
-      patient:
-        type: integer
     type: object
   model.Drug:
-    properties:
-      active-ingredients:
-        type: string
-      country:
-        type: string
-      description:
-        type: string
-      dosage-form:
-        type: string
-      id:
-        type: string
-      manufacturer:
-        type: string
-      name:
-        type: string
-      prescribing-order:
-        type: string
     type: object
   model.Patient:
     type: object
   model.PatientCourse:
-    properties:
-      begin-date:
-        type: string
-      course:
-        type: string
-      diagnosis:
-        type: string
-      disease:
-        type: string
-      doctor:
-        type: integer
-      end-date:
-        type: string
-      id:
-        type: integer
-      patient:
-        type: integer
     type: object
   model.PatientDisease:
-    properties:
-      diagnosis:
-        type: string
-      disease:
-        type: string
-      patient:
-        type: integer
-      stage:
-        type: string
     type: object
   model.ProcedureBloodCount:
-    properties:
-      blood-count:
-        type: string
-      measure-code:
-        type: string
-      procedure:
-        type: integer
-      value:
-        type: string
     type: object
   model.UnitMeasure:
-    properties:
-      full-text:
-        type: string
-      global:
-        type: string
-      id:
-        type: string
-      shorthand:
-        type: string
     type: object
   model.User:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      password:
-        type: string
-      role:
-        type: string
-    required:
-    - email
-    - password
-    - role
     type: object
 host: localhost:8080
 info:
@@ -1763,7 +1593,7 @@ paths:
         in: path
         name: patient_id
         required: true
-        type: string
+        type: integer
       - description: Disease ID
         in: path
         name: disease_id
@@ -1790,7 +1620,7 @@ paths:
         in: path
         name: patient_id
         required: true
-        type: string
+        type: integer
       - description: Disease ID
         in: path
         name: disease_id
@@ -1845,7 +1675,7 @@ paths:
         in: path
         name: patient_id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:

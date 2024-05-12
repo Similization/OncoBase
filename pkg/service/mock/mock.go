@@ -1211,7 +1211,7 @@ func (mr *MockPatientDiseaseMockRecorder) CreatePatientDisease(patientDisease an
 }
 
 // DeletePatientDisease mocks base method.
-func (m *MockPatientDisease) DeletePatientDisease(patientId, diseaseId int) error {
+func (m *MockPatientDisease) DeletePatientDisease(patientId int, diseaseId string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeletePatientDisease", patientId, diseaseId)
 	ret0, _ := ret[0].(error)
@@ -1225,7 +1225,7 @@ func (mr *MockPatientDiseaseMockRecorder) DeletePatientDisease(patientId, diseas
 }
 
 // GetPatientDiseaseById mocks base method.
-func (m *MockPatientDisease) GetPatientDiseaseById(patientId, diseaseId int) (model.PatientDisease, error) {
+func (m *MockPatientDisease) GetPatientDiseaseById(patientId int, diseaseId string) (model.PatientDisease, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPatientDiseaseById", patientId, diseaseId)
 	ret0, _ := ret[0].(model.PatientDisease)
@@ -1255,7 +1255,7 @@ func (mr *MockPatientDiseaseMockRecorder) GetPatientDiseaseList() *gomock.Call {
 }
 
 // GetPatientDiseaseListByDisease mocks base method.
-func (m *MockPatientDisease) GetPatientDiseaseListByDisease(diseaseId int) ([]model.PatientDisease, error) {
+func (m *MockPatientDisease) GetPatientDiseaseListByDisease(diseaseId string) ([]model.PatientDisease, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPatientDiseaseListByDisease", diseaseId)
 	ret0, _ := ret[0].([]model.PatientDisease)

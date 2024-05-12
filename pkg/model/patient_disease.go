@@ -8,3 +8,10 @@ type PatientDisease struct {
 	Patient   null.Int    `json:"patient" db:"patient" binding:"required"`
 	Disease   null.String `json:"disease" db:"disease" binding:"required"`
 }
+
+// type PatientDisease struct {
+// 	Stage     string `json:"stage" db:"stage"`
+// 	Diagnosis string `json:"diagnosis" db:"diagnosis" binding:"required"`
+// 	Patient   int    `json:"patient" db:"patient" binding:"required"`
+// 	Disease   string `json:"disease" db:"disease" binding:"required"`
+// }
