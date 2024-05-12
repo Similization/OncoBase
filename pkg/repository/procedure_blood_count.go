@@ -56,7 +56,7 @@ func (r *ProcedureBloodCountRepository) GetProcedureBloodCountListByProcedure(pr
 // Get patient list from database
 func (r *ProcedureBloodCountRepository) GetProcedureBloodCountListByBloodCount(bloodCountId string) ([]model.ProcedureBloodCount, error) {
 	var procedureBloodCountList []model.ProcedureBloodCount
-	query := fmt.Sprintf("SELECT * FROM %s WHERE bloodCount=$1", procedureBloodCountTable)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE blood_count=$1", procedureBloodCountTable)
 	err := r.db.Select(&procedureBloodCountList, query, bloodCountId)
 	return procedureBloodCountList, err
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateBloodCount(t *testing.T) {
+func TestCreateCourse(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -20,37 +20,35 @@ func TestCreateBloodCount(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewBloodCountRepository(sqlxDB)
+	r := NewCourseRepository(sqlxDB)
 
-	type mockBehavior func(model model.BloodCount)
+	type mockBehavior func(model model.Course)
 
 	testTable := []struct {
 		name         string
-		model        model.BloodCount
+		model        model.Course
 		mockBehavior mockBehavior
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			model: model.BloodCount{
-				Id:               null.StringFrom("1"),
-				Description:      null.StringFrom("1"),
-				MinNormalValue:   null.FloatFrom(0.1),
-				MaxNormalValue:   null.FloatFrom(0.2),
-				MinPossibleValue: null.FloatFrom(0.05),
-				MaxPossibleValue: null.FloatFrom(0.45),
-				MeasureCode:      null.StringFrom("1"),
+			model: model.Course{
+				Id:          null.StringFrom("1"),
+				Period:      null.IntFrom(1),
+				Frequency:   null.FloatFrom(0.1),
+				Dose:        null.FloatFrom(0.2),
+				Drug:        null.StringFrom("1"),
+				MeasureCode: null.StringFrom("1"),
 			},
-			mockBehavior: func(model model.BloodCount) {
+			mockBehavior: func(model model.Course) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.blood_count").
+				mock.ExpectExec("INSERT INTO onco_base.course").
 					WithArgs(
 						model.Id,
-						model.Description,
-						model.MinNormalValue,
-						model.MaxNormalValue,
-						model.MinPossibleValue,
-						model.MaxPossibleValue,
+						model.Period,
+						model.Frequency,
+						model.Dose,
+						model.Drug,
 						model.MeasureCode,
 					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
@@ -60,24 +58,22 @@ func TestCreateBloodCount(t *testing.T) {
 		},
 		{
 			name: "Empty required field",
-			model: model.BloodCount{
-				Description:      null.StringFrom("1"),
-				MinNormalValue:   null.FloatFrom(0.1),
-				MaxNormalValue:   null.FloatFrom(0.2),
-				MinPossibleValue: null.FloatFrom(0.05),
-				MaxPossibleValue: null.FloatFrom(0.45),
-				MeasureCode:      null.StringFrom("1"),
+			model: model.Course{
+				Period:      null.IntFrom(1),
+				Frequency:   null.FloatFrom(0.1),
+				Dose:        null.FloatFrom(0.2),
+				Drug:        null.StringFrom("1"),
+				MeasureCode: null.StringFrom("1"),
 			},
-			mockBehavior: func(model model.BloodCount) {
+			mockBehavior: func(model model.Course) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.blood_count").
+				mock.ExpectExec("INSERT INTO onco_base.course").
 					WithArgs(
 						nil,
-						model.Description,
-						model.MinNormalValue,
-						model.MaxNormalValue,
-						model.MinPossibleValue,
-						model.MaxPossibleValue,
+						model.Period,
+						model.Frequency,
+						model.Dose,
+						model.Drug,
 						model.MeasureCode,
 					).
 					WillReturnError(errors.New("some error occured"))
@@ -90,7 +86,7 @@ func TestCreateBloodCount(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.model)
-			err := r.CreateBloodCount(testCase.model)
+			err := r.CreateCourse(testCase.model)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -102,7 +98,7 @@ func TestCreateBloodCount(t *testing.T) {
 	}
 }
 
-func TestGetBloodCountList(t *testing.T) {
+func TestGetCourseList(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -110,14 +106,14 @@ func TestGetBloodCountList(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewBloodCountRepository(sqlxDB)
+	r := NewCourseRepository(sqlxDB)
 
 	type mockBehavior func()
 
 	testTable := []struct {
 		name         string
 		mockBehavior mockBehavior
-		expectResult []model.BloodCount
+		expectResult []model.Course
 		expectErr    bool
 	}{
 		{
@@ -125,37 +121,34 @@ func TestGetBloodCountList(t *testing.T) {
 			mockBehavior: func() {
 				rows := sqlmock.NewRows([]string{
 					"id",
-					"description",
-					"min_normal_value",
-					"max_normal_value",
-					"min_possible_value",
-					"max_possible_value",
+					"period",
+					"frequency",
+					"dose",
+					"drug",
 					"measure_code",
 				}).
-					AddRow("1", "descr", 0.1, 0.2, 0.05, 0.45, "1").
-					AddRow("2", "", 0.11, 0.21, 0.025, 0.451, "2")
+					AddRow("1", 1, 0.1, 0.2, "1", "1").
+					AddRow("2", 2, 0.2, 0.3, "2", "1")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.course").
 					WillReturnRows(rows)
 			},
-			expectResult: []model.BloodCount{
+			expectResult: []model.Course{
 				{
-					Id:               null.StringFrom("1"),
-					Description:      null.StringFrom("descr"),
-					MinNormalValue:   null.FloatFrom(0.1),
-					MaxNormalValue:   null.FloatFrom(0.2),
-					MinPossibleValue: null.FloatFrom(0.05),
-					MaxPossibleValue: null.FloatFrom(0.45),
-					MeasureCode:      null.StringFrom("1"),
+					Id:          null.StringFrom("1"),
+					Period:      null.IntFrom(1),
+					Frequency:   null.FloatFrom(0.1),
+					Dose:        null.FloatFrom(0.2),
+					Drug:        null.StringFrom("1"),
+					MeasureCode: null.StringFrom("1"),
 				},
 				{
-					Id:               null.StringFrom("2"),
-					Description:      null.StringFrom(""),
-					MinNormalValue:   null.FloatFrom(0.11),
-					MaxNormalValue:   null.FloatFrom(0.21),
-					MinPossibleValue: null.FloatFrom(0.025),
-					MaxPossibleValue: null.FloatFrom(0.451),
-					MeasureCode:      null.StringFrom("2"),
+					Id:          null.StringFrom("2"),
+					Period:      null.IntFrom(2),
+					Frequency:   null.FloatFrom(0.2),
+					Dose:        null.FloatFrom(0.3),
+					Drug:        null.StringFrom("2"),
+					MeasureCode: null.StringFrom("1"),
 				},
 			},
 			expectErr: false,
@@ -163,7 +156,7 @@ func TestGetBloodCountList(t *testing.T) {
 		{
 			name: "Select error occured",
 			mockBehavior: func() {
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.course").
 					WillReturnError(errors.New("some error occured"))
 			},
 			expectErr: true,
@@ -173,7 +166,7 @@ func TestGetBloodCountList(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior()
-			res, err := r.GetBloodCountList()
+			res, err := r.GetCourseList()
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -185,7 +178,7 @@ func TestGetBloodCountList(t *testing.T) {
 	}
 }
 
-func TestGetBloodCountById(t *testing.T) {
+func TestGetCourseById(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -193,7 +186,7 @@ func TestGetBloodCountById(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewBloodCountRepository(sqlxDB)
+	r := NewCourseRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
@@ -201,7 +194,7 @@ func TestGetBloodCountById(t *testing.T) {
 		name         string
 		data         string
 		mockBehavior mockBehavior
-		expectResult model.BloodCount
+		expectResult model.Course
 		expectErr    bool
 	}{
 		{
@@ -210,27 +203,25 @@ func TestGetBloodCountById(t *testing.T) {
 			mockBehavior: func(id string) {
 				row := sqlmock.NewRows([]string{
 					"id",
-					"description",
-					"min_normal_value",
-					"max_normal_value",
-					"min_possible_value",
-					"max_possible_value",
+					"period",
+					"frequency",
+					"dose",
+					"drug",
 					"measure_code",
 				}).
-					AddRow("1", "descr", 0.1, 0.2, 0.05, 0.45, "1")
+					AddRow("1", 1, 0.1, 0.2, "1", "1")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count WHERE id=(.+)").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.course WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnRows(row)
 			},
-			expectResult: model.BloodCount{
-				Id:               null.StringFrom("1"),
-				Description:      null.StringFrom("descr"),
-				MinNormalValue:   null.FloatFrom(0.1),
-				MaxNormalValue:   null.FloatFrom(0.2),
-				MinPossibleValue: null.FloatFrom(0.05),
-				MaxPossibleValue: null.FloatFrom(0.45),
-				MeasureCode:      null.StringFrom("1"),
+			expectResult: model.Course{
+				Id:          null.StringFrom("1"),
+				Period:      null.IntFrom(1),
+				Frequency:   null.FloatFrom(0.1),
+				Dose:        null.FloatFrom(0.2),
+				Drug:        null.StringFrom("1"),
+				MeasureCode: null.StringFrom("1"),
 			},
 			expectErr: false,
 		},
@@ -239,15 +230,14 @@ func TestGetBloodCountById(t *testing.T) {
 			mockBehavior: func(id string) {
 				row := sqlmock.NewRows([]string{
 					"id",
-					"description",
-					"min_normal_value",
-					"max_normal_value",
-					"min_possible_value",
-					"max_possible_value",
+					"period",
+					"frequency",
+					"dose",
+					"drug",
 					"measure_code",
 				})
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count WHERE id=(.+)").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.course WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnRows(row)
 			},
@@ -258,7 +248,7 @@ func TestGetBloodCountById(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			res, err := r.GetBloodCountById(testCase.data)
+			res, err := r.GetCourseById(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -270,7 +260,7 @@ func TestGetBloodCountById(t *testing.T) {
 	}
 }
 
-func TestUpdateBloodCount(t *testing.T) {
+func TestUpdateCourse(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -278,39 +268,37 @@ func TestUpdateBloodCount(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewBloodCountRepository(sqlxDB)
+	r := NewCourseRepository(sqlxDB)
 
-	type mockBehavior func(model model.BloodCount)
+	type mockBehavior func(model model.Course)
 
 	testTable := []struct {
 		name         string
-		data         model.BloodCount
+		data         model.Course
 		mockBehavior mockBehavior
-		expectResult model.BloodCount
+		expectResult model.Course
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			data: model.BloodCount{
-				Id:               null.StringFrom("1"),
-				Description:      null.StringFrom("descr"),
-				MinNormalValue:   null.FloatFrom(0.1),
-				MaxNormalValue:   null.FloatFrom(0.2),
-				MinPossibleValue: null.FloatFrom(0.05),
-				MaxPossibleValue: null.FloatFrom(0.45),
-				MeasureCode:      null.StringFrom("1"),
+			data: model.Course{
+				Id:          null.StringFrom("1"),
+				Period:      null.IntFrom(1),
+				Frequency:   null.FloatFrom(0.1),
+				Dose:        null.FloatFrom(0.2),
+				Drug:        null.StringFrom("1"),
+				MeasureCode: null.StringFrom("1"),
 			},
-			mockBehavior: func(model model.BloodCount) {
+			mockBehavior: func(model model.Course) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.blood_count SET (.+) WHERE id=(.+)").
+				mock.ExpectExec("UPDATE onco_base.course SET (.+) WHERE id=(.+)").
 					WithArgs(
-						model.Description,
-						model.MinNormalValue,
-						model.MaxNormalValue,
-						model.MinPossibleValue,
-						model.MaxPossibleValue,
-						model.MeasureCode,
 						model.Id,
+						model.Period,
+						model.Frequency,
+						model.Dose,
+						model.Drug,
+						model.MeasureCode,
 					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
@@ -319,17 +307,16 @@ func TestUpdateBloodCount(t *testing.T) {
 		},
 		{
 			name: "Update error occured",
-			mockBehavior: func(model model.BloodCount) {
+			mockBehavior: func(model model.Course) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.blood_count SET (.+) WHERE id=(.+)").
+				mock.ExpectExec("UPDATE onco_base.course SET (.+) WHERE id=(.+)").
 					WithArgs(
-						model.Description,
-						model.MinNormalValue,
-						model.MaxNormalValue,
-						model.MinPossibleValue,
-						model.MaxPossibleValue,
-						model.MeasureCode,
 						model.Id,
+						model.Period,
+						model.Frequency,
+						model.Dose,
+						model.Drug,
+						model.MeasureCode,
 					).
 					WillReturnError(errors.New("error occured"))
 				mock.ExpectRollback()
@@ -341,7 +328,7 @@ func TestUpdateBloodCount(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.UpdateBloodCount(testCase.data)
+			err := r.UpdateCourse(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -353,7 +340,7 @@ func TestUpdateBloodCount(t *testing.T) {
 	}
 }
 
-func TestDeleteBloodCount(t *testing.T) {
+func TestDeleteCourse(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -361,7 +348,7 @@ func TestDeleteBloodCount(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewBloodCountRepository(sqlxDB)
+	r := NewCourseRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
@@ -369,7 +356,7 @@ func TestDeleteBloodCount(t *testing.T) {
 		name         string
 		data         string
 		mockBehavior mockBehavior
-		expectResult model.BloodCount
+		expectResult model.Course
 		expectErr    bool
 	}{
 		{
@@ -377,7 +364,7 @@ func TestDeleteBloodCount(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.blood_count WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.course WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
@@ -389,7 +376,7 @@ func TestDeleteBloodCount(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.blood_count WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.course WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnError(errors.New("some error occured"))
 				mock.ExpectRollback()
@@ -401,7 +388,7 @@ func TestDeleteBloodCount(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.DeleteBloodCount(testCase.data)
+			err := r.DeleteCourse(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)

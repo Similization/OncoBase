@@ -59,7 +59,7 @@ func (h *Handler) GetPatientDiseaseList(ctx *gin.Context) {
 // @Description Retrieves a list of patient diseases by patient ID.
 // @Tags PatientDisease
 // @Produce json
-// @Param patient_id path string true "Patient ID"
+// @Param patient_id path int true "Patient ID"
 // @Success 200 {array} []model.PatientDisease "Patient disease list"
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-diseases/patient/{patient_id} [get]
@@ -89,11 +89,7 @@ func (h *Handler) GetPatientDiseaseListByPatient(ctx *gin.Context) {
 // @Failure 500 {object} ErrorResponse "Internal server error"
 // @Router /patient-diseases/disease/{disease_id} [get]
 func (h *Handler) GetPatientDiseaseListByDisease(ctx *gin.Context) {
-	diseaseId, err := strconv.Atoi(ctx.Param(diseaseContext))
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
+	diseaseId := ctx.Param(diseaseContext)
 
 	patientDisease, err := h.services.PatientDisease.GetPatientDiseaseListByDisease(diseaseId)
 	if err != nil {
@@ -109,7 +105,7 @@ func (h *Handler) GetPatientDiseaseListByDisease(ctx *gin.Context) {
 // @Description Retrieves a patient disease by patient and disease ID.
 // @Tags PatientDisease
 // @Produce json
-// @Param patient_id path string true "Patient ID"
+// @Param patient_id path int true "Patient ID"
 // @Param disease_id path string true "Disease ID"
 // @Success 200 {object} model.PatientDisease "Patient disease data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
@@ -120,11 +116,7 @@ func (h *Handler) GetPatientDiseaseById(ctx *gin.Context) {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
-	diseaseId, err := strconv.Atoi(ctx.Param(diseaseContext))
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
+	diseaseId := ctx.Param(diseaseContext)
 
 	patientDisease, err := h.services.PatientDisease.GetPatientDiseaseById(patientId, diseaseId)
 	if err != nil {
@@ -168,7 +160,7 @@ func (h *Handler) UpdatePatientDisease(ctx *gin.Context) {
 // @Description Deletes a patient disease by patient and disease ID.
 // @Tags PatientDisease
 // @Produce json
-// @Param patient_id path string true "Patient ID"
+// @Param patient_id path int true "Patient ID"
 // @Param disease_id path string true "Disease ID"
 // @Success 200 {string} string "Deleted patient disease data"
 // @Failure 500 {object} ErrorResponse "Internal server error"
@@ -179,11 +171,7 @@ func (h *Handler) DeletePatientDisease(ctx *gin.Context) {
 		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
-	diseaseId, err := strconv.Atoi(ctx.Param(diseaseContext))
-	if err != nil {
-		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
-	}
+	diseaseId := ctx.Param(diseaseContext)
 
 	err = h.services.PatientDisease.DeletePatientDisease(patientId, diseaseId)
 	if err != nil {

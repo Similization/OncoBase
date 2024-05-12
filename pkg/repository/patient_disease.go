@@ -54,7 +54,7 @@ func (r *PatientDiseaseRepository) GetPatientDiseaseListByPatient(patientId int)
 }
 
 // Get patient list from database
-func (r *PatientDiseaseRepository) GetPatientDiseaseListByDisease(diseaseId int) ([]model.PatientDisease, error) {
+func (r *PatientDiseaseRepository) GetPatientDiseaseListByDisease(diseaseId string) ([]model.PatientDisease, error) {
 	var patientDiseaseList []model.PatientDisease
 	query := fmt.Sprintf("SELECT * FROM %s WHERE disease=$1", patientDiseaseTable)
 	err := r.db.Select(&patientDiseaseList, query, diseaseId)
@@ -62,7 +62,7 @@ func (r *PatientDiseaseRepository) GetPatientDiseaseListByDisease(diseaseId int)
 }
 
 // Get patient from database by ID
-func (r *PatientDiseaseRepository) GetPatientDiseaseById(patientId, diseaseId int) (model.PatientDisease, error) {
+func (r *PatientDiseaseRepository) GetPatientDiseaseById(patientId int, diseaseId string) (model.PatientDisease, error) {
 	var patientDisease model.PatientDisease
 	query := fmt.Sprintf("SELECT * FROM %s WHERE patient=$1 AND disease=$2", patientDiseaseTable)
 	err := r.db.Get(&patientDisease, query, patientId, diseaseId)
@@ -92,7 +92,7 @@ func (r *PatientDiseaseRepository) UpdatePatientDisease(patientDisease model.Pat
 }
 
 // Delete patient data from database
-func (r *PatientDiseaseRepository) DeletePatientDisease(patientId, diseaseId int) error {
+func (r *PatientDiseaseRepository) DeletePatientDisease(patientId int, diseaseId string) error {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err

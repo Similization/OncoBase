@@ -8,5 +8,5 @@ type CourseProcedure struct {
 	Doctor        null.Int    `json:"doctor" db:"doctor" binding:"required"`
 	BeginDate     null.String `json:"begin-date" db:"begin_date" binding:"required"`
 	Period        null.Int    `json:"period" db:"period"`
-	Result        null.Int    `json:"result" db:"result"`
+	Result        null.String `json:"result" db:"result"`
 }

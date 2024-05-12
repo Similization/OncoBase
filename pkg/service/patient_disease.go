@@ -16,10 +16,10 @@ func NewPatientDiseaseService(repo repository.PatientDisease) *PatientDiseaseSer
 func (s *PatientDiseaseService) CreatePatientDisease(patientDisease model.PatientDisease) error {
 	return s.repo.CreatePatientDisease(patientDisease)
 }
-func (s *PatientDiseaseService) GetPatientDiseaseById(diseaseId, patientId int) (model.PatientDisease, error) {
-	return s.repo.GetPatientDiseaseById(diseaseId, patientId)
+func (s *PatientDiseaseService) GetPatientDiseaseById(patientId int, diseaseId string) (model.PatientDisease, error) {
+	return s.repo.GetPatientDiseaseById(patientId, diseaseId)
 }
-func (s *PatientDiseaseService) GetPatientDiseaseListByDisease(diseaseId int) ([]model.PatientDisease, error) {
+func (s *PatientDiseaseService) GetPatientDiseaseListByDisease(diseaseId string) ([]model.PatientDisease, error) {
 	return s.repo.GetPatientDiseaseListByDisease(diseaseId)
 }
 func (s *PatientDiseaseService) GetPatientDiseaseListByPatient(patientId int) ([]model.PatientDisease, error) {
@@ -31,6 +31,6 @@ func (s *PatientDiseaseService) GetPatientDiseaseList() ([]model.PatientDisease,
 func (s *PatientDiseaseService) UpdatePatientDisease(patientDisease model.PatientDisease) error {
 	return s.repo.UpdatePatientDisease(patientDisease)
 }
-func (s *PatientDiseaseService) DeletePatientDisease(diseaseId, patientId int) error {
+func (s *PatientDiseaseService) DeletePatientDisease(diseaseId int, patientId string) error {
 	return s.repo.DeletePatientDisease(diseaseId, patientId)
 }

@@ -3,7 +3,7 @@ package model
 import "github.com/guregu/null/v5"
 
 type PatientCourse struct {
-	Id        null.Int    `json:"id" db:"phone" binding:"required"`
+	Id        null.Int    `json:"id" db:"id" binding:"required"`
 	Patient   null.Int    `json:"patient" db:"patient" binding:"required"`
 	Disease   null.String `json:"disease" db:"disease" binding:"required"`
 	Course    null.String `json:"course" db:"course" binding:"required"`

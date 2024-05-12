@@ -107,12 +107,12 @@ type PatientCourse interface {
 
 type PatientDisease interface {
 	CreatePatientDisease(patientDisease model.PatientDisease) error
-	GetPatientDiseaseById(patientId, diseaseId int) (model.PatientDisease, error)
+	GetPatientDiseaseById(patientId int, diseaseId string) (model.PatientDisease, error)
 	GetPatientDiseaseListByPatient(patientId int) ([]model.PatientDisease, error)
-	GetPatientDiseaseListByDisease(diseaseId int) ([]model.PatientDisease, error)
+	GetPatientDiseaseListByDisease(diseaseId string) ([]model.PatientDisease, error)
 	GetPatientDiseaseList() ([]model.PatientDisease, error)
 	UpdatePatientDisease(patientDisease model.PatientDisease) error
-	DeletePatientDisease(patientId, diseaseId int) error
+	DeletePatientDisease(patientId int, diseaseId string) error
 }
 
 type ProcedureBloodCount interface {

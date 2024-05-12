@@ -24,7 +24,7 @@ func (r *PatientRepository) CreatePatient(patient model.Patient) (int, error) {
 	}
 
 	var patientId int
-	query := fmt.Sprintf("INSERT INTO %s (first_name, middle_name, last_name, birth_date, sex, snils, phone) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", patientTable)
+	query := fmt.Sprintf("INSERT INTO %s (first_name, middle_name, last_name, birth_date, sex, snils, user_id, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id", patientTable)
 	row := r.db.QueryRow(query,
 		patient.FirstName,
 		patient.MiddleName,
@@ -32,6 +32,7 @@ func (r *PatientRepository) CreatePatient(patient model.Patient) (int, error) {
 		patient.BirthDate,
 		patient.Sex,
 		patient.SNILS,
+		patient.UserId,
 		patient.Phone,
 	)
 
@@ -75,9 +76,9 @@ func (r *PatientRepository) UpdatePatient(patient model.Patient) error {
 		Set("birth_date", patient.BirthDate).
 		Set("sex", patient.Sex).
 		Set("snils", patient.SNILS).
+		Set("user_id", patient.UserId).
 		Set("phone", patient.Phone).
-		Where(squirrel.Eq{"id": patient.Id}).
-		Suffix("RETURNING *")
+		Where(squirrel.Eq{"id": patient.Id})
 
 	// Get the SQL query and arguments from the update builder
 	sql, args, err := updateBuilder.ToSql()

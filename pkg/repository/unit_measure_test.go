@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"med/pkg/model"
 	"testing"
@@ -12,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateDiagnosis(t *testing.T) {
+func TestCreateUnitMeasure(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -20,26 +21,33 @@ func TestCreateDiagnosis(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiagnosisRepository(sqlxDB)
+	r := NewUnitMeasureRepository(sqlxDB)
 
-	type mockBehavior func(model model.Diagnosis)
+	type mockBehavior func(model model.UnitMeasure)
 
 	testTable := []struct {
 		name         string
-		model        model.Diagnosis
+		model        model.UnitMeasure
 		mockBehavior mockBehavior
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			model: model.Diagnosis{
-				Id:          null.StringFrom("1"),
-				Description: null.StringFrom("text"),
+			model: model.UnitMeasure{
+				Id:        null.StringFrom("1"),
+				Shorthand: null.StringFrom("shrt"),
+				FullText:  null.StringFrom("full text"),
+				Global:    null.StringFrom("glob"),
 			},
-			mockBehavior: func(model model.Diagnosis) {
+			mockBehavior: func(model model.UnitMeasure) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.diagnosis").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("INSERT INTO onco_base.unit_measure (.+) VALUES (.+)").
+					WithArgs(
+						model.Id,
+						model.Shorthand,
+						model.FullText,
+						model.Global,
+					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
@@ -47,14 +55,21 @@ func TestCreateDiagnosis(t *testing.T) {
 		},
 		{
 			name: "Empty required field",
-			model: model.Diagnosis{
-				Description: null.StringFrom("text"),
+			model: model.UnitMeasure{
+				Shorthand: null.StringFrom("shrt"),
+				FullText:  null.StringFrom("full text"),
+				Global:    null.StringFrom("glob"),
 			},
-			mockBehavior: func(model model.Diagnosis) {
+			mockBehavior: func(model model.UnitMeasure) {
 				mock.ExpectBegin()
-				mock.ExpectExec("INSERT INTO onco_base.diagnosis").
-					WithArgs(nil, model.Description).
-					WillReturnError(errors.New("some error occured"))
+				mock.ExpectExec("INSERT INTO onco_base.unit_measure (.+) VALUES (.+)").
+					WithArgs(
+						nil,
+						model.Shorthand,
+						model.FullText,
+						model.Global,
+					).
+					WillReturnError(errors.New("empty required field"))
 				mock.ExpectRollback()
 			},
 			expectErr: true,
@@ -64,7 +79,7 @@ func TestCreateDiagnosis(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.model)
-			err := r.CreateDiagnosis(testCase.model)
+			err := r.CreateUnitMeasure(testCase.model)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -76,7 +91,7 @@ func TestCreateDiagnosis(t *testing.T) {
 	}
 }
 
-func TestGetDiagnosisList(t *testing.T) {
+func TestGetUnitMeasureList(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -84,39 +99,43 @@ func TestGetDiagnosisList(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiagnosisRepository(sqlxDB)
+	r := NewUnitMeasureRepository(sqlxDB)
 
 	type mockBehavior func()
 
 	testTable := []struct {
 		name         string
 		mockBehavior mockBehavior
-		expectResult []model.Diagnosis
+		expectResult []model.UnitMeasure
 		expectErr    bool
 	}{
 		{
 			name: "OK",
 			mockBehavior: func() {
-				rows := sqlmock.NewRows([]string{"id", "description"}).
-					AddRow("1", "descr1").
-					AddRow("2", "descr2").
-					AddRow("3", "descr3")
+				rows := sqlmock.NewRows([]string{
+					"id",
+					"shorthand",
+					"full_text",
+					"global",
+				}).
+					AddRow("1", "shrt", "full text", "glob").
+					AddRow("2", "shrt", "full text", "glob")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.unit_measure").
 					WillReturnRows(rows)
 			},
-			expectResult: []model.Diagnosis{
+			expectResult: []model.UnitMeasure{
 				{
-					Id:          null.StringFrom("1"),
-					Description: null.StringFrom("descr1"),
+					Id:        null.StringFrom("1"),
+					Shorthand: null.StringFrom("shrt"),
+					FullText:  null.StringFrom("full text"),
+					Global:    null.StringFrom("glob"),
 				},
 				{
-					Id:          null.StringFrom("2"),
-					Description: null.StringFrom("descr2"),
-				},
-				{
-					Id:          null.StringFrom("3"),
-					Description: null.StringFrom("descr3"),
+					Id:        null.StringFrom("2"),
+					Shorthand: null.StringFrom("shrt"),
+					FullText:  null.StringFrom("full text"),
+					Global:    null.StringFrom("glob"),
 				},
 			},
 			expectErr: false,
@@ -124,7 +143,7 @@ func TestGetDiagnosisList(t *testing.T) {
 		{
 			name: "Select error occured",
 			mockBehavior: func() {
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis").
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.unit_measure").
 					WillReturnError(errors.New("some error occured"))
 			},
 			expectErr: true,
@@ -134,7 +153,7 @@ func TestGetDiagnosisList(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior()
-			res, err := r.GetDiagnosisList()
+			res, err := r.GetUnitMeasureList()
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -146,7 +165,7 @@ func TestGetDiagnosisList(t *testing.T) {
 	}
 }
 
-func TestGetDiagnosisById(t *testing.T) {
+func TestGetUnitMeasureById(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -154,35 +173,54 @@ func TestGetDiagnosisById(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiagnosisRepository(sqlxDB)
+	r := NewUnitMeasureRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
 	testTable := []struct {
 		name         string
+		data         string
 		mockBehavior mockBehavior
-		expectResult model.Diagnosis
+		expectResult model.UnitMeasure
 		expectErr    bool
 	}{
 		{
 			name: "OK",
+			data: "1",
 			mockBehavior: func(id string) {
-				row := sqlmock.NewRows([]string{"id", "description"}).AddRow("1", "description1")
+				row := sqlmock.NewRows([]string{
+					"id",
+					"shorthand",
+					"full_text",
+					"global",
+				}).
+					AddRow("1", "shrt", "full text", "glob")
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis WHERE id=").WithArgs(id).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.unit_measure WHERE id=(.+)").
+					WithArgs(id).
+					WillReturnRows(row)
 			},
-			expectResult: model.Diagnosis{
-				Id:          null.StringFrom("1"),
-				Description: null.StringFrom("description1"),
+			expectResult: model.UnitMeasure{
+				Id:        null.StringFrom("1"),
+				Shorthand: null.StringFrom("shrt"),
+				FullText:  null.StringFrom("full text"),
+				Global:    null.StringFrom("glob"),
 			},
 			expectErr: false,
 		},
 		{
 			name: "No records",
 			mockBehavior: func(id string) {
-				row := sqlmock.NewRows([]string{"id", "description"})
+				row := sqlmock.NewRows([]string{
+					"value",
+					"measure_code",
+					"procedure",
+					"blood_count",
+				})
 
-				mock.ExpectQuery("SELECT (.+) FROM onco_base.diagnosis WHERE id=(.+)").WithArgs(id).WillReturnRows(row)
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.unit_measure WHERE id=(.+)").
+					WithArgs(id).
+					WillReturnRows(row)
 			},
 			expectErr: true,
 		},
@@ -190,8 +228,8 @@ func TestGetDiagnosisById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			testCase.mockBehavior(testCase.expectResult.Id.String)
-			res, err := r.GetDiagnosisById(testCase.expectResult.Id.String)
+			testCase.mockBehavior(testCase.data)
+			res, err := r.GetUnitMeasureById(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)
@@ -203,7 +241,7 @@ func TestGetDiagnosisById(t *testing.T) {
 	}
 }
 
-func TestUpdateDiagnosis(t *testing.T) {
+func TestUpdateUnitMeasure(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -211,27 +249,33 @@ func TestUpdateDiagnosis(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiagnosisRepository(sqlxDB)
+	r := NewUnitMeasureRepository(sqlxDB)
 
-	type mockBehavior func(model model.Diagnosis)
+	type mockBehavior func(model model.UnitMeasure)
 
 	testTable := []struct {
 		name         string
-		data         model.Diagnosis
+		data         model.UnitMeasure
 		mockBehavior mockBehavior
-		expectResult model.Diagnosis
 		expectErr    bool
 	}{
 		{
 			name: "OK",
-			data: model.Diagnosis{
-				Id:          null.StringFrom("1"),
-				Description: null.StringFrom("description1"),
+			data: model.UnitMeasure{
+				Id:        null.StringFrom("1"),
+				Shorthand: null.StringFrom("shrt"),
+				FullText:  null.StringFrom("full text"),
+				Global:    null.StringFrom("glob"),
 			},
-			mockBehavior: func(model model.Diagnosis) {
+			mockBehavior: func(model model.UnitMeasure) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.diagnosis SET (.+) WHERE id=(.+)").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("UPDATE onco_base.unit_measure SET (.+) WHERE id=(.+)").
+					WithArgs(
+						model.Id,
+						model.Shorthand,
+						model.FullText,
+						model.Global,
+					).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 			},
@@ -239,10 +283,15 @@ func TestUpdateDiagnosis(t *testing.T) {
 		},
 		{
 			name: "Update error occured",
-			mockBehavior: func(model model.Diagnosis) {
+			mockBehavior: func(model model.UnitMeasure) {
 				mock.ExpectBegin()
-				mock.ExpectExec("UPDATE onco_base.diagnosis SET (.+) WHERE id=(.+)").
-					WithArgs(model.Id, model.Description).
+				mock.ExpectExec("UPDATE onco_base.unit_measure SET (.+) WHERE id=(.+)").
+					WithArgs(
+						model.Id,
+						model.Shorthand,
+						model.FullText,
+						model.Global,
+					).
 					WillReturnError(errors.New("error occured"))
 				mock.ExpectRollback()
 			},
@@ -253,9 +302,10 @@ func TestUpdateDiagnosis(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.UpdateDiagnosis(testCase.data)
+			err := r.UpdateUnitMeasure(testCase.data)
 
 			if testCase.expectErr {
+				fmt.Print(err)
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
@@ -265,7 +315,7 @@ func TestUpdateDiagnosis(t *testing.T) {
 	}
 }
 
-func TestDeleteDiagnosis(t *testing.T) {
+func TestDeleteUnitMeasure(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -273,7 +323,7 @@ func TestDeleteDiagnosis(t *testing.T) {
 	defer mockDB.Close()
 
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewDiagnosisRepository(sqlxDB)
+	r := NewUnitMeasureRepository(sqlxDB)
 
 	type mockBehavior func(id string)
 
@@ -281,7 +331,6 @@ func TestDeleteDiagnosis(t *testing.T) {
 		name         string
 		data         string
 		mockBehavior mockBehavior
-		expectResult model.Diagnosis
 		expectErr    bool
 	}{
 		{
@@ -289,7 +338,7 @@ func TestDeleteDiagnosis(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.diagnosis WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.unit_measure WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
@@ -301,7 +350,7 @@ func TestDeleteDiagnosis(t *testing.T) {
 			data: "1",
 			mockBehavior: func(id string) {
 				mock.ExpectBegin()
-				mock.ExpectExec("DELETE FROM onco_base.diagnosis WHERE id=(.+)").
+				mock.ExpectExec("DELETE FROM onco_base.unit_measure WHERE id=(.+)").
 					WithArgs(id).
 					WillReturnError(errors.New("some error occured"))
 				mock.ExpectRollback()
@@ -313,7 +362,7 @@ func TestDeleteDiagnosis(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior(testCase.data)
-			err := r.DeleteDiagnosis(testCase.data)
+			err := r.DeleteUnitMeasure(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)

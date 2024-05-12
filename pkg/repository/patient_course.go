@@ -34,7 +34,7 @@ func (r *PatientCourseRepository) CreatePatientCourse(patientCourse model.Patien
 		patientCourse.Diagnosis,
 	)
 
-	err = row.Scan(&patientCourse)
+	err = row.Scan(&patientCourseId)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
@@ -45,7 +45,7 @@ func (r *PatientCourseRepository) CreatePatientCourse(patientCourse model.Patien
 // Get patient course list from database
 func (r *PatientCourseRepository) GetPatientCourseList() ([]model.PatientCourse, error) {
 	var patientCourseList []model.PatientCourse
-	query := fmt.Sprintf("SELECT * FROM %s ", patientCourseTable)
+	query := fmt.Sprintf("SELECT * FROM %s", patientCourseTable)
 	err := r.db.Select(&patientCourseList, query)
 	return patientCourseList, err
 }

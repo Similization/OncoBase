@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"med/pkg/model"
 	"testing"
@@ -15,8 +13,6 @@ import (
 )
 
 func TestCreateBloodCountValue(t *testing.T) {
-	a := sql.NullString{}
-	fmt.Print("a", a)
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatal(err)
@@ -149,6 +145,164 @@ func TestGetBloodCountValueList(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.mockBehavior()
 			res, err := r.GetBloodCountValueList()
+
+			if testCase.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, testCase.expectResult, res)
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestGetBloodCountValueListByDisease(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mockDB.Close()
+
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+	r := NewBloodCountValueRepository(sqlxDB)
+
+	type mockBehavior func(diseaseId string)
+
+	testTable := []struct {
+		name         string
+		data         string
+		mockBehavior mockBehavior
+		expectResult []model.BloodCountValue
+		expectErr    bool
+	}{
+		{
+			name: "OK",
+			mockBehavior: func(diseaseId string) {
+				rows := sqlmock.NewRows([]string{"disease", "blood_count", "coefficient", "description"}).
+					AddRow("1", "1", 0.1, "descr").
+					AddRow("1", "2", 0.2, "descr2").
+					AddRow("1", "3", 0.3, "")
+
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count_value WHERE disease=(.+)").
+					WithArgs(diseaseId).
+					WillReturnRows(rows)
+			},
+			expectResult: []model.BloodCountValue{
+				{
+					Disease:     null.StringFrom("1"),
+					BloodCount:  null.StringFrom("1"),
+					Coefficient: null.FloatFrom(0.1),
+					Description: null.StringFrom("descr"),
+				},
+				{
+					Disease:     null.StringFrom("1"),
+					BloodCount:  null.StringFrom("2"),
+					Coefficient: null.FloatFrom(0.2),
+					Description: null.StringFrom("descr2"),
+				},
+				{
+					Disease:     null.StringFrom("1"),
+					BloodCount:  null.StringFrom("3"),
+					Coefficient: null.FloatFrom(0.3),
+					Description: null.StringFrom(""),
+				},
+			},
+			expectErr: false,
+		},
+		{
+			name: "Select error occured",
+			mockBehavior: func(diseaseId string) {
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count_value WHERE disease=(.+)").
+					WithArgs(diseaseId).
+					WillReturnError(errors.New("some error occured"))
+			},
+			expectErr: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			testCase.mockBehavior(testCase.data)
+			res, err := r.GetBloodCountValueListByDisease(testCase.data)
+
+			if testCase.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, testCase.expectResult, res)
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestGetBloodCountValueListByBloodCount(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mockDB.Close()
+
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+	r := NewBloodCountValueRepository(sqlxDB)
+
+	type mockBehavior func(bloodCountId string)
+
+	testTable := []struct {
+		name         string
+		data         string
+		mockBehavior mockBehavior
+		expectResult []model.BloodCountValue
+		expectErr    bool
+	}{
+		{
+			name: "OK",
+			mockBehavior: func(bloodCountId string) {
+				rows := sqlmock.NewRows([]string{"disease", "blood_count", "coefficient", "description"}).
+					AddRow("1", "1", 0.1, "descr").
+					AddRow("2", "1", 0.2, "descr2").
+					AddRow("3", "1", 0.3, "")
+
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count_value WHERE blood_count=(.+)").
+					WithArgs(bloodCountId).
+					WillReturnRows(rows)
+			},
+			expectResult: []model.BloodCountValue{
+				{
+					Disease:     null.StringFrom("1"),
+					BloodCount:  null.StringFrom("1"),
+					Coefficient: null.FloatFrom(0.1),
+					Description: null.StringFrom("descr"),
+				},
+				{
+					Disease:     null.StringFrom("2"),
+					BloodCount:  null.StringFrom("1"),
+					Coefficient: null.FloatFrom(0.2),
+					Description: null.StringFrom("descr2"),
+				},
+				{
+					Disease:     null.StringFrom("3"),
+					BloodCount:  null.StringFrom("1"),
+					Coefficient: null.FloatFrom(0.3),
+					Description: null.StringFrom(""),
+				},
+			},
+			expectErr: false,
+		},
+		{
+			name: "Select error occured",
+			mockBehavior: func(bloodCountId string) {
+				mock.ExpectQuery("SELECT (.+) FROM onco_base.blood_count_value WHERE blood_count=(.+)").
+					WithArgs(bloodCountId).
+					WillReturnError(errors.New("some error occured"))
+			},
+			expectErr: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			testCase.mockBehavior(testCase.data)
+			res, err := r.GetBloodCountValueListByBloodCount(testCase.data)
 
 			if testCase.expectErr {
 				assert.Error(t, err)

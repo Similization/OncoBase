@@ -167,8 +167,9 @@ CREATE TABLE IF NOT EXISTS onco_base.course_procedure
 (
     id             SERIAL NOT NULL UNIQUE,
     patient_course INT    NOT NULL,
-    begin_date     DATE   NOT NULL,
     doctor         INT    NOT NULL,
+    begin_date     DATE   NOT NULL,
+    period         INT,
     result         VARCHAR(10),
     PRIMARY KEY (id),
     FOREIGN KEY (patient_course) REFERENCES onco_base.patient_course (id),
